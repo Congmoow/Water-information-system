@@ -17,6 +17,7 @@ logs/
 # Root local cache / temp artifacts
 .npm-cache/
 .frontendwater-info-web/
+docs/
 
 # Backend build outputs
 backend/**/bin/
