@@ -12,6 +12,7 @@ Thumbs.db
 *.log
 *.out.log
 *.err.log
+logs/
 
 # Root local cache / temp artifacts
 .npm-cache/
