@@ -116,14 +116,16 @@ async function handleLogin() {
   padding: 8px 14px;
   width: fit-content;
   border-radius: 999px;
-  background: rgba(15, 108, 123, 0.08);
+  background: var(--wi-primary-soft);
   color: var(--wi-primary);
   font-size: 13px;
   font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--wi-emphasis-outline);
 }
 
 .login-card {
   align-self: center;
+  background: var(--wi-surface-panel);
 }
 
 .login-card__head {

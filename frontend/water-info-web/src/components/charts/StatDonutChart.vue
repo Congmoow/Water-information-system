@@ -8,11 +8,12 @@
 import { computed } from 'vue'
 import VChart from 'vue-echarts'
 import '@/components/charts/chartSetup'
+import { visualizationTokens } from '@/theme/tokens'
 import type { CategoryCount } from '@/types/models'
 
 const props = defineProps<{
   items: CategoryCount[]
-  colors: string[]
+  colors: readonly string[]
 }>()
 
 const option = computed(() => ({
@@ -22,7 +23,7 @@ const option = computed(() => ({
   legend: {
     bottom: 0,
     textStyle: {
-      color: '#5c738d'
+      color: visualizationTokens.chart.text
     }
   },
   series: [
@@ -31,7 +32,8 @@ const option = computed(() => ({
       radius: ['54%', '74%'],
       center: ['50%', '44%'],
       label: {
-        formatter: '{b}\n{c}'
+        formatter: '{b}\n{c}',
+        color: visualizationTokens.chart.text
       },
       data: props.items.map((item, index) => ({
         name: item.name,

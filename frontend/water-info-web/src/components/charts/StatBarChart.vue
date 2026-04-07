@@ -8,11 +8,12 @@
 import { computed } from 'vue'
 import VChart from 'vue-echarts'
 import '@/components/charts/chartSetup'
+import { visualizationTokens } from '@/theme/tokens'
 import type { CategoryCount } from '@/types/models'
 
 const props = defineProps<{
   items: CategoryCount[]
-  colors: string[]
+  colors: readonly string[]
 }>()
 
 const option = computed(() => ({
@@ -29,13 +30,13 @@ const option = computed(() => ({
   xAxis: {
     type: 'category',
     data: props.items.map((item) => item.name),
-    axisLine: { lineStyle: { color: 'rgba(23, 50, 77, 0.14)' } },
-    axisLabel: { color: '#5c738d' }
+    axisLine: { lineStyle: { color: visualizationTokens.chart.axis } },
+    axisLabel: { color: visualizationTokens.chart.text }
   },
   yAxis: {
     type: 'value',
-    splitLine: { lineStyle: { color: 'rgba(23, 50, 77, 0.08)' } },
-    axisLabel: { color: '#5c738d' }
+    splitLine: { lineStyle: { color: visualizationTokens.chart.grid } },
+    axisLabel: { color: visualizationTokens.chart.text }
   },
   series: [
     {

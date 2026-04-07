@@ -55,9 +55,10 @@ const icons: Record<string, Component> = {
   min-height: 100vh;
   padding: 24px 18px;
   background:
-    linear-gradient(180deg, rgba(8, 52, 72, 0.98), rgba(8, 42, 58, 0.98)),
-    radial-gradient(circle at top, rgba(201, 138, 61, 0.22), transparent 28%);
-  color: #f5fbff;
+    linear-gradient(180deg, var(--wi-surface-inverse-strong), var(--wi-surface-inverse)),
+    radial-gradient(circle at top, var(--wi-glow-brand), transparent 26%);
+  color: var(--wi-text-inverse-primary);
+  border-right: 1px solid var(--wi-border-inverse);
 }
 
 .brand {
@@ -74,7 +75,7 @@ const icons: Record<string, Component> = {
   span {
     display: block;
     margin-top: 4px;
-    color: rgba(245, 251, 255, 0.72);
+    color: var(--wi-text-inverse-secondary);
     font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -87,9 +88,23 @@ const icons: Record<string, Component> = {
   border-radius: 16px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, rgba(201, 138, 61, 0.95), rgba(15, 108, 123, 0.95));
+  position: relative;
+  background: linear-gradient(135deg, var(--wi-primary-hover), var(--wi-primary-active));
+  box-shadow: var(--wi-shadow-inverse-strong);
   font-size: 22px;
   font-weight: 800;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--wi-accent);
+    box-shadow: var(--wi-ring-accent);
+  }
 }
 
 .sidebar__nav {
@@ -104,17 +119,23 @@ const icons: Record<string, Component> = {
   gap: 12px;
   padding: 14px 16px;
   border-radius: 18px;
-  color: rgba(245, 251, 255, 0.86);
-  transition: all 0.2s ease;
+  color: var(--wi-text-inverse-secondary);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 
   &.router-link-active {
-    background: rgba(255, 255, 255, 0.14);
-    color: #fff;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    background: var(--wi-surface-inverse-muted);
+    color: var(--wi-text-inverse-primary);
+    box-shadow: inset 0 0 0 1px var(--wi-border-inverse);
   }
 
   &:hover {
-    transform: translateX(4px);
+    transform: translateX(3px);
+    background: var(--wi-surface-inverse-soft);
+    color: var(--wi-text-inverse-primary);
   }
 }
 </style>

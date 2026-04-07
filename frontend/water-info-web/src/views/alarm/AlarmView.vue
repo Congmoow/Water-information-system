@@ -231,24 +231,8 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.toolbar {
-  display: grid;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
 .toolbar--alarm {
   grid-template-columns: 1fr 0.7fr 0.7fr 1.1fr auto;
-}
-
-.table-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 18px;
-}
-
-.w-full {
-  width: 100%;
 }
 
 @media (max-width: 1240px) {

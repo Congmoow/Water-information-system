@@ -60,10 +60,12 @@ async function handleCommand(command: string) {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  background: var(--wi-surface-panel);
 
   h2 {
     margin: 6px 0 0;
     font-size: 24px;
+    color: var(--wi-text-primary);
   }
 }
 
@@ -101,7 +103,10 @@ async function handleCommand(command: string) {
 }
 
 .app-header__avatar {
-  background: linear-gradient(135deg, var(--wi-primary), var(--wi-accent));
-  color: #fff;
+  background: linear-gradient(135deg, var(--wi-primary-hover), var(--wi-primary-active));
+  color: var(--wi-primary-contrast);
+  box-shadow:
+    var(--wi-ring-accent),
+    var(--wi-shadow-primary);
 }
 </style>

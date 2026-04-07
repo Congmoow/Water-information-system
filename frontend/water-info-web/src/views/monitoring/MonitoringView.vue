@@ -57,8 +57,8 @@
       <TrendLineChart
         v-if="historyPoints.length > 0"
         :points="historyPoints"
-        color="#0f6c7b"
-        area-color="rgba(15, 108, 123, 0.18)"
+        :color="lineChartTokens.waterLevel.line"
+        :area-color="lineChartTokens.waterLevel.area"
         unit=""
       />
       <el-empty v-else description="当前筛选条件下暂无历史数据" />
@@ -112,6 +112,7 @@ import dayjs from 'dayjs'
 import { ElMessage } from 'element-plus'
 import PageCard from '@/components/common/PageCard.vue'
 import TrendLineChart from '@/components/charts/TrendLineChart.vue'
+import { lineChartTokens } from '@/theme/tokens'
 import { createMonitoringRecord, fetchMonitoringHistory, fetchMonitoringRecords, type MonitoringFormModel } from '@/api/modules/monitoring'
 import { useStationOptions } from '@/composables/useStationOptions'
 import { useAuthStore } from '@/stores/auth'
@@ -229,24 +230,8 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.toolbar {
-  display: grid;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
 .toolbar--monitoring {
   grid-template-columns: 1fr 0.7fr 1.2fr auto;
-}
-
-.table-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 18px;
-}
-
-.w-full {
-  width: 100%;
 }
 
 @media (max-width: 1180px) {

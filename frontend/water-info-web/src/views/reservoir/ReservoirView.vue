@@ -186,19 +186,6 @@ onMounted(loadData)
 
 <style scoped lang="scss">
 .toolbar {
-  display: grid;
   grid-template-columns: 1fr auto;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.table-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 18px;
-}
-
-.w-full {
-  width: 100%;
 }
 </style>

@@ -25,6 +25,7 @@ defineProps<{
 <style scoped lang="scss">
 .page-card {
   padding: 22px 24px;
+  background: var(--wi-surface-panel);
 }
 
 .page-card__header {
@@ -33,15 +34,18 @@ defineProps<{
   gap: 16px;
   align-items: flex-start;
   margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--wi-border-subtle);
 
   h3 {
     margin: 0;
     font-size: 18px;
+    color: var(--wi-text-primary);
   }
 
   p {
     margin: 8px 0 0;
-    color: var(--wi-text-soft);
+    color: var(--wi-text-secondary);
     font-size: 13px;
   }
 }

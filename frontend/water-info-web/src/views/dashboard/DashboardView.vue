@@ -31,8 +31,8 @@
       <PageCard title="水位趋势" subtitle="最近监测样本按日期聚合">
         <TrendLineChart
           :points="overview.waterLevelTrend"
-          color="#0f6c7b"
-          area-color="rgba(15, 108, 123, 0.2)"
+          :color="lineChartTokens.waterLevel.line"
+          :area-color="lineChartTokens.waterLevel.area"
           unit=""
         />
       </PageCard>
@@ -40,8 +40,8 @@
       <PageCard title="雨量统计" subtitle="最近雨量采样按日期累计">
         <TrendLineChart
           :points="overview.rainfallTrend"
-          color="#2d8f5a"
-          area-color="rgba(45, 143, 90, 0.18)"
+          :color="lineChartTokens.rainfall.line"
+          :area-color="lineChartTokens.rainfall.area"
           unit=""
         />
       </PageCard>
@@ -49,11 +49,11 @@
 
     <div class="page-grid analytics-grid analytics-grid--secondary">
       <PageCard title="告警数量统计" subtitle="按告警等级汇总">
-        <StatBarChart :items="overview.alarmLevelStats" :colors="['#8aa2b4', '#d08c2e', '#c44d4d']" />
+        <StatBarChart :items="overview.alarmLevelStats" :colors="chartSeries.alarmLevels" />
       </PageCard>
 
       <PageCard title="站点状态统计" subtitle="在线、离线与预警站点分布">
-        <StatDonutChart :items="overview.stationStatusStats" :colors="['#2d8f5a', '#8aa2b4', '#d08c2e']" />
+        <StatDonutChart :items="overview.stationStatusStats" :colors="chartSeries.stationStatus" />
       </PageCard>
     </div>
 
@@ -90,6 +90,7 @@ import PageCard from '@/components/common/PageCard.vue'
 import TrendLineChart from '@/components/charts/TrendLineChart.vue'
 import StatBarChart from '@/components/charts/StatBarChart.vue'
 import StatDonutChart from '@/components/charts/StatDonutChart.vue'
+import { chartSeries, lineChartTokens } from '@/theme/tokens'
 import { fetchDashboardOverview } from '@/api/modules/dashboard'
 import type { DashboardOverview } from '@/types/models'
 
@@ -134,16 +135,22 @@ onMounted(loadData)
 .dashboard-hero {
   overflow: hidden;
   background:
-    linear-gradient(135deg, rgba(9, 65, 77, 0.97), rgba(14, 94, 111, 0.92)),
-    radial-gradient(circle at top left, rgba(201, 138, 61, 0.28), transparent 30%);
-  color: #f5fbff;
+    linear-gradient(135deg, var(--wi-surface-inverse-strong), var(--wi-surface-inverse)),
+    radial-gradient(circle at top right, var(--wi-glow-brand-strong), transparent 28%),
+    radial-gradient(circle at bottom left, var(--wi-glow-accent-subtle), transparent 22%);
+  color: var(--wi-text-inverse-primary);
+  border-color: var(--wi-border-inverse);
 
   :deep(.page-card__header p) {
-    color: rgba(245, 251, 255, 0.78);
+    color: var(--wi-text-inverse-secondary);
   }
 
   :deep(.page-card__header h3) {
-    color: #fff;
+    color: var(--wi-text-inverse-primary);
+  }
+
+  :deep(.page-card__header) {
+    border-bottom-color: var(--wi-border-inverse);
   }
 }
 
@@ -158,7 +165,7 @@ onMounted(loadData)
   margin: 0 0 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(245, 251, 255, 0.74);
+  color: var(--wi-text-inverse-secondary);
   font-size: 12px;
 }
 
@@ -171,7 +178,7 @@ onMounted(loadData)
 .dashboard-hero__copy {
   margin: 14px 0 0;
   max-width: 720px;
-  color: rgba(245, 251, 255, 0.82);
+  color: var(--wi-text-inverse-secondary);
   line-height: 1.9;
 }
 
@@ -180,15 +187,16 @@ onMounted(loadData)
   min-width: 220px;
   padding: 24px;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  background: var(--wi-surface-inverse-soft);
+  box-shadow: inset 0 0 0 1px var(--wi-border-inverse);
   display: flex;
   flex-direction: column;
   gap: 8px;
+  backdrop-filter: blur(8px);
 
   span,
   em {
-    color: rgba(245, 251, 255, 0.78);
+    color: var(--wi-text-inverse-secondary);
     font-style: normal;
   }
 
@@ -208,7 +216,7 @@ onMounted(loadData)
   gap: 12px;
 
   span {
-    color: var(--wi-text-soft);
+    color: var(--wi-text-tertiary);
     font-size: 13px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -221,7 +229,7 @@ onMounted(loadData)
 
   p {
     margin: 0;
-    color: var(--wi-text-soft);
+    color: var(--wi-text-secondary);
     line-height: 1.7;
   }
 }

@@ -61,6 +61,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import PageCard from '@/components/common/PageCard.vue'
+import { visualizationTokens } from '@/theme/tokens'
 import { fetchMapPoints } from '@/api/modules/map'
 import type { MapPoint } from '@/types/models'
 
@@ -80,11 +81,11 @@ function pointTypeLabel(point: MapPoint) {
 }
 
 function markerColor(point: MapPoint) {
-  if (point.source === 'reservoir') return '#0f6c7b'
-  if (point.source === 'river') return '#2d8f5a'
-  if (point.status === 'Warning') return '#d08c2e'
-  if (point.status === 'Offline') return '#8aa2b4'
-  return '#c98a3d'
+  if (point.source === 'reservoir') return visualizationTokens.map.engineering
+  if (point.source === 'river') return visualizationTokens.map.river
+  if (point.status === 'Warning') return visualizationTokens.map.warning
+  if (point.status === 'Offline') return visualizationTokens.map.offline
+  return visualizationTokens.map.station
 }
 
 function initMap() {
@@ -108,7 +109,7 @@ function renderMarkers() {
   const layers = points.value.map((point) => {
     const marker = L.circleMarker([point.latitude, point.longitude], {
       radius: point.source === 'station' ? 10 : 12,
-      color: '#ffffff',
+      color: visualizationTokens.map.markerStroke,
       weight: 2,
       fillColor: markerColor(point),
       fillOpacity: 0.92
@@ -155,10 +156,8 @@ onBeforeUnmount(() => {
 .map-canvas-wrap {
   padding: 12px;
   border-radius: 28px;
-  background:
-    radial-gradient(circle at top left, rgba(15, 108, 123, 0.14), transparent 30%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.9));
-  border: 1px solid rgba(15, 108, 123, 0.1);
+  background: linear-gradient(180deg, var(--wi-surface-raised), var(--wi-surface-panel));
+  border: 1px solid var(--wi-border-default);
 }
 
 .map-canvas {
@@ -175,11 +174,13 @@ onBeforeUnmount(() => {
 .map-sidebar__summary,
 .map-sidebar__detail {
   padding: 22px;
+  background: var(--wi-map-panel-bg);
 }
 
 .map-sidebar__summary h4,
 .map-sidebar__detail h3 {
   margin: 0;
+  color: var(--wi-text-primary);
 }
 
 .map-sidebar__detail {
@@ -202,6 +203,7 @@ onBeforeUnmount(() => {
   dd {
     margin: 0;
     line-height: 1.8;
+    color: var(--wi-text-primary);
   }
 }
 
@@ -222,12 +224,13 @@ onBeforeUnmount(() => {
   div {
     padding: 18px;
     border-radius: 18px;
-    background: rgba(15, 108, 123, 0.06);
+    background: var(--wi-bg-muted);
+    border: 1px solid var(--wi-border-subtle);
   }
 
   span {
     display: block;
-    color: var(--wi-text-soft);
+    color: var(--wi-text-secondary);
     font-size: 13px;
   }
 
@@ -235,7 +238,7 @@ onBeforeUnmount(() => {
     display: block;
     margin-top: 10px;
     font-size: 30px;
-    color: var(--wi-primary-strong);
+    color: var(--wi-primary-active);
   }
 }
 
@@ -250,7 +253,7 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--wi-text-soft);
+    color: var(--wi-text-secondary);
   }
 }
 
@@ -262,15 +265,15 @@ onBeforeUnmount(() => {
 }
 
 .legend-dot--reservoir {
-  background: #0f6c7b;
+  background: var(--wi-map-engineering);
 }
 
 .legend-dot--river {
-  background: #2d8f5a;
+  background: var(--wi-map-river);
 }
 
 .legend-dot--station {
-  background: #c98a3d;
+  background: var(--wi-map-station);
 }
 
 @media (max-width: 1180px) {

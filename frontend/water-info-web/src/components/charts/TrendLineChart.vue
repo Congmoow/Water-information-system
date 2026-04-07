@@ -8,6 +8,7 @@
 import { computed } from 'vue'
 import VChart from 'vue-echarts'
 import '@/components/charts/chartSetup'
+import { visualizationTokens } from '@/theme/tokens'
 import type { TrendPoint } from '@/types/models'
 
 const props = defineProps<{
@@ -32,15 +33,15 @@ const option = computed(() => ({
     type: 'category',
     boundaryGap: false,
     data: props.points.map((item) => item.label),
-    axisLine: { lineStyle: { color: 'rgba(23, 50, 77, 0.14)' } },
-    axisLabel: { color: '#5c738d' }
+    axisLine: { lineStyle: { color: visualizationTokens.chart.axis } },
+    axisLabel: { color: visualizationTokens.chart.text }
   },
   yAxis: {
     type: 'value',
     axisLine: { show: false },
-    splitLine: { lineStyle: { color: 'rgba(23, 50, 77, 0.08)' } },
+    splitLine: { lineStyle: { color: visualizationTokens.chart.grid } },
     axisLabel: {
-      color: '#5c738d',
+      color: visualizationTokens.chart.text,
       formatter: `{value}${props.unit}`
     }
   },
