@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{56110D4F-C9E1-4BDE-8580-D557D8790ADE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterInfoSystem.API", "src\WaterInfoSystem.API\WaterInfoSystem.API.csproj", "{5A12A5B3-AE29-488F-BF23-BBD26AD205F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterInfoSystem.Application", "src\WaterInfoSystem.Application\WaterInfoSystem.Application.csproj", "{2601A367-6235-4939-919F-10BFCA4105AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterInfoSystem.Domain", "src\WaterInfoSystem.Domain\WaterInfoSystem.Domain.csproj", "{385BA6DE-00F9-4301-8DBA-441680BD136C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterInfoSystem.Infrastructure", "src\WaterInfoSystem.Infrastructure\WaterInfoSystem.Infrastructure.csproj", "{EEEF2C00-AEE8-4E90-8B75-F7C5C2454AE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterInfoSystem.Shared", "src\WaterInfoSystem.Shared\WaterInfoSystem.Shared.csproj", "{78D234BC-E9DF-45EE-9969-C9A769D77819}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E6639BFA-E195-44FF-8B7B-06E4459E3E28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterInfoSystem.Application.Tests", "tests\WaterInfoSystem.Application.Tests\WaterInfoSystem.Application.Tests.csproj", "{FDE40A92-F4FC-4415-9E5E-9BFF05F99134}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A12A5B3-AE29-488F-BF23-BBD26AD205F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A12A5B3-AE29-488F-BF23-BBD26AD205F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A12A5B3-AE29-488F-BF23-BBD26AD205F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A12A5B3-AE29-488F-BF23-BBD26AD205F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2601A367-6235-4939-919F-10BFCA4105AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2601A367-6235-4939-919F-10BFCA4105AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2601A367-6235-4939-919F-10BFCA4105AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2601A367-6235-4939-919F-10BFCA4105AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{385BA6DE-00F9-4301-8DBA-441680BD136C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{385BA6DE-00F9-4301-8DBA-441680BD136C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{385BA6DE-00F9-4301-8DBA-441680BD136C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{385BA6DE-00F9-4301-8DBA-441680BD136C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEEF2C00-AEE8-4E90-8B75-F7C5C2454AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEEF2C00-AEE8-4E90-8B75-F7C5C2454AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEEF2C00-AEE8-4E90-8B75-F7C5C2454AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEEF2C00-AEE8-4E90-8B75-F7C5C2454AE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78D234BC-E9DF-45EE-9969-C9A769D77819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78D234BC-E9DF-45EE-9969-C9A769D77819}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78D234BC-E9DF-45EE-9969-C9A769D77819}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78D234BC-E9DF-45EE-9969-C9A769D77819}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDE40A92-F4FC-4415-9E5E-9BFF05F99134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDE40A92-F4FC-4415-9E5E-9BFF05F99134}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDE40A92-F4FC-4415-9E5E-9BFF05F99134}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDE40A92-F4FC-4415-9E5E-9BFF05F99134}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5A12A5B3-AE29-488F-BF23-BBD26AD205F8} = {56110D4F-C9E1-4BDE-8580-D557D8790ADE}
+		{2601A367-6235-4939-919F-10BFCA4105AB} = {56110D4F-C9E1-4BDE-8580-D557D8790ADE}
+		{385BA6DE-00F9-4301-8DBA-441680BD136C} = {56110D4F-C9E1-4BDE-8580-D557D8790ADE}
+		{EEEF2C00-AEE8-4E90-8B75-F7C5C2454AE3} = {56110D4F-C9E1-4BDE-8580-D557D8790ADE}
+		{78D234BC-E9DF-45EE-9969-C9A769D77819} = {56110D4F-C9E1-4BDE-8580-D557D8790ADE}
+		{FDE40A92-F4FC-4415-9E5E-9BFF05F99134} = {E6639BFA-E195-44FF-8B7B-06E4459E3E28}
+	EndGlobalSection
+EndGlobal

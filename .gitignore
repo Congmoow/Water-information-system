@@ -1,0 +1,35 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.user
+*.swp
+*.tmp
+
+# Logs
+*.log
+*.out.log
+*.err.log
+
+# Root local cache / temp artifacts
+.npm-cache/
+.frontendwater-info-web/
+
+# Backend build outputs
+backend/**/bin/
+backend/**/obj/
+
+# Frontend dependencies and build outputs
+frontend/water-info-web/node_modules/
+frontend/water-info-web/dist/
+frontend/water-info-web/dist-ssr/
+
+# Optional generated config artifacts
+frontend/water-info-web/vite.config.js
+frontend/water-info-web/vite.config.d.ts
+
+# Test / coverage artifacts
+coverage/
+TestResults/

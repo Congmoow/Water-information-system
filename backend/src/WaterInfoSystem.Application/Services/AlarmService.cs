@@ -1,0 +1,123 @@
+using WaterInfoSystem.Application.Contracts.Alarms;
+using WaterInfoSystem.Application.Interfaces.Repositories;
+using WaterInfoSystem.Application.Interfaces.Services;
+using WaterInfoSystem.Domain.Entities;
+using WaterInfoSystem.Domain.Enums;
+using WaterInfoSystem.Shared.Exceptions;
+using WaterInfoSystem.Shared.Results;
+
+namespace WaterInfoSystem.Application.Services;
+
+public class AlarmService : IAlarmService
+{
+    private readonly IAlarmRepository _alarmRepository;
+    private readonly IStationRepository _stationRepository;
+
+    public AlarmService(IAlarmRepository alarmRepository, IStationRepository stationRepository)
+    {
+        _alarmRepository = alarmRepository;
+        _stationRepository = stationRepository;
+    }
+
+    public async Task<PagedResult<AlarmListItemDto>> SearchAsync(AlarmQueryDto query, CancellationToken cancellationToken)
+    {
+        var (items, total) = await _alarmRepository.SearchAsync(
+            query.StationId,
+            query.Level,
+            query.Status,
+            query.StartTime,
+            query.EndTime,
+            query.Page,
+            query.PageSize,
+            cancellationToken);
+
+        return new PagedResult<AlarmListItemDto>(items.Select(MapListItem).ToList(), total);
+    }
+
+    public async Task<AlarmDetailDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var entity = await GetRequiredAsync(id, cancellationToken);
+        return MapDetail(entity);
+    }
+
+    public async Task<AlarmDetailDto> CreateAsync(AlarmCreateDto request, CancellationToken cancellationToken)
+    {
+        var station = await _stationRepository.GetByIdAsync(request.StationId, cancellationToken);
+        if (station is null)
+        {
+            throw new NotFoundException("指定站点不存在");
+        }
+
+        var entity = new AlarmRecord
+        {
+            StationId = station.Id,
+            Station = station,
+            AlarmType = request.AlarmType,
+            Level = request.Level,
+            Status = AlarmStatus.Pending,
+            Message = request.Message,
+            TriggeredAt = request.TriggeredAt,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        await _alarmRepository.AddAsync(entity, cancellationToken);
+        await _alarmRepository.SaveChangesAsync(cancellationToken);
+        return MapDetail(entity);
+    }
+
+    public async Task<AlarmDetailDto> HandleAsync(Guid id, AlarmHandleDto request, CancellationToken cancellationToken)
+    {
+        var entity = await GetRequiredAsync(id, cancellationToken);
+        entity.Status = request.Status;
+        entity.HandleRemark = request.HandleRemark;
+        entity.HandledByUserId = request.HandledByUserId;
+        entity.HandledAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.Now;
+
+        await _alarmRepository.SaveChangesAsync(cancellationToken);
+        return MapDetail(entity);
+    }
+
+    private async Task<AlarmRecord> GetRequiredAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var entity = await _alarmRepository.GetByIdAsync(id, cancellationToken);
+        if (entity is null)
+        {
+            throw new NotFoundException("指定告警不存在");
+        }
+
+        return entity;
+    }
+
+    private static AlarmListItemDto MapListItem(AlarmRecord entity)
+    {
+        return new AlarmListItemDto(
+            entity.Id,
+            entity.StationId,
+            entity.Station?.Name ?? "--",
+            entity.AlarmType.ToString(),
+            entity.Level.ToString(),
+            entity.Status.ToString(),
+            entity.Message,
+            entity.TriggeredAt,
+            entity.HandledAt);
+    }
+
+    private static AlarmDetailDto MapDetail(AlarmRecord entity)
+    {
+        return new AlarmDetailDto(
+            entity.Id,
+            entity.StationId,
+            entity.Station?.Name ?? "--",
+            entity.AlarmType.ToString(),
+            entity.Level.ToString(),
+            entity.Status.ToString(),
+            entity.Message,
+            entity.TriggeredAt,
+            entity.HandledAt,
+            entity.HandleRemark,
+            entity.MonitoringDataId,
+            entity.HandledByUserId);
+    }
+}

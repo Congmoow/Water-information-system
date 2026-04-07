@@ -1,0 +1,28 @@
+:root {
+  --wi-bg: #f4f8fb;
+  --wi-panel: rgba(255, 255, 255, 0.92);
+  --wi-panel-strong: #ffffff;
+  --wi-text: #17324d;
+  --wi-text-soft: #5c738d;
+  --wi-primary: #0f6c7b;
+  --wi-primary-strong: #0b4f5a;
+  --wi-accent: #c98a3d;
+  --wi-border: rgba(15, 108, 123, 0.12);
+  --wi-shadow: 0 20px 55px rgba(25, 63, 93, 0.12);
+  --el-color-primary: var(--wi-primary);
+  --el-color-primary-light-3: #4d98a3;
+  --el-color-success: #2d8f5a;
+  --el-color-warning: #d08c2e;
+  --el-color-danger: #c44d4d;
+  --el-border-radius-base: 14px;
+  --el-border-color-light: rgba(15, 108, 123, 0.12);
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(14, 116, 144, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(201, 138, 61, 0.16), transparent 28%),
+    linear-gradient(180deg, #f8fbfd 0%, #eef5f9 100%);
+  color: var(--wi-text);
+}
