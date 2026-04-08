@@ -1,15 +1,15 @@
 export const corePalette = {
   brand: {
-    50: '#eff8fb',
-    100: '#d9edf3',
-    200: '#b7dce7',
-    300: '#87c3d4',
-    400: '#539fb7',
-    500: '#2b7f9b',
-    600: '#1f6782',
-    700: '#1d546a',
-    800: '#1d4758',
-    900: '#1d3b49'
+    50: '#eef5fb',
+    100: '#d9e9f7',
+    200: '#b8d4ee',
+    300: '#8db8e2',
+    400: '#5d96d2',
+    500: '#2f7dc1',
+    600: '#1a6fb5',
+    700: '#155b95',
+    800: '#124a79',
+    900: '#103b61'
   },
   neutral: {
     0: '#ffffff',
@@ -68,9 +68,9 @@ export const semanticTokens = {
   },
   neutral: {
     background: {
-      base: '#f4f8fb',
+      base: '#f3f7fc',
       subtle: corePalette.neutral[50],
-      muted: '#edf3f7'
+      muted: '#eaf1f8'
     }
   },
   surface: {
@@ -78,7 +78,7 @@ export const semanticTokens = {
     panel: 'rgba(255, 255, 255, 0.92)',
     overlay: corePalette.neutral[0],
     strong: '#fbfdff',
-    inverse: 'rgba(15, 23, 42, 0.92)'
+    inverse: 'rgba(26, 54, 93, 0.94)'
   },
   text: {
     primary: '#183247',
@@ -87,18 +87,18 @@ export const semanticTokens = {
     disabled: '#94a3b8'
   },
   inverse: {
-    surface: 'rgba(18, 42, 57, 0.94)',
-    surfaceStrong: '#112d3f',
+    surface: 'rgba(26, 54, 93, 0.94)',
+    surfaceStrong: '#0e1e38',
     surfaceSoft: 'rgba(247, 251, 253, 0.1)',
     surfaceMuted: 'rgba(247, 251, 253, 0.14)',
-    textPrimary: '#f7fbfd',
-    textSecondary: 'rgba(232, 242, 248, 0.78)'
+    textPrimary: '#eef5fb',
+    textSecondary: 'rgba(217, 233, 247, 0.78)'
   },
   border: {
-    subtle: 'rgba(51, 84, 106, 0.08)',
-    default: 'rgba(51, 84, 106, 0.14)',
-    strong: 'rgba(51, 84, 106, 0.22)',
-    inverse: 'rgba(229, 241, 247, 0.16)'
+    subtle: 'rgba(48, 79, 118, 0.08)',
+    default: 'rgba(48, 79, 118, 0.14)',
+    strong: 'rgba(48, 79, 118, 0.22)',
+    inverse: 'rgba(217, 233, 247, 0.16)'
   },
   state: {
     success: {
@@ -119,7 +119,7 @@ export const semanticTokens = {
     }
   },
   interactive: {
-    focusRing: 'rgba(31, 103, 130, 0.22)',
+    focusRing: 'rgba(26, 111, 181, 0.22)',
     disabledBg: '#e8eef4',
     disabledBorder: '#d7e0e8'
   },
@@ -135,8 +135,8 @@ export const visualizationTokens = {
     grid: 'rgba(72, 98, 118, 0.12)',
     text: semanticTokens.text.secondary,
     seriesPrimary: semanticTokens.brand.primary,
-    seriesSecondary: '#2f6f88',
-    seriesAccent: '#76a9be',
+    seriesSecondary: corePalette.brand[400],
+    seriesAccent: corePalette.brand[300],
     seriesNeutral: '#7d92a5',
     seriesSuccess: semanticTokens.state.success.default,
     seriesWarning: semanticTokens.state.warning.default,
@@ -144,8 +144,8 @@ export const visualizationTokens = {
   },
   map: {
     engineering: semanticTokens.brand.primary,
-    river: '#3f839a',
-    station: '#5b9ab0',
+    river: '#4c89ca',
+    station: '#78abd9',
     warning: semanticTokens.state.warning.default,
     offline: semanticTokens.state.info.default,
     markerStroke: '#ffffff',
@@ -169,10 +169,10 @@ export const chartSeries = {
 export const lineChartTokens = {
   waterLevel: {
     line: visualizationTokens.chart.seriesPrimary,
-    area: 'rgba(31, 103, 130, 0.16)'
+    area: 'rgba(26, 111, 181, 0.16)'
   },
   rainfall: {
     line: visualizationTokens.chart.seriesSecondary,
-    area: 'rgba(63, 131, 154, 0.14)'
+    area: 'rgba(93, 150, 210, 0.16)'
   }
 } as const

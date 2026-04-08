@@ -1,16 +1,16 @@
 :root {
   color-scheme: light;
 
-  --wi-color-brand-50: #eff8fb;
-  --wi-color-brand-100: #d9edf3;
-  --wi-color-brand-200: #b7dce7;
-  --wi-color-brand-300: #87c3d4;
-  --wi-color-brand-400: #539fb7;
-  --wi-color-brand-500: #2b7f9b;
-  --wi-color-brand-600: #1f6782;
-  --wi-color-brand-700: #1d546a;
-  --wi-color-brand-800: #1d4758;
-  --wi-color-brand-900: #1d3b49;
+  --wi-color-brand-50: #eef5fb;
+  --wi-color-brand-100: #d9e9f7;
+  --wi-color-brand-200: #b8d4ee;
+  --wi-color-brand-300: #8db8e2;
+  --wi-color-brand-400: #5d96d2;
+  --wi-color-brand-500: #2f7dc1;
+  --wi-color-brand-600: #1a6fb5;
+  --wi-color-brand-700: #155b95;
+  --wi-color-brand-800: #124a79;
+  --wi-color-brand-900: #103b61;
 
   --wi-color-neutral-0: #ffffff;
   --wi-color-neutral-50: #f7fafc;
@@ -49,16 +49,16 @@
   --wi-color-info-500: #4e7a95;
   --wi-color-info-600: #3f6278;
 
-  --wi-bg-base: #f4f8fb;
+  --wi-bg-base: #f3f7fc;
   --wi-bg-subtle: var(--wi-color-neutral-50);
-  --wi-bg-muted: #edf3f7;
+  --wi-bg-muted: #eaf1f8;
 
   --wi-surface-raised: rgba(255, 255, 255, 0.72);
   --wi-surface-panel: rgba(255, 255, 255, 0.92);
   --wi-surface-overlay: var(--wi-color-neutral-0);
   --wi-surface-strong: #fbfdff;
-  --wi-surface-inverse: rgba(18, 42, 57, 0.94);
-  --wi-surface-inverse-strong: #112d3f;
+  --wi-surface-inverse: rgba(26, 54, 93, 0.94);
+  --wi-surface-inverse-strong: #0e1e38;
   --wi-surface-inverse-soft: rgba(247, 251, 253, 0.1);
   --wi-surface-inverse-muted: rgba(247, 251, 253, 0.14);
 
@@ -66,13 +66,13 @@
   --wi-text-secondary: #486276;
   --wi-text-tertiary: #6c8192;
   --wi-text-disabled: var(--wi-color-neutral-400);
-  --wi-text-inverse-primary: #f7fbfd;
-  --wi-text-inverse-secondary: rgba(232, 242, 248, 0.78);
+  --wi-text-inverse-primary: #eef5fb;
+  --wi-text-inverse-secondary: rgba(217, 233, 247, 0.78);
 
-  --wi-border-subtle: rgba(51, 84, 106, 0.08);
-  --wi-border-default: rgba(51, 84, 106, 0.14);
-  --wi-border-strong: rgba(51, 84, 106, 0.22);
-  --wi-border-inverse: rgba(229, 241, 247, 0.16);
+  --wi-border-subtle: rgba(48, 79, 118, 0.08);
+  --wi-border-default: rgba(48, 79, 118, 0.14);
+  --wi-border-strong: rgba(48, 79, 118, 0.22);
+  --wi-border-inverse: rgba(217, 233, 247, 0.16);
 
   --wi-primary: var(--wi-color-brand-600);
   --wi-primary-hover: var(--wi-color-brand-500);
@@ -92,18 +92,18 @@
   --wi-info: var(--wi-color-info-500);
   --wi-info-soft: var(--wi-color-info-100);
 
-  --wi-focus-ring: rgba(31, 103, 130, 0.22);
+  --wi-focus-ring: rgba(26, 111, 181, 0.22);
   --wi-disabled-bg: #e8eef4;
   --wi-disabled-border: #d7e0e8;
-  --wi-selection-bg: rgba(31, 103, 130, 0.18);
-  --wi-emphasis-outline: rgba(31, 103, 130, 0.08);
-  --wi-interactive-soft-hover: rgba(31, 103, 130, 0.04);
-  --wi-interactive-soft-active: rgba(31, 103, 130, 0.06);
-  --wi-shadow-primary: 0 10px 24px rgba(31, 103, 130, 0.18);
-  --wi-shadow-inverse-strong: 0 10px 24px rgba(11, 45, 63, 0.28);
+  --wi-selection-bg: rgba(26, 111, 181, 0.18);
+  --wi-emphasis-outline: rgba(26, 111, 181, 0.08);
+  --wi-interactive-soft-hover: rgba(26, 111, 181, 0.04);
+  --wi-interactive-soft-active: rgba(26, 111, 181, 0.06);
+  --wi-shadow-primary: 0 10px 24px rgba(26, 111, 181, 0.18);
+  --wi-shadow-inverse-strong: 0 10px 24px rgba(14, 30, 56, 0.32);
   --wi-ring-accent: 0 0 0 3px rgba(201, 155, 67, 0.18);
-  --wi-glow-brand: rgba(83, 159, 183, 0.18);
-  --wi-glow-brand-strong: rgba(83, 159, 183, 0.2);
+  --wi-glow-brand: rgba(93, 150, 210, 0.18);
+  --wi-glow-brand-strong: rgba(47, 125, 193, 0.22);
   --wi-glow-accent-subtle: rgba(201, 155, 67, 0.08);
 
   --wi-shadow-card: 0 18px 40px rgba(15, 23, 42, 0.08);
@@ -113,16 +113,16 @@
   --wi-chart-grid: rgba(72, 98, 118, 0.12);
   --wi-chart-text: var(--wi-text-secondary);
   --wi-chart-series-primary: var(--wi-primary);
-  --wi-chart-series-secondary: #2f6f88;
-  --wi-chart-series-accent: #76a9be;
+  --wi-chart-series-secondary: #5d96d2;
+  --wi-chart-series-accent: #8db8e2;
   --wi-chart-series-neutral: #7d92a5;
   --wi-chart-series-success: var(--wi-success);
   --wi-chart-series-warning: var(--wi-warning);
   --wi-chart-series-danger: var(--wi-danger);
 
   --wi-map-engineering: var(--wi-primary);
-  --wi-map-river: #3f839a;
-  --wi-map-station: #5b9ab0;
+  --wi-map-river: #4c89ca;
+  --wi-map-station: #78abd9;
   --wi-map-warning: var(--wi-warning);
   --wi-map-offline: var(--wi-info);
   --wi-map-marker-stroke: #ffffff;
@@ -182,7 +182,7 @@
   --el-bg-color-overlay: var(--wi-surface-overlay);
   --el-fill-color-blank: var(--wi-surface-overlay);
   --el-fill-color-light: var(--wi-bg-muted);
-  --el-fill-color-lighter: rgba(237, 243, 247, 0.72);
+  --el-fill-color-lighter: rgba(234, 241, 248, 0.72);
   --el-fill-color-extra-light: rgba(241, 245, 249, 0.82);
   --el-fill-color-dark: rgba(24, 50, 71, 0.08);
   --el-fill-color-darker: rgba(24, 50, 71, 0.14);
@@ -195,8 +195,8 @@
 
   --el-border-color: var(--wi-border-default);
   --el-border-color-light: var(--wi-border-subtle);
-  --el-border-color-lighter: rgba(51, 84, 106, 0.06);
-  --el-border-color-extra-light: rgba(51, 84, 106, 0.04);
+  --el-border-color-lighter: rgba(48, 79, 118, 0.06);
+  --el-border-color-extra-light: rgba(48, 79, 118, 0.04);
   --el-border-color-dark: var(--wi-border-strong);
   --el-border-color-darker: rgba(51, 84, 106, 0.28);
 
@@ -217,8 +217,8 @@
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(31, 103, 130, 0.09), transparent 28%),
+    radial-gradient(circle at top left, rgba(26, 111, 181, 0.1), transparent 28%),
     radial-gradient(circle at bottom right, rgba(185, 133, 47, 0.05), transparent 22%),
-    linear-gradient(180deg, var(--wi-bg-subtle) 0%, var(--wi-bg-base) 44%, #edf4f8 100%);
+    linear-gradient(180deg, var(--wi-bg-subtle) 0%, var(--wi-bg-base) 44%, #edf4fa 100%);
   color: var(--wi-text-primary);
 }
