@@ -69,6 +69,19 @@
   --wi-text-inverse-primary: #eef5fb;
   --wi-text-inverse-secondary: rgba(217, 233, 247, 0.78);
 
+  --wi-auth-hero-bg: linear-gradient(135deg, #0e1e38 0%, #1a365d 50%, #2a5298 100%);
+  --wi-auth-hero-badge-bg: rgba(247, 251, 253, 0.1);
+  --wi-auth-hero-badge-border: rgba(217, 233, 247, 0.2);
+  --wi-auth-hero-title-shadow: 0 4px 12px rgba(10, 18, 32, 0.28);
+  --wi-auth-hero-overlay-strong: rgba(247, 251, 253, 0.2);
+  --wi-auth-hero-overlay-medium: rgba(247, 251, 253, 0.15);
+  --wi-auth-hero-overlay-soft: rgba(247, 251, 253, 0.1);
+  --wi-auth-hero-particle: rgba(247, 251, 253, 0.3);
+  --wi-auth-card-bg: rgba(255, 255, 255, 0.95);
+  --wi-auth-card-shadow: 0 20px 60px rgba(10, 18, 32, 0.3);
+  --wi-auth-input-bg: #f8fafc;
+  --wi-auth-input-focus-shadow: 0 0 0 3px rgba(26, 111, 181, 0.12);
+
   --wi-border-subtle: rgba(48, 79, 118, 0.08);
   --wi-border-default: rgba(48, 79, 118, 0.14);
   --wi-border-strong: rgba(48, 79, 118, 0.22);

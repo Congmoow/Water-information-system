@@ -63,7 +63,7 @@
             <el-button
               type="primary"
               size="large"
-              style="width: 100%; border-radius: var(--radius-md); font-weight: 500; height: 44px; margin-top: 8px;"
+              class="login-submit"
               :loading="authStore.loading"
               native-type="submit"
             >
@@ -143,14 +143,6 @@ async function handleLogin() {
   --radius-md: 8px;
   --radius-lg: 16px;
   --radius-xl: 24px;
-  --text-primary: #1e293b;
-  --text-secondary: #475569;
-  --text-white: #ffffff;
-  --text-muted: #94a3b8;
-  --border-color: #e2e8f0;
-  --bg-input: #f8fafc;
-  --bg-white: #ffffff;
-  --primary-color: #1a6fb5;
   --transition-fast: 0.2s ease;
 
   min-height: 100vh;
@@ -158,7 +150,7 @@ async function handleLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0e1e38 0%, #1a365d 50%, #2a5298 100%);
+  background: var(--wi-auth-hero-bg);
   overflow: hidden;
   font-family: var(--el-font-family);
 }
@@ -177,7 +169,7 @@ async function handleLogin() {
 
 /* 左侧 Hero 区域样式 */
 .login-page__hero {
-  color: var(--text-white);
+  color: var(--wi-text-inverse-primary);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -189,12 +181,12 @@ async function handleLogin() {
   padding: 8px 14px;
   width: fit-content;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-white);
+  background: var(--wi-auth-hero-badge-bg);
+  color: var(--wi-text-inverse-primary);
   font-size: 13px;
   font-weight: 700;
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--wi-auth-hero-badge-border);
   margin-bottom: 24px;
 }
 
@@ -205,11 +197,11 @@ async function handleLogin() {
   line-height: 1.15;
   letter-spacing: -0.02em;
   font-weight: 700;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  text-shadow: var(--wi-auth-hero-title-shadow);
 }
 
 .login-page__hero p {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--wi-text-inverse-secondary);
   font-size: 16px;
   line-height: 1.8;
   margin-bottom: 12px;
@@ -219,7 +211,7 @@ async function handleLogin() {
 .login-page__hero ul {
   margin: 16px 0 0;
   padding-left: 20px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--wi-text-inverse-secondary);
   font-size: 16px;
   line-height: 1.8;
 }
@@ -232,7 +224,7 @@ async function handleLogin() {
 .login-form-wrapper {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* 或者 center */
+  justify-content: flex-end;
 }
 
 /* 动态水波纹效果 */
@@ -258,18 +250,18 @@ async function handleLogin() {
 }
 
 .login-waves .wave:nth-child(1) {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--wi-auth-hero-overlay-strong);
   animation: waveAnim 8s linear infinite;
 }
 
 .login-waves .wave:nth-child(2) {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--wi-auth-hero-overlay-medium);
   animation: waveAnim 12s linear infinite reverse;
   bottom: -10px;
 }
 
 .login-waves .wave:nth-child(3) {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--wi-auth-hero-overlay-soft);
   animation: waveAnim 16s linear infinite;
   bottom: -20px;
 }
@@ -294,7 +286,7 @@ async function handleLogin() {
   position: absolute;
   width: 4px;
   height: 4px;
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--wi-auth-hero-particle);
   border-radius: 50%;
   animation: floatUp linear infinite;
   bottom: 0;
@@ -326,10 +318,10 @@ async function handleLogin() {
 .login-card {
   width: 100%;
   max-width: 440px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--wi-auth-card-bg);
   border-radius: var(--radius-xl);
   padding: var(--spacing-2xl);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--wi-auth-card-shadow);
   backdrop-filter: blur(20px);
   animation: fadeUp 0.8s ease-out 0.2s both;
 }
@@ -344,7 +336,7 @@ async function handleLogin() {
   font-size: 24px;
   margin-top: 0;
   margin-bottom: var(--spacing-lg);
-  color: var(--text-primary);
+  color: var(--wi-text-primary);
   font-weight: 600;
 }
 
@@ -357,17 +349,17 @@ async function handleLogin() {
   display: block;
   margin-bottom: var(--spacing-sm);
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--wi-text-secondary);
   font-size: 14px;
 }
 
 .form-input {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--wi-border-default);
   border-radius: var(--radius-md);
-  background: var(--bg-input);
-  color: var(--text-primary);
+  background: var(--wi-auth-input-bg);
+  color: var(--wi-text-primary);
   font-size: 14px;
   transition: all var(--transition-fast);
   box-sizing: border-box;
@@ -375,13 +367,13 @@ async function handleLogin() {
 }
 
 .form-input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(26, 111, 181, 0.12);
-  background: var(--bg-white);
+  border-color: var(--wi-primary);
+  box-shadow: var(--wi-auth-input-focus-shadow);
+  background: var(--wi-surface-overlay);
 }
 
 .form-input::placeholder {
-  color: var(--text-muted);
+  color: var(--wi-text-disabled);
 }
 
 .login-options {
@@ -389,6 +381,7 @@ async function handleLogin() {
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--spacing-lg);
+  color: var(--wi-text-secondary);
   font-size: 13px;
 }
 
@@ -397,11 +390,11 @@ async function handleLogin() {
   align-items: center;
   gap: var(--spacing-xs);
   cursor: pointer;
-  color: var(--text-secondary);
+  color: var(--wi-text-secondary);
 }
 
 .login-options a {
-  color: var(--primary-color);
+  color: var(--wi-primary);
   text-decoration: none;
   font-size: 13px;
   transition: opacity var(--transition-fast);
@@ -414,14 +407,22 @@ async function handleLogin() {
 .login-card__tips {
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid var(--border-color);
-  color: var(--text-muted);
+  border-top: 1px solid var(--wi-border-default);
+  color: var(--wi-text-disabled);
   font-size: 13px;
   text-align: center;
 }
 
 .login-card__tips p {
   margin: 4px 0;
+}
+
+.login-submit {
+  width: 100%;
+  height: 44px;
+  margin-top: 8px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
 }
 
 @media (max-width: 960px) {

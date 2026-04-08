@@ -31,8 +31,7 @@
       <PageCard title="水位趋势" subtitle="最近监测样本按日期聚合">
         <TrendLineChart
           :points="overview.waterLevelTrend"
-          :color="lineChartTokens.waterLevel.line"
-          :area-color="lineChartTokens.waterLevel.area"
+          series-type="waterLevel"
           unit=""
         />
       </PageCard>
@@ -40,8 +39,7 @@
       <PageCard title="雨量统计" subtitle="最近雨量采样按日期累计">
         <TrendLineChart
           :points="overview.rainfallTrend"
-          :color="lineChartTokens.rainfall.line"
-          :area-color="lineChartTokens.rainfall.area"
+          series-type="rainfall"
           unit=""
         />
       </PageCard>
@@ -49,11 +47,11 @@
 
     <div class="page-grid analytics-grid analytics-grid--secondary">
       <PageCard title="告警数量统计" subtitle="按告警等级汇总">
-        <StatBarChart :items="overview.alarmLevelStats" :colors="chartSeries.alarmLevels" />
+        <StatBarChart :items="overview.alarmLevelStats" palette="alarmLevels" />
       </PageCard>
 
       <PageCard title="站点状态统计" subtitle="在线、离线与预警站点分布">
-        <StatDonutChart :items="overview.stationStatusStats" :colors="chartSeries.stationStatus" />
+        <StatDonutChart :items="overview.stationStatusStats" palette="stationStatus" />
       </PageCard>
     </div>
 
@@ -90,7 +88,6 @@ import PageCard from '@/components/common/PageCard.vue'
 import TrendLineChart from '@/components/charts/TrendLineChart.vue'
 import StatBarChart from '@/components/charts/StatBarChart.vue'
 import StatDonutChart from '@/components/charts/StatDonutChart.vue'
-import { chartSeries, lineChartTokens } from '@/theme/tokens'
 import { fetchDashboardOverview } from '@/api/modules/dashboard'
 import type { DashboardOverview } from '@/types/models'
 

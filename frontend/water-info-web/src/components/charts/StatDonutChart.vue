@@ -8,13 +8,16 @@
 import { computed } from 'vue'
 import VChart from 'vue-echarts'
 import '@/components/charts/chartSetup'
-import { visualizationTokens } from '@/theme/tokens'
+import { chartSeries, visualizationTokens } from '@/theme/tokens'
+import type { ChartSeriesPaletteKey } from '@/theme/tokens'
 import type { CategoryCount } from '@/types/models'
 
 const props = defineProps<{
   items: CategoryCount[]
-  colors: readonly string[]
+  palette: ChartSeriesPaletteKey
 }>()
+
+const paletteColors = computed(() => chartSeries[props.palette])
 
 const option = computed(() => ({
   tooltip: {
@@ -39,7 +42,7 @@ const option = computed(() => ({
         name: item.name,
         value: item.value,
         itemStyle: {
-          color: props.colors[index % props.colors.length]
+          color: paletteColors.value[index % paletteColors.value.length]
         }
       }))
     }

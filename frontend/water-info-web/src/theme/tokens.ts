@@ -94,6 +94,20 @@ export const semanticTokens = {
     textPrimary: '#eef5fb',
     textSecondary: 'rgba(217, 233, 247, 0.78)'
   },
+  auth: {
+    heroBackground: 'linear-gradient(135deg, #0e1e38 0%, #1a365d 50%, #2a5298 100%)',
+    heroBadgeBg: 'rgba(247, 251, 253, 0.1)',
+    heroBadgeBorder: 'rgba(217, 233, 247, 0.2)',
+    heroTitleShadow: '0 4px 12px rgba(10, 18, 32, 0.28)',
+    heroOverlayStrong: 'rgba(247, 251, 253, 0.2)',
+    heroOverlayMedium: 'rgba(247, 251, 253, 0.15)',
+    heroOverlaySoft: 'rgba(247, 251, 253, 0.1)',
+    heroParticle: 'rgba(247, 251, 253, 0.3)',
+    cardBg: 'rgba(255, 255, 255, 0.95)',
+    cardShadow: '0 20px 60px rgba(10, 18, 32, 0.3)',
+    inputBg: '#f8fafc',
+    inputFocusShadow: '0 0 0 3px rgba(26, 111, 181, 0.12)'
+  },
   border: {
     subtle: 'rgba(48, 79, 118, 0.08)',
     default: 'rgba(48, 79, 118, 0.14)',
@@ -176,3 +190,6 @@ export const lineChartTokens = {
     area: 'rgba(93, 150, 210, 0.16)'
   }
 } as const
+
+export type ChartSeriesPaletteKey = keyof typeof chartSeries
+export type LineChartSeriesType = keyof typeof lineChartTokens

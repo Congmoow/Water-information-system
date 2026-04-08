@@ -8,15 +8,17 @@
 import { computed } from 'vue'
 import VChart from 'vue-echarts'
 import '@/components/charts/chartSetup'
-import { visualizationTokens } from '@/theme/tokens'
+import { lineChartTokens, visualizationTokens } from '@/theme/tokens'
+import type { LineChartSeriesType } from '@/theme/tokens'
 import type { TrendPoint } from '@/types/models'
 
 const props = defineProps<{
   points: TrendPoint[]
-  color: string
-  areaColor: string
+  seriesType: LineChartSeriesType
   unit: string
 }>()
+
+const seriesTokens = computed(() => lineChartTokens[props.seriesType])
 
 const option = computed(() => ({
   tooltip: {
@@ -52,11 +54,11 @@ const option = computed(() => ({
       showSymbol: false,
       data: props.points.map((item) => item.value),
       lineStyle: {
-        color: props.color,
+        color: seriesTokens.value.line,
         width: 3
       },
       areaStyle: {
-        color: props.areaColor
+        color: seriesTokens.value.area
       }
     }
   ]
