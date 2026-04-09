@@ -56,6 +56,65 @@ export const corePalette = {
   }
 } as const
 
+const decorativeAlphaTokens = {
+  accentGlowSubtle: '0.08',
+  heroOverlaySoft: '0.1',
+  heroOverlayMedium: '0.15',
+  brandGlow: '0.18',
+  heroOverlayStrong: '0.2',
+  brandGlowStrong: '0.22',
+  heroParticle: '0.3'
+} as const
+
+const visualTokens = {
+  gradient: {
+    pageBackground:
+      'radial-gradient(circle at top left, rgba(26, 111, 181, 0.1), transparent 28%), radial-gradient(circle at bottom right, rgba(185, 133, 47, 0.05), transparent 22%), linear-gradient(180deg, #f7fafc 0%, #f3f7fc 44%, #edf4fa 100%)',
+    inverseHero: 'linear-gradient(135deg, #0e1e38, rgba(26, 54, 93, 0.94))'
+  },
+  glow: {
+    brand: `rgba(93, 150, 210, ${decorativeAlphaTokens.brandGlow})`,
+    brandStrong: `rgba(47, 125, 193, ${decorativeAlphaTokens.brandGlowStrong})`,
+    accentSubtle: `rgba(201, 155, 67, ${decorativeAlphaTokens.accentGlowSubtle})`
+  },
+  overlay: {
+    decorativeStrong: `rgba(247, 251, 253, ${decorativeAlphaTokens.heroOverlayStrong})`,
+    decorativeMedium: `rgba(247, 251, 253, ${decorativeAlphaTokens.heroOverlayMedium})`,
+    decorativeSoft: `rgba(247, 251, 253, ${decorativeAlphaTokens.heroOverlaySoft})`
+  },
+  shadow: {
+    emphasis: '0 10px 24px rgba(26, 111, 181, 0.18)',
+    inverseStrong: '0 10px 24px rgba(14, 30, 56, 0.32)',
+    card: '0 18px 40px rgba(15, 23, 42, 0.08)',
+    overlay: '0 24px 64px rgba(15, 23, 42, 0.14)'
+  }
+} as const
+
+const authTokens = {
+  hero: {
+    background: 'linear-gradient(135deg, #0e1e38 0%, #1a365d 50%, #2a5298 100%)',
+    overlay: {
+      strong: visualTokens.overlay.decorativeStrong,
+      medium: visualTokens.overlay.decorativeMedium,
+      soft: visualTokens.overlay.decorativeSoft
+    },
+    decorative: {
+      badgeBackground: 'rgba(247, 251, 253, 0.1)',
+      badgeBorder: 'rgba(217, 233, 247, 0.2)',
+      titleShadow: '0 4px 12px rgba(10, 18, 32, 0.28)',
+      particle: `rgba(247, 251, 253, ${decorativeAlphaTokens.heroParticle})`
+    }
+  },
+  glassCard: {
+    background: 'rgba(255, 255, 255, 0.95)',
+    shadow: '0 20px 60px rgba(10, 18, 32, 0.3)'
+  },
+  input: {
+    background: '#f8fafc',
+    focusShadow: '0 0 0 3px rgba(26, 111, 181, 0.12)'
+  }
+} as const
+
 export const semanticTokens = {
   brand: {
     primary: corePalette.brand[600],
@@ -95,18 +154,19 @@ export const semanticTokens = {
     textSecondary: 'rgba(217, 233, 247, 0.78)'
   },
   auth: {
-    heroBackground: 'linear-gradient(135deg, #0e1e38 0%, #1a365d 50%, #2a5298 100%)',
-    heroBadgeBg: 'rgba(247, 251, 253, 0.1)',
-    heroBadgeBorder: 'rgba(217, 233, 247, 0.2)',
-    heroTitleShadow: '0 4px 12px rgba(10, 18, 32, 0.28)',
-    heroOverlayStrong: 'rgba(247, 251, 253, 0.2)',
-    heroOverlayMedium: 'rgba(247, 251, 253, 0.15)',
-    heroOverlaySoft: 'rgba(247, 251, 253, 0.1)',
-    heroParticle: 'rgba(247, 251, 253, 0.3)',
-    cardBg: 'rgba(255, 255, 255, 0.95)',
-    cardShadow: '0 20px 60px rgba(10, 18, 32, 0.3)',
-    inputBg: '#f8fafc',
-    inputFocusShadow: '0 0 0 3px rgba(26, 111, 181, 0.12)'
+    ...authTokens,
+    heroBackground: authTokens.hero.background,
+    heroBadgeBg: authTokens.hero.decorative.badgeBackground,
+    heroBadgeBorder: authTokens.hero.decorative.badgeBorder,
+    heroTitleShadow: authTokens.hero.decorative.titleShadow,
+    heroOverlayStrong: authTokens.hero.overlay.strong,
+    heroOverlayMedium: authTokens.hero.overlay.medium,
+    heroOverlaySoft: authTokens.hero.overlay.soft,
+    heroParticle: authTokens.hero.decorative.particle,
+    cardBg: authTokens.glassCard.background,
+    cardShadow: authTokens.glassCard.shadow,
+    inputBg: authTokens.input.background,
+    inputFocusShadow: authTokens.input.focusShadow
   },
   border: {
     subtle: 'rgba(48, 79, 118, 0.08)',
@@ -137,9 +197,13 @@ export const semanticTokens = {
     disabledBg: '#e8eef4',
     disabledBorder: '#d7e0e8'
   },
+  visual: {
+    decorativeAlpha: decorativeAlphaTokens,
+    ...visualTokens
+  },
   shadow: {
-    card: '0 18px 40px rgba(15, 23, 42, 0.08)',
-    overlay: '0 24px 64px rgba(15, 23, 42, 0.14)'
+    card: visualTokens.shadow.card,
+    overlay: visualTokens.shadow.overlay
   }
 } as const
 
@@ -148,11 +212,43 @@ export const visualizationTokens = {
     axis: 'rgba(72, 98, 118, 0.26)',
     grid: 'rgba(72, 98, 118, 0.12)',
     text: semanticTokens.text.secondary,
+    comparison: {
+      primary: semanticTokens.brand.primary,
+      secondary: corePalette.brand[400]
+    },
+    comparisonSecondary: {
+      primary: corePalette.brand[400],
+      secondary: '#7d92a5'
+    },
+    trend: {
+      primary: {
+        line: semanticTokens.brand.primary,
+        area: 'rgba(26, 111, 181, 0.16)'
+      },
+      secondary: {
+        line: corePalette.brand[400],
+        area: 'rgba(93, 150, 210, 0.16)'
+      }
+    },
+    statusDistribution: [
+      semanticTokens.state.success.default,
+      semanticTokens.state.info.default,
+      semanticTokens.state.warning.default,
+      semanticTokens.state.danger.default
+    ],
+    categorySequential: [
+      semanticTokens.brand.primary,
+      corePalette.brand[500],
+      corePalette.brand[400],
+      corePalette.brand[300],
+      '#7d92a5'
+    ],
     seriesPrimary: semanticTokens.brand.primary,
     seriesSecondary: corePalette.brand[400],
     seriesAccent: corePalette.brand[300],
     seriesNeutral: '#7d92a5',
     seriesSuccess: semanticTokens.state.success.default,
+    seriesInfo: semanticTokens.state.info.default,
     seriesWarning: semanticTokens.state.warning.default,
     seriesDanger: semanticTokens.state.danger.default
   },
@@ -177,18 +273,31 @@ export const chartSeries = {
     visualizationTokens.chart.seriesSuccess,
     visualizationTokens.map.offline,
     visualizationTokens.chart.seriesWarning
-  ]
+  ],
+  comparison: [
+    visualizationTokens.chart.comparison.primary,
+    visualizationTokens.chart.comparison.secondary,
+    visualizationTokens.chart.seriesNeutral
+  ],
+  comparisonSecondary: [
+    visualizationTokens.chart.comparisonSecondary.primary,
+    visualizationTokens.chart.comparisonSecondary.secondary,
+    visualizationTokens.chart.seriesAccent
+  ],
+  statusDistribution: visualizationTokens.chart.statusDistribution,
+  categorySequential: visualizationTokens.chart.categorySequential
 } as const
 
 export const lineChartTokens = {
-  waterLevel: {
-    line: visualizationTokens.chart.seriesPrimary,
-    area: 'rgba(26, 111, 181, 0.16)'
-  },
-  rainfall: {
-    line: visualizationTokens.chart.seriesSecondary,
-    area: 'rgba(93, 150, 210, 0.16)'
-  }
+  trendPrimary: visualizationTokens.chart.trend.primary,
+  trendSecondary: visualizationTokens.chart.trend.secondary,
+  waterLevel: visualizationTokens.chart.trend.primary,
+  rainfall: visualizationTokens.chart.trend.secondary
+} as const
+
+export const chartTokenKeys = {
+  palettes: Object.keys(chartSeries) as Array<keyof typeof chartSeries>,
+  lineSeries: Object.keys(lineChartTokens) as Array<keyof typeof lineChartTokens>
 } as const
 
 export type ChartSeriesPaletteKey = keyof typeof chartSeries

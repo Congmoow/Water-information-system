@@ -150,7 +150,7 @@ async function handleLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--wi-auth-hero-bg);
+  background: var(--wi-auth-hero-background);
   overflow: hidden;
   font-family: var(--el-font-family);
 }
@@ -181,12 +181,12 @@ async function handleLogin() {
   padding: 8px 14px;
   width: fit-content;
   border-radius: 999px;
-  background: var(--wi-auth-hero-badge-bg);
+  background: var(--wi-auth-hero-decorative-badge-bg);
   color: var(--wi-text-inverse-primary);
   font-size: 13px;
   font-weight: 700;
   backdrop-filter: blur(4px);
-  border: 1px solid var(--wi-auth-hero-badge-border);
+  border: 1px solid var(--wi-auth-hero-decorative-badge-border);
   margin-bottom: 24px;
 }
 
@@ -197,7 +197,7 @@ async function handleLogin() {
   line-height: 1.15;
   letter-spacing: -0.02em;
   font-weight: 700;
-  text-shadow: var(--wi-auth-hero-title-shadow);
+  text-shadow: var(--wi-auth-hero-decorative-title-shadow);
 }
 
 .login-page__hero p {
@@ -286,7 +286,7 @@ async function handleLogin() {
   position: absolute;
   width: 4px;
   height: 4px;
-  background: var(--wi-auth-hero-particle);
+  background: var(--wi-auth-hero-decorative-particle);
   border-radius: 50%;
   animation: floatUp linear infinite;
   bottom: 0;
@@ -318,10 +318,10 @@ async function handleLogin() {
 .login-card {
   width: 100%;
   max-width: 440px;
-  background: var(--wi-auth-card-bg);
+  background: var(--wi-auth-glass-card-bg);
   border-radius: var(--radius-xl);
   padding: var(--spacing-2xl);
-  box-shadow: var(--wi-auth-card-shadow);
+  box-shadow: var(--wi-auth-glass-card-shadow);
   backdrop-filter: blur(20px);
   animation: fadeUp 0.8s ease-out 0.2s both;
 }
@@ -358,7 +358,7 @@ async function handleLogin() {
   padding: 12px 16px;
   border: 1px solid var(--wi-border-default);
   border-radius: var(--radius-md);
-  background: var(--wi-auth-input-bg);
+  background: var(--wi-auth-input-background);
   color: var(--wi-text-primary);
   font-size: 14px;
   transition: all var(--transition-fast);

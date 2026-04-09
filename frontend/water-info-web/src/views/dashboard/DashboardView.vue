@@ -132,7 +132,7 @@ onMounted(loadData)
 .dashboard-hero {
   overflow: hidden;
   background:
-    linear-gradient(135deg, var(--wi-surface-inverse-strong), var(--wi-surface-inverse)),
+    var(--wi-gradient-inverse-hero),
     radial-gradient(circle at top right, var(--wi-glow-brand-strong), transparent 28%),
     radial-gradient(circle at bottom left, var(--wi-glow-accent-subtle), transparent 22%);
   color: var(--wi-text-inverse-primary);

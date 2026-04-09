@@ -69,18 +69,54 @@
   --wi-text-inverse-primary: #eef5fb;
   --wi-text-inverse-secondary: rgba(217, 233, 247, 0.78);
 
-  --wi-auth-hero-bg: linear-gradient(135deg, #0e1e38 0%, #1a365d 50%, #2a5298 100%);
-  --wi-auth-hero-badge-bg: rgba(247, 251, 253, 0.1);
-  --wi-auth-hero-badge-border: rgba(217, 233, 247, 0.2);
-  --wi-auth-hero-title-shadow: 0 4px 12px rgba(10, 18, 32, 0.28);
-  --wi-auth-hero-overlay-strong: rgba(247, 251, 253, 0.2);
-  --wi-auth-hero-overlay-medium: rgba(247, 251, 253, 0.15);
-  --wi-auth-hero-overlay-soft: rgba(247, 251, 253, 0.1);
-  --wi-auth-hero-particle: rgba(247, 251, 253, 0.3);
-  --wi-auth-card-bg: rgba(255, 255, 255, 0.95);
-  --wi-auth-card-shadow: 0 20px 60px rgba(10, 18, 32, 0.3);
-  --wi-auth-input-bg: #f8fafc;
+  --wi-decorative-alpha-accent-glow-subtle: 0.08;
+  --wi-decorative-alpha-hero-overlay-soft: 0.1;
+  --wi-decorative-alpha-hero-overlay-medium: 0.15;
+  --wi-decorative-alpha-brand-glow: 0.18;
+  --wi-decorative-alpha-hero-overlay-strong: 0.2;
+  --wi-decorative-alpha-brand-glow-strong: 0.22;
+  --wi-decorative-alpha-hero-particle: 0.3;
+
+  --wi-gradient-page-background:
+    radial-gradient(circle at top left, rgba(26, 111, 181, 0.1), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(185, 133, 47, 0.05), transparent 22%),
+    linear-gradient(180deg, var(--wi-bg-subtle) 0%, var(--wi-bg-base) 44%, #edf4fa 100%);
+  --wi-gradient-inverse-hero: linear-gradient(135deg, var(--wi-surface-inverse-strong), var(--wi-surface-inverse));
+
+  --wi-overlay-decorative-strong: rgba(247, 251, 253, var(--wi-decorative-alpha-hero-overlay-strong));
+  --wi-overlay-decorative-medium: rgba(247, 251, 253, var(--wi-decorative-alpha-hero-overlay-medium));
+  --wi-overlay-decorative-soft: rgba(247, 251, 253, var(--wi-decorative-alpha-hero-overlay-soft));
+
+  --wi-glow-brand: rgba(93, 150, 210, var(--wi-decorative-alpha-brand-glow));
+  --wi-glow-brand-strong: rgba(47, 125, 193, var(--wi-decorative-alpha-brand-glow-strong));
+  --wi-glow-accent-subtle: rgba(201, 155, 67, var(--wi-decorative-alpha-accent-glow-subtle));
+
+  --wi-shadow-emphasis: 0 10px 24px rgba(26, 111, 181, 0.18);
+  --wi-shadow-inverse-strong: 0 10px 24px rgba(14, 30, 56, 0.32);
+  --wi-shadow-card: 0 18px 40px rgba(15, 23, 42, 0.08);
+  --wi-shadow-overlay: 0 24px 64px rgba(15, 23, 42, 0.14);
+
+  --wi-auth-hero-background: linear-gradient(135deg, #0e1e38 0%, #1a365d 50%, #2a5298 100%);
+  --wi-auth-hero-decorative-badge-bg: rgba(247, 251, 253, 0.1);
+  --wi-auth-hero-decorative-badge-border: rgba(217, 233, 247, 0.2);
+  --wi-auth-hero-decorative-title-shadow: 0 4px 12px rgba(10, 18, 32, 0.28);
+  --wi-auth-hero-overlay-strong: var(--wi-overlay-decorative-strong);
+  --wi-auth-hero-overlay-medium: var(--wi-overlay-decorative-medium);
+  --wi-auth-hero-overlay-soft: var(--wi-overlay-decorative-soft);
+  --wi-auth-hero-decorative-particle: rgba(247, 251, 253, var(--wi-decorative-alpha-hero-particle));
+  --wi-auth-glass-card-bg: rgba(255, 255, 255, 0.95);
+  --wi-auth-glass-card-shadow: 0 20px 60px rgba(10, 18, 32, 0.3);
+  --wi-auth-input-background: #f8fafc;
   --wi-auth-input-focus-shadow: 0 0 0 3px rgba(26, 111, 181, 0.12);
+
+  --wi-auth-hero-bg: var(--wi-auth-hero-background);
+  --wi-auth-hero-badge-bg: var(--wi-auth-hero-decorative-badge-bg);
+  --wi-auth-hero-badge-border: var(--wi-auth-hero-decorative-badge-border);
+  --wi-auth-hero-title-shadow: var(--wi-auth-hero-decorative-title-shadow);
+  --wi-auth-hero-particle: var(--wi-auth-hero-decorative-particle);
+  --wi-auth-card-bg: var(--wi-auth-glass-card-bg);
+  --wi-auth-card-shadow: var(--wi-auth-glass-card-shadow);
+  --wi-auth-input-bg: var(--wi-auth-input-background);
 
   --wi-border-subtle: rgba(48, 79, 118, 0.08);
   --wi-border-default: rgba(48, 79, 118, 0.14);
@@ -112,24 +148,34 @@
   --wi-emphasis-outline: rgba(26, 111, 181, 0.08);
   --wi-interactive-soft-hover: rgba(26, 111, 181, 0.04);
   --wi-interactive-soft-active: rgba(26, 111, 181, 0.06);
-  --wi-shadow-primary: 0 10px 24px rgba(26, 111, 181, 0.18);
-  --wi-shadow-inverse-strong: 0 10px 24px rgba(14, 30, 56, 0.32);
+  --wi-shadow-primary: var(--wi-shadow-emphasis);
   --wi-ring-accent: 0 0 0 3px rgba(201, 155, 67, 0.18);
-  --wi-glow-brand: rgba(93, 150, 210, 0.18);
-  --wi-glow-brand-strong: rgba(47, 125, 193, 0.22);
-  --wi-glow-accent-subtle: rgba(201, 155, 67, 0.08);
-
-  --wi-shadow-card: 0 18px 40px rgba(15, 23, 42, 0.08);
-  --wi-shadow-overlay: 0 24px 64px rgba(15, 23, 42, 0.14);
 
   --wi-chart-axis: rgba(72, 98, 118, 0.26);
   --wi-chart-grid: rgba(72, 98, 118, 0.12);
   --wi-chart-text: var(--wi-text-secondary);
-  --wi-chart-series-primary: var(--wi-primary);
-  --wi-chart-series-secondary: #5d96d2;
+  --wi-chart-comparison-primary: var(--wi-primary);
+  --wi-chart-comparison-secondary: var(--wi-color-brand-400);
+  --wi-chart-comparison-secondary-muted: #7d92a5;
+  --wi-chart-trend-primary-line: var(--wi-chart-comparison-primary);
+  --wi-chart-trend-primary-area: rgba(26, 111, 181, 0.16);
+  --wi-chart-trend-secondary-line: var(--wi-chart-comparison-secondary);
+  --wi-chart-trend-secondary-area: rgba(93, 150, 210, 0.16);
+  --wi-chart-status-distribution-1: var(--wi-success);
+  --wi-chart-status-distribution-2: var(--wi-info);
+  --wi-chart-status-distribution-3: var(--wi-warning);
+  --wi-chart-status-distribution-4: var(--wi-danger);
+  --wi-chart-category-sequential-1: var(--wi-primary);
+  --wi-chart-category-sequential-2: var(--wi-color-brand-500);
+  --wi-chart-category-sequential-3: var(--wi-color-brand-400);
+  --wi-chart-category-sequential-4: var(--wi-color-brand-300);
+  --wi-chart-category-sequential-5: #7d92a5;
+  --wi-chart-series-primary: var(--wi-chart-comparison-primary);
+  --wi-chart-series-secondary: var(--wi-chart-comparison-secondary);
   --wi-chart-series-accent: #8db8e2;
-  --wi-chart-series-neutral: #7d92a5;
+  --wi-chart-series-neutral: var(--wi-chart-comparison-secondary-muted);
   --wi-chart-series-success: var(--wi-success);
+  --wi-chart-series-info: var(--wi-info);
   --wi-chart-series-warning: var(--wi-warning);
   --wi-chart-series-danger: var(--wi-danger);
 
@@ -229,9 +275,6 @@
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at top left, rgba(26, 111, 181, 0.1), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(185, 133, 47, 0.05), transparent 22%),
-    linear-gradient(180deg, var(--wi-bg-subtle) 0%, var(--wi-bg-base) 44%, #edf4fa 100%);
+  background: var(--wi-gradient-page-background);
   color: var(--wi-text-primary);
 }

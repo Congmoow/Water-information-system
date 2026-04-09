@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { semanticTokens, visualizationTokens } from '@/theme/tokens'
+import { chartSeries, lineChartTokens, semanticTokens, visualizationTokens } from '@/theme/tokens'
 
 describe('theme tokens', () => {
   it('defines semantic token groups for the app shell', () => {
@@ -28,12 +28,19 @@ describe('theme tokens', () => {
   it('keeps accent separate from warning semantics', () => {
     expect(semanticTokens.brand.accent).not.toBe(semanticTokens.state.warning.default)
     expect(semanticTokens.brand.accentSoft).not.toBe(semanticTokens.state.warning.soft)
+    expect(semanticTokens.brand.accent).not.toBe(semanticTokens.state.danger.default)
   })
 
   it('defines dedicated visualization aliases for charts and maps', () => {
     expect(visualizationTokens.chart.axis).toBeTruthy()
     expect(visualizationTokens.chart.grid).toBeTruthy()
     expect(visualizationTokens.chart.text).toBeTruthy()
+    expect(visualizationTokens.chart.comparison.primary).toBeTruthy()
+    expect(visualizationTokens.chart.comparison.secondary).toBeTruthy()
+    expect(visualizationTokens.chart.trend.primary.line).toBeTruthy()
+    expect(visualizationTokens.chart.trend.secondary.line).toBeTruthy()
+    expect(visualizationTokens.chart.statusDistribution).toHaveLength(4)
+    expect(visualizationTokens.chart.categorySequential.length).toBeGreaterThanOrEqual(4)
     expect(visualizationTokens.chart.seriesPrimary).toBeTruthy()
     expect(visualizationTokens.chart.seriesWarning).toBeTruthy()
     expect(visualizationTokens.chart.seriesDanger).toBeTruthy()
@@ -43,7 +50,49 @@ describe('theme tokens', () => {
     expect(visualizationTokens.map.warning).toBeTruthy()
     expect(visualizationTokens.map.offline).toBeTruthy()
     expect(visualizationTokens.chart.seriesPrimary).not.toBe(semanticTokens.brand.accent)
+    expect(visualizationTokens.chart.seriesWarning).not.toBe(semanticTokens.brand.accent)
     expect(visualizationTokens.map.warning).not.toBe(semanticTokens.brand.accent)
+  })
+
+  it('exposes reusable auth tokens for hero, glass card, and inputs', () => {
+    expect(semanticTokens.auth.hero.background).toBeTruthy()
+    expect(semanticTokens.auth.hero.overlay.strong).toBeTruthy()
+    expect(semanticTokens.auth.hero.overlay.medium).toBeTruthy()
+    expect(semanticTokens.auth.hero.overlay.soft).toBeTruthy()
+    expect(semanticTokens.auth.hero.decorative.badgeBackground).toBeTruthy()
+    expect(semanticTokens.auth.hero.decorative.badgeBorder).toBeTruthy()
+    expect(semanticTokens.auth.hero.decorative.titleShadow).toBeTruthy()
+    expect(semanticTokens.auth.hero.decorative.particle).toBeTruthy()
+    expect(semanticTokens.auth.glassCard.background).toBeTruthy()
+    expect(semanticTokens.auth.glassCard.shadow).toBeTruthy()
+    expect(semanticTokens.auth.input.background).toBeTruthy()
+    expect(semanticTokens.auth.input.focusShadow).toBeTruthy()
+  })
+
+  it('keeps chart palette keys and line series types available for component consumers', () => {
+    expect(chartSeries.alarmLevels.length).toBeGreaterThan(0)
+    expect(chartSeries.stationStatus.length).toBeGreaterThan(0)
+    expect(chartSeries.comparison.length).toBeGreaterThan(0)
+    expect(chartSeries.comparisonSecondary.length).toBeGreaterThan(0)
+    expect(chartSeries.statusDistribution.length).toBeGreaterThan(0)
+    expect(chartSeries.categorySequential.length).toBeGreaterThan(0)
+    expect(lineChartTokens.waterLevel.line).toBeTruthy()
+    expect(lineChartTokens.rainfall.line).toBeTruthy()
+    expect(lineChartTokens.trendPrimary.line).toBeTruthy()
+    expect(lineChartTokens.trendSecondary.line).toBeTruthy()
+  })
+
+  it('provides visual effect tokens for gradients, glows, overlays, and shadows', () => {
+    expect(semanticTokens.visual.gradient.pageBackground).toBeTruthy()
+    expect(semanticTokens.visual.gradient.inverseHero).toBeTruthy()
+    expect(semanticTokens.visual.glow.brand).toBeTruthy()
+    expect(semanticTokens.visual.glow.brandStrong).toBeTruthy()
+    expect(semanticTokens.visual.glow.accentSubtle).toBeTruthy()
+    expect(semanticTokens.visual.overlay.decorativeStrong).toBeTruthy()
+    expect(semanticTokens.visual.overlay.decorativeMedium).toBeTruthy()
+    expect(semanticTokens.visual.overlay.decorativeSoft).toBeTruthy()
+    expect(semanticTokens.visual.shadow.emphasis).toBeTruthy()
+    expect(semanticTokens.visual.shadow.inverseStrong).toBeTruthy()
   })
 
   it('keeps usage boundaries clear between brand, accent, warning, and danger', () => {
