@@ -1,75 +1,132 @@
 <template>
   <div class="page-shell">
-    <PageCard class="dashboard-hero" title="水利信息管理系统" subtitle="以工程、站点、监测和告警为核心的课程演示后台">
-      <div class="dashboard-hero__content">
+    <section class="dashboard-overview panel">
+      <div class="dashboard-overview__main">
+        <p class="dashboard-overview__eyebrow">系统运行总览</p>
+        <h2>优先关注站点在线率、水位变化与当日告警响应。</h2>
+        <p class="dashboard-overview__copy">
+          当前首页聚合工程资产、站点在线状态、趋势变化与最近告警，便于在答辩或日常巡检中快速判断系统运行态势。
+        </p>
+      </div>
+      <div class="dashboard-overview__meta">
         <div>
-          <p class="dashboard-hero__eyebrow">Control Room Snapshot</p>
-          <h2>实时掌握工程态势、监测数据与风险告警</h2>
-          <p class="dashboard-hero__copy">
-            首页聚合展示工程总量、站点在线情况、水位与雨量趋势，以及最近告警处置动态，便于课程答辩时直接演示主业务链路。
-          </p>
+          <span>在线覆盖率</span>
+          <strong>{{ onlineCoverage }}</strong>
         </div>
-        <div class="dashboard-hero__pulse">
-          <span>在线站点</span>
-          <strong>{{ overview.onlineStationCount }}</strong>
-          <em>/ {{ overview.stationCount }}</em>
+        <div>
+          <span>待关注告警</span>
+          <strong>{{ alarmSnapshot.pendingCount }}</strong>
+        </div>
+        <div>
+          <span>最近触发</span>
+          <strong>{{ formatDateTime(alarmSnapshot.latestTriggeredAt) }}</strong>
         </div>
       </div>
-    </PageCard>
+    </section>
 
     <div class="page-grid metrics-grid">
-      <PageCard v-for="item in metrics" :key="item.title">
-        <div class="metric-tile">
-          <span>{{ item.title }}</span>
-          <strong>{{ item.value }}</strong>
-          <p>{{ item.description }}</p>
+      <MetricCard
+        v-for="item in metrics"
+        :key="item.title"
+        :label="item.title"
+        :value="item.value"
+        :description="item.description"
+        :highlight="item.highlight"
+        :tone="item.tone"
+      />
+    </div>
+
+    <div class="page-grid dashboard-focus-grid">
+      <ChartSection
+        class="dashboard-main-chart"
+        title="水位趋势"
+        description="作为首页主分析区，聚焦最近监测样本按日期聚合后的变化走势。"
+      >
+        <template #actions>
+          <div class="trend-summary-group">
+            <div class="trend-summary-card">
+              <span>最新水位</span>
+              <strong>{{ waterTrendSummary.currentValue }}</strong>
+              <em :class="`trend-summary-card__delta trend-summary-card__delta--${waterTrendSummary.direction}`">
+                {{ formatSignedValue(waterTrendSummary.delta) }}
+              </em>
+            </div>
+            <div class="trend-summary-card trend-summary-card--muted">
+              <span>最新雨量</span>
+              <strong>{{ rainfallTrendSummary.currentValue }}</strong>
+              <em :class="`trend-summary-card__delta trend-summary-card__delta--${rainfallTrendSummary.direction}`">
+                {{ formatSignedValue(rainfallTrendSummary.delta) }}
+              </em>
+            </div>
+          </div>
+        </template>
+        <TrendLineChart :points="overview.waterLevelTrend" series-type="waterLevel" unit="" />
+      </ChartSection>
+
+      <SideInfoPanel title="告警关注" subtitle="首页响应摘要">
+        <template #status>
+          <StatusTag category="alarmStatus" :value="alarmSnapshot.pendingCount > 0 ? 'Pending' : 'Resolved'" />
+        </template>
+        <template #meta>
+          <div class="dashboard-alert-meta">
+            <div>
+              <span>严重告警</span>
+              <strong>{{ alarmSnapshot.criticalCount }}</strong>
+            </div>
+            <div>
+              <span>预警告警</span>
+              <strong>{{ alarmSnapshot.warningCount }}</strong>
+            </div>
+            <div>
+              <span>待处理</span>
+              <strong>{{ alarmSnapshot.pendingCount }}</strong>
+            </div>
+          </div>
+        </template>
+        <div class="dashboard-alert-copy">
+          <p class="dashboard-alert-copy__title">当前关注重点</p>
+          <p>
+            今日累计触发 {{ overview.todayAlarmCount }} 条告警，其中待处理 {{ alarmSnapshot.pendingCount }} 条。
+            首页下方列表保留最近事件，便于继续追踪。
+          </p>
         </div>
-      </PageCard>
+      </SideInfoPanel>
     </div>
 
-    <div class="page-grid analytics-grid">
-      <PageCard title="水位趋势" subtitle="最近监测样本按日期聚合">
-        <TrendLineChart
-          :points="overview.waterLevelTrend"
-          series-type="waterLevel"
-          unit=""
-        />
-      </PageCard>
+    <div class="page-grid dashboard-support-grid">
+      <ChartSection title="雨量统计" description="作为次级趋势区，展示最近雨量采样的累计变化。">
+        <TrendLineChart :points="overview.rainfallTrend" series-type="rainfall" unit="" />
+      </ChartSection>
 
-      <PageCard title="雨量统计" subtitle="最近雨量采样按日期累计">
-        <TrendLineChart
-          :points="overview.rainfallTrend"
-          series-type="rainfall"
-          unit=""
-        />
-      </PageCard>
+      <div class="dashboard-support-grid__stack">
+        <ChartSection title="告警等级分布" description="按告警等级汇总，用于快速判断风险结构。">
+          <StatBarChart :items="overview.alarmLevelStats" palette="alarmLevels" />
+        </ChartSection>
+
+        <ChartSection title="站点运行状态" description="在线、离线与预警站点分布。">
+          <StatDonutChart :items="overview.stationStatusStats" palette="stationStatus" />
+        </ChartSection>
+      </div>
     </div>
 
-    <div class="page-grid analytics-grid analytics-grid--secondary">
-      <PageCard title="告警数量统计" subtitle="按告警等级汇总">
-        <StatBarChart :items="overview.alarmLevelStats" palette="alarmLevels" />
-      </PageCard>
-
-      <PageCard title="站点状态统计" subtitle="在线、离线与预警站点分布">
-        <StatDonutChart :items="overview.stationStatusStats" palette="stationStatus" />
-      </PageCard>
-    </div>
-
-    <PageCard title="最近告警" subtitle="展示最新触发的告警记录，便于首页快速追踪">
+    <TableSection
+      title="最近告警"
+      description="展示最新触发的告警记录，便于首页快速追踪"
+      :loading="loading"
+      :has-data="overview.recentAlarms.length > 0"
+      :total="overview.recentAlarms.length"
+      empty-description="当前暂无最近告警"
+    >
       <el-table :data="overview.recentAlarms" v-loading="loading" border>
         <el-table-column prop="stationName" label="站点名称" min-width="160" />
         <el-table-column label="等级" width="120">
           <template #default="{ row }">
-            <el-tag :type="row.level === 'Critical' ? 'danger' : row.level === 'Warning' ? 'warning' : 'info'">
-              {{ row.level }}
-            </el-tag>
+            <StatusTag category="alarmLevel" :value="row.level" />
           </template>
         </el-table-column>
         <el-table-column label="状态" width="120">
           <template #default="{ row }">
-            <el-tag :type="row.status === 'Resolved' ? 'success' : row.status === 'Processing' ? 'warning' : 'danger'">
-              {{ row.status }}
-            </el-tag>
+            <StatusTag category="alarmStatus" :value="row.status" />
           </template>
         </el-table-column>
         <el-table-column prop="message" label="内容" min-width="260" show-overflow-tooltip />
@@ -77,18 +134,23 @@
           <template #default="{ row }">{{ formatDateTime(row.triggeredAt) }}</template>
         </el-table-column>
       </el-table>
-    </PageCard>
+    </TableSection>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import dayjs from 'dayjs'
-import PageCard from '@/components/common/PageCard.vue'
+import ChartSection from '@/components/common/ChartSection.vue'
+import MetricCard from '@/components/common/MetricCard.vue'
+import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
+import StatusTag from '@/components/common/StatusTag.vue'
+import TableSection from '@/components/common/TableSection.vue'
 import TrendLineChart from '@/components/charts/TrendLineChart.vue'
 import StatBarChart from '@/components/charts/StatBarChart.vue'
 import StatDonutChart from '@/components/charts/StatDonutChart.vue'
 import { fetchDashboardOverview } from '@/api/modules/dashboard'
+import { buildDashboardAlarmSnapshot, buildDashboardMetrics, buildTrendSummary } from './dashboardPresentation'
 import type { DashboardOverview } from '@/types/models'
 
 const loading = ref(false)
@@ -105,15 +167,22 @@ const overview = reactive<DashboardOverview>({
   recentAlarms: []
 })
 
-const metrics = computed(() => [
-  { title: '水库总数', value: overview.reservoirCount, description: '纳入系统统一维护的水库工程' },
-  { title: '河道总数', value: overview.riverCount, description: '纳入系统展示的主要河道' },
-  { title: '站点总数', value: overview.stationCount, description: '支持监测与告警的站点总量' },
-  { title: '今日告警', value: overview.todayAlarmCount, description: '今日自动触发的告警记录' }
-])
+const metrics = computed(() => buildDashboardMetrics(overview))
+const alarmSnapshot = computed(() => buildDashboardAlarmSnapshot(overview))
+const waterTrendSummary = computed(() => buildTrendSummary(overview.waterLevelTrend))
+const rainfallTrendSummary = computed(() => buildTrendSummary(overview.rainfallTrend))
+const onlineCoverage = computed(() => {
+  if (overview.stationCount === 0) return '0%'
+  return `${Math.round((overview.onlineStationCount / overview.stationCount) * 100)}%`
+})
 
-function formatDateTime(value: string) {
-  return dayjs(value).format('YYYY-MM-DD HH:mm')
+function formatDateTime(value?: string) {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm') : '--'
+}
+
+function formatSignedValue(value: number) {
+  if (value > 0) return `+${value}`
+  return `${value}`
 }
 
 async function loadData() {
@@ -129,77 +198,60 @@ onMounted(loadData)
 </script>
 
 <style scoped lang="scss">
-.dashboard-hero {
-  overflow: hidden;
-  background:
-    var(--wi-gradient-inverse-hero),
-    radial-gradient(circle at top right, var(--wi-glow-brand-strong), transparent 28%),
-    radial-gradient(circle at bottom left, var(--wi-glow-accent-subtle), transparent 22%);
-  color: var(--wi-text-inverse-primary);
-  border-color: var(--wi-border-inverse);
-
-  :deep(.page-card__header p) {
-    color: var(--wi-text-inverse-secondary);
-  }
-
-  :deep(.page-card__header h3) {
-    color: var(--wi-text-inverse-primary);
-  }
-
-  :deep(.page-card__header) {
-    border-bottom-color: var(--wi-border-inverse);
-  }
-}
-
-.dashboard-hero__content {
+.dashboard-overview {
+  padding: 24px;
   display: grid;
-  grid-template-columns: 1.4fr 0.6fr;
-  gap: 22px;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  gap: 24px;
   align-items: center;
 }
 
-.dashboard-hero__eyebrow {
-  margin: 0 0 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--wi-text-inverse-secondary);
-  font-size: 12px;
-}
-
-.dashboard-hero h2 {
+.dashboard-overview__eyebrow {
   margin: 0;
-  font-size: clamp(28px, 3vw, 42px);
-  line-height: 1.1;
+  color: var(--wi-text-tertiary);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.dashboard-hero__copy {
-  margin: 14px 0 0;
+.dashboard-overview__main h2 {
+  margin: 12px 0 0;
+  max-width: 760px;
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1.2;
+  color: var(--wi-text-primary);
+}
+
+.dashboard-overview__copy {
+  margin: 12px 0 0;
   max-width: 720px;
-  color: var(--wi-text-inverse-secondary);
-  line-height: 1.9;
+  color: var(--wi-text-secondary);
+  line-height: 1.8;
 }
 
-.dashboard-hero__pulse {
-  justify-self: end;
-  min-width: 220px;
-  padding: 24px;
-  border-radius: 24px;
-  background: var(--wi-surface-inverse-soft);
-  box-shadow: inset 0 0 0 1px var(--wi-border-inverse);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  backdrop-filter: blur(8px);
+.dashboard-overview__meta {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: var(--wi-app-radius-lg);
+  background: var(--wi-app-surface-secondary);
+  border: 1px solid var(--wi-app-border-subtle);
 
   span,
-  em {
-    color: var(--wi-text-inverse-secondary);
-    font-style: normal;
+  strong {
+    display: block;
+  }
+
+  span {
+    color: var(--wi-text-tertiary);
+    font-size: 12px;
   }
 
   strong {
-    font-size: 54px;
-    line-height: 1;
+    margin-top: 8px;
+    color: var(--wi-text-primary);
+    font-size: 18px;
+    line-height: 1.5;
   }
 }
 
@@ -207,43 +259,127 @@ onMounted(loadData)
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.metric-tile {
+.dashboard-focus-grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.55fr);
+}
+
+.dashboard-main-chart :deep(.chart-card__view) {
+  height: 320px;
+}
+
+.trend-summary-group {
   display: flex;
-  flex-direction: column;
   gap: 12px;
+}
+
+.trend-summary-card {
+  min-width: 126px;
+  padding: 12px 14px;
+  border-radius: var(--wi-app-radius-md);
+  background: var(--wi-app-surface-secondary);
+  border: 1px solid var(--wi-app-border-subtle);
+
+  span,
+  strong,
+  em {
+    display: block;
+  }
 
   span {
     color: var(--wi-text-tertiary);
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 12px;
   }
 
   strong {
-    font-size: 40px;
-    color: var(--wi-primary-strong);
-  }
-
-  p {
-    margin: 0;
-    color: var(--wi-text-secondary);
-    line-height: 1.7;
+    margin-top: 8px;
+    color: var(--wi-text-primary);
+    font-size: 20px;
   }
 }
 
-.analytics-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.trend-summary-card__delta {
+  margin-top: 6px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.trend-summary-card__delta--up {
+  color: var(--wi-warning);
+}
+
+.trend-summary-card__delta--down {
+  color: var(--wi-info);
+}
+
+.trend-summary-card__delta--flat {
+  color: var(--wi-text-tertiary);
+}
+
+.trend-summary-card--muted strong {
+  font-size: 18px;
+}
+
+.dashboard-alert-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+
+  span,
+  strong {
+    display: block;
+  }
+
+  span {
+    color: var(--wi-text-tertiary);
+    font-size: 12px;
+  }
+
+  strong {
+    margin-top: 8px;
+    color: var(--wi-text-primary);
+    font-size: 24px;
+  }
+}
+
+.dashboard-alert-copy__title {
+  margin: 0 0 8px;
+  color: var(--wi-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dashboard-alert-copy p:last-child {
+  margin: 0;
+  color: var(--wi-text-secondary);
+  line-height: 1.8;
+}
+
+.dashboard-support-grid {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+}
+
+.dashboard-support-grid__stack {
+  display: grid;
+  gap: 24px;
 }
 
 @media (max-width: 1200px) {
-  .dashboard-hero__content,
+  .dashboard-overview,
   .metrics-grid,
-  .analytics-grid {
+  .dashboard-focus-grid,
+  .dashboard-support-grid {
     grid-template-columns: 1fr;
   }
 
-  .dashboard-hero__pulse {
-    justify-self: stretch;
+  .trend-summary-group,
+  .dashboard-alert-meta {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .dashboard-support-grid__stack {
+    gap: 24px;
   }
 }
 </style>

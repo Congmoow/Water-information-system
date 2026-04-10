@@ -115,6 +115,35 @@ const authTokens = {
   }
 } as const
 
+const appChromeTokens = {
+  background: {
+    canvas: '#f5f8fb',
+    subtle: '#eef3f8'
+  },
+  surface: {
+    primary: '#ffffff',
+    secondary: '#f8fbfd',
+    tertiary: '#f3f7fb'
+  },
+  border: {
+    subtle: 'rgba(72, 98, 118, 0.08)',
+    default: 'rgba(72, 98, 118, 0.12)',
+    strong: 'rgba(72, 98, 118, 0.18)'
+  },
+  shadow: {
+    sm: '0 8px 20px rgba(15, 23, 42, 0.04)',
+    md: '0 14px 32px rgba(15, 23, 42, 0.06)'
+  },
+  inverse: {
+    sidebar: '#101b2d',
+    surface: 'rgba(247, 251, 253, 0.06)',
+    surfaceHover: 'rgba(247, 251, 253, 0.08)',
+    surfaceActive: 'rgba(247, 251, 253, 0.12)',
+    border: 'rgba(217, 233, 247, 0.12)',
+    textSecondary: 'rgba(217, 233, 247, 0.72)'
+  }
+} as const
+
 export const semanticTokens = {
   brand: {
     primary: corePalette.brand[600],
@@ -168,6 +197,7 @@ export const semanticTokens = {
     inputBg: authTokens.input.background,
     inputFocusShadow: authTokens.input.focusShadow
   },
+  app: appChromeTokens,
   border: {
     subtle: 'rgba(48, 79, 118, 0.08)',
     default: 'rgba(48, 79, 118, 0.14)',

@@ -1,14 +1,23 @@
 <template>
   <div class="page-shell">
-    <PageCard title="水库管理" subtitle="支持新增、编辑、删除、查询和详情查看">
-      <template #extra>
+    <TableSection
+      title="水库管理"
+      description="支持新增、编辑、删除、查询和详情查看"
+      :loading="loading"
+      :has-data="rows.length > 0"
+      :total="total"
+      empty-description="暂无水库数据"
+    >
+      <template #actions>
         <el-button v-if="isAdmin" type="primary" @click="openCreateDialog">新增水库</el-button>
       </template>
 
-      <div class="toolbar">
+      <FilterBar class="toolbar">
         <el-input v-model="query.keyword" placeholder="按名称、位置或管理单位搜索" clearable @keyup.enter="loadData" @clear="loadData" />
-        <el-button type="primary" @click="loadData">查询</el-button>
-      </div>
+        <template #actions>
+          <el-button type="primary" @click="loadData">查询</el-button>
+        </template>
+      </FilterBar>
 
       <el-table :data="rows" v-loading="loading" border>
         <el-table-column prop="name" label="名称" min-width="140" />
@@ -27,7 +36,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="table-footer">
+      <template #pagination>
         <el-pagination
           background
           layout="total, prev, pager, next"
@@ -36,8 +45,8 @@
           :total="total"
           @current-change="handlePageChange"
         />
-      </div>
-    </PageCard>
+      </template>
+    </TableSection>
 
     <el-dialog v-model="dialogVisible" :title="editingId ? '编辑水库' : '新增水库'" width="640px">
       <el-form :model="form" label-position="top">
@@ -73,7 +82,8 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import PageCard from '@/components/common/PageCard.vue'
+import FilterBar from '@/components/common/FilterBar.vue'
+import TableSection from '@/components/common/TableSection.vue'
 import {
   createReservoir,
   deleteReservoir,
@@ -184,8 +194,4 @@ async function showDetail(id: string) {
 onMounted(loadData)
 </script>
 
-<style scoped lang="scss">
-.toolbar {
-  grid-template-columns: 1fr auto;
-}
-</style>
+<style scoped lang="scss"></style>

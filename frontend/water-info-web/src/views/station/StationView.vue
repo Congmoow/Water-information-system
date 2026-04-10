@@ -1,11 +1,18 @@
 <template>
   <div class="page-shell">
-    <PageCard title="站点管理" subtitle="支持站点类型、状态、经纬度和父级工程维护">
-      <template #extra>
+    <TableSection
+      title="站点管理"
+      description="支持站点类型、状态、经纬度和父级工程维护"
+      :loading="loading"
+      :has-data="rows.length > 0"
+      :total="total"
+      empty-description="暂无站点数据"
+    >
+      <template #actions>
         <el-button v-if="isAdmin" type="primary" @click="openCreateDialog">新增站点</el-button>
       </template>
 
-      <div class="toolbar toolbar--station">
+      <FilterBar class="toolbar toolbar--station">
         <el-input v-model="query.keyword" placeholder="搜索站点名称" clearable @keyup.enter="loadData" @clear="loadData" />
         <el-select v-model="query.type" placeholder="站点类型" clearable>
           <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value" />
@@ -13,15 +20,17 @@
         <el-select v-model="query.status" placeholder="站点状态" clearable>
           <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
-        <el-button type="primary" @click="loadData">查询</el-button>
-      </div>
+        <template #actions>
+          <el-button type="primary" @click="loadData">查询</el-button>
+        </template>
+      </FilterBar>
 
       <el-table :data="rows" v-loading="loading" border>
         <el-table-column prop="name" label="站点名称" min-width="150" />
         <el-table-column prop="type" label="类型" width="120" />
         <el-table-column label="状态" width="120">
           <template #default="{ row }">
-            <el-tag :type="statusTagType(row.status)">{{ row.status }}</el-tag>
+            <StatusTag category="stationStatus" :value="row.status" />
           </template>
         </el-table-column>
         <el-table-column prop="parentName" label="归属工程" min-width="160" />
@@ -40,7 +49,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="table-footer">
+      <template #pagination>
         <el-pagination
           background
           layout="total, prev, pager, next"
@@ -49,8 +58,8 @@
           :total="total"
           @current-change="handlePageChange"
         />
-      </div>
-    </PageCard>
+      </template>
+    </TableSection>
 
     <el-dialog v-model="dialogVisible" :title="editingId ? '编辑站点' : '新增站点'" width="760px">
       <el-form :model="form" label-position="top">
@@ -92,7 +101,9 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import PageCard from '@/components/common/PageCard.vue'
+import FilterBar from '@/components/common/FilterBar.vue'
+import StatusTag from '@/components/common/StatusTag.vue'
+import TableSection from '@/components/common/TableSection.vue'
 import { fetchReservoirs } from '@/api/modules/reservoir'
 import { fetchRivers } from '@/api/modules/river'
 import { createStation, deleteStation, fetchStationDetail, fetchStations, updateStation, type StationFormModel } from '@/api/modules/station'
@@ -141,12 +152,6 @@ const form = reactive<StationFormModel>({
   reservoirId: '',
   riverId: ''
 })
-
-function statusTagType(status: string) {
-  if (status === 'Online') return 'success'
-  if (status === 'Offline') return 'info'
-  return 'warning'
-}
 
 function resetForm() {
   Object.assign(form, {
@@ -254,14 +259,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped lang="scss">
-.toolbar--station {
-  grid-template-columns: 1.2fr 0.7fr 0.7fr auto;
-}
-
-@media (max-width: 1080px) {
-  .toolbar--station {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

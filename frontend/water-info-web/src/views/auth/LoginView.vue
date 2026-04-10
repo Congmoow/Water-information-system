@@ -19,10 +19,11 @@
 
     <div class="login-content">
       <section class="login-page__hero">
-        <span class="login-page__badge">课程项目答辩演示系统</span>
+        <span class="login-page__badge">水利信息系统</span>
         <h1>面向工程、站点、告警与空间展示的一体化水利信息管理后台</h1>
-        <p>
-          当前阶段先完成后台管理骨架与登录入口，下一阶段接入 JWT 认证、权限和真实业务数据。
+        <p class="hero-en-title">Integrated Water Conservancy Information Management System</p>
+        <p class="hero-description">
+          本系统旨在通过数字化手段，实现水利工程全要素的实时监测、告警闭环与空间决策分析，提升水务管理的科学化水平。
         </p>
         <ul>
           <li>统一的工程与站点管理视图</li>
@@ -194,10 +195,21 @@ async function handleLogin() {
   margin: 0 0 24px;
   max-width: 760px;
   font-size: clamp(36px, 3.5vw, 52px);
-  line-height: 1.15;
+  line-height: 1.3;
   letter-spacing: -0.02em;
   font-weight: 700;
   text-shadow: var(--wi-auth-hero-decorative-title-shadow);
+  margin-bottom: 8px;
+}
+
+/*英文副标题样式 */
+.hero-en-title {
+  font-size: 18px !important;
+  color: var(--wi-primary-light-3) !important; /* 稍微浅一点的蓝色 */
+  opacity: 0.8;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px !important;
+  font-style: italic;
 }
 
 .login-page__hero p {

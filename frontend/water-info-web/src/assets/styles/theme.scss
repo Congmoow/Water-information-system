@@ -118,6 +118,32 @@
   --wi-auth-card-shadow: var(--wi-auth-glass-card-shadow);
   --wi-auth-input-bg: var(--wi-auth-input-background);
 
+  --wi-app-bg: #f5f8fb;
+  --wi-app-bg-subtle: #eef3f8;
+  --wi-app-surface: #ffffff;
+  --wi-app-surface-secondary: #f8fbfd;
+  --wi-app-surface-tertiary: #f3f7fb;
+  --wi-app-border-subtle: rgba(72, 98, 118, 0.08);
+  --wi-app-border: rgba(72, 98, 118, 0.12);
+  --wi-app-border-strong: rgba(72, 98, 118, 0.18);
+  --wi-app-shadow-sm: 0 8px 20px rgba(15, 23, 42, 0.04);
+  --wi-app-shadow-md: 0 14px 32px rgba(15, 23, 42, 0.06);
+  --wi-app-sidebar-bg: #101b2d;
+  --wi-app-sidebar-surface: rgba(247, 251, 253, 0.06);
+  --wi-app-sidebar-surface-hover: rgba(247, 251, 253, 0.08);
+  --wi-app-sidebar-surface-active: rgba(247, 251, 253, 0.12);
+  --wi-app-sidebar-border: rgba(217, 233, 247, 0.12);
+  --wi-app-sidebar-text-secondary: rgba(217, 233, 247, 0.72);
+
+  --wi-app-sidebar-width: 248px;
+  --wi-app-content-max-width: 1440px;
+  --wi-app-page-padding-inline: 28px;
+  --wi-app-page-padding-block: 24px;
+  --wi-app-header-min-height: 92px;
+  --wi-app-radius-lg: 20px;
+  --wi-app-radius-md: 16px;
+  --wi-app-radius-sm: 12px;
+
   --wi-border-subtle: rgba(48, 79, 118, 0.08);
   --wi-border-default: rgba(48, 79, 118, 0.14);
   --wi-border-strong: rgba(48, 79, 118, 0.22);

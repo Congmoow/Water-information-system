@@ -7,48 +7,62 @@
         </div>
 
         <div class="map-sidebar">
-          <section class="map-sidebar__summary panel">
-            <h4>空间态势总览</h4>
-            <div class="map-summary-grid">
-              <div>
-                <span>工程点位</span>
-                <strong>{{ engineeringCount }}</strong>
+          <SideInfoPanel title="空间态势总览" subtitle="地图摘要">
+            <template #meta>
+              <div class="map-summary-grid">
+                <div>
+                  <span>工程点位</span>
+                  <strong>{{ engineeringCount }}</strong>
+                </div>
+                <div>
+                  <span>站点点位</span>
+                  <strong>{{ stationCount }}</strong>
+                </div>
               </div>
-              <div>
-                <span>站点点位</span>
-                <strong>{{ stationCount }}</strong>
-              </div>
-            </div>
+            </template>
             <ul class="legend-list">
               <li><i class="legend-dot legend-dot--reservoir"></i> 水库点位</li>
               <li><i class="legend-dot legend-dot--river"></i> 河道点位</li>
               <li><i class="legend-dot legend-dot--station"></i> 监测站点</li>
+              <li><i class="legend-dot legend-dot--warning"></i> 预警站点</li>
+              <li><i class="legend-dot legend-dot--offline"></i> 离线站点</li>
             </ul>
-          </section>
+          </SideInfoPanel>
 
-          <section class="map-sidebar__detail panel">
-            <template v-if="activePoint">
-              <p class="map-sidebar__eyebrow">{{ pointTypeLabel(activePoint) }}</p>
-              <h3>{{ activePoint.name }}</h3>
-              <el-tag v-if="activePoint.status" :type="activePoint.status === 'Warning' ? 'warning' : activePoint.status === 'Offline' ? 'info' : 'success'">
-                {{ activePoint.status }}
-              </el-tag>
-              <dl>
-                <div>
-                  <dt>坐标</dt>
-                  <dd>{{ activePoint.latitude.toFixed(4) }}, {{ activePoint.longitude.toFixed(4) }}</dd>
-                </div>
-                <div>
-                  <dt>来源</dt>
-                  <dd>{{ activePoint.source }}</dd>
-                </div>
-                <div>
-                  <dt>说明</dt>
-                  <dd>{{ activePoint.description || '暂无说明' }}</dd>
-                </div>
-              </dl>
+          <SideInfoPanel
+            v-if="activePoint"
+            :title="activePoint.name"
+            :subtitle="pointTypeLabel(activePoint)"
+          >
+            <template #status>
+              <StatusTag
+                v-if="activePoint.status"
+                :category="activePoint.status === 'Offline' ? 'stationStatus' : 'riskStatus'"
+                :value="activePoint.status === 'Offline' ? activePoint.status : activePoint.status === 'Warning' ? 'Warning' : 'Normal'"
+              />
             </template>
-            <el-empty v-else description="点击地图中的点位查看详细信息" />
+            <template #meta>
+              <div class="detail-meta-grid">
+                <div>
+                  <span>坐标</span>
+                  <strong>{{ activePoint.latitude.toFixed(4) }}, {{ activePoint.longitude.toFixed(4) }}</strong>
+                </div>
+                <div>
+                  <span>来源</span>
+                  <strong>{{ activePoint.source }}</strong>
+                </div>
+              </div>
+            </template>
+            <dl class="map-detail-list">
+              <div>
+                <dt>说明</dt>
+                <dd>{{ activePoint.description || '暂无说明' }}</dd>
+              </div>
+            </dl>
+          </SideInfoPanel>
+
+          <section v-else class="map-sidebar__detail panel">
+            <el-empty description="点击地图中的点位查看详细信息" />
           </section>
         </div>
       </div>
@@ -61,6 +75,8 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import PageCard from '@/components/common/PageCard.vue'
+import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
+import StatusTag from '@/components/common/StatusTag.vue'
 import { visualizationTokens } from '@/theme/tokens'
 import { fetchMapPoints } from '@/api/modules/map'
 import type { MapPoint } from '@/types/models'
@@ -177,55 +193,19 @@ onBeforeUnmount(() => {
   background: var(--wi-map-panel-bg);
 }
 
-.map-sidebar__summary h4,
-.map-sidebar__detail h3 {
-  margin: 0;
-  color: var(--wi-text-primary);
-}
-
 .map-sidebar__detail {
   display: flex;
   flex-direction: column;
   gap: 14px;
-
-  dl {
-    display: grid;
-    gap: 16px;
-    margin: 0;
-  }
-
-  dt {
-    color: var(--wi-text-soft);
-    font-size: 13px;
-    margin-bottom: 6px;
-  }
-
-  dd {
-    margin: 0;
-    line-height: 1.8;
-    color: var(--wi-text-primary);
-  }
-}
-
-.map-sidebar__eyebrow {
-  margin: 0;
-  color: var(--wi-primary);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .map-summary-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
-  margin-top: 18px;
 
   div {
-    padding: 18px;
-    border-radius: 18px;
-    background: var(--wi-bg-muted);
-    border: 1px solid var(--wi-border-subtle);
+    padding: 4px 0;
   }
 
   span {
@@ -239,6 +219,43 @@ onBeforeUnmount(() => {
     margin-top: 10px;
     font-size: 30px;
     color: var(--wi-primary-active);
+  }
+}
+
+.detail-meta-grid {
+  display: grid;
+  gap: 14px;
+
+  span {
+    display: block;
+    color: var(--wi-text-tertiary);
+    font-size: 12px;
+  }
+
+  strong {
+    display: block;
+    margin-top: 6px;
+    color: var(--wi-text-primary);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+}
+
+.map-detail-list {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+
+  dt {
+    margin-bottom: 6px;
+    color: var(--wi-text-tertiary);
+    font-size: 12px;
+  }
+
+  dd {
+    margin: 0;
+    line-height: 1.8;
+    color: var(--wi-text-primary);
   }
 }
 
@@ -274,6 +291,14 @@ onBeforeUnmount(() => {
 
 .legend-dot--station {
   background: var(--wi-map-station);
+}
+
+.legend-dot--warning {
+  background: var(--wi-map-warning);
+}
+
+.legend-dot--offline {
+  background: var(--wi-map-offline);
 }
 
 @media (max-width: 1180px) {
