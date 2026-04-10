@@ -5,6 +5,19 @@ export interface AppMenuItem {
   icon: string
 }
 
+export interface SettingsMenuItem {
+  name: string
+  title: string
+  icon: string
+  path?: string
+  action?: 'logout'
+}
+
+export interface SettingsMenuGroup {
+  id: string
+  items: SettingsMenuItem[]
+}
+
 export const appMenus: AppMenuItem[] = [
   { path: '/dashboard', name: 'dashboard', title: '首页仪表盘', icon: 'DataAnalysis' },
   { path: '/reservoirs', name: 'reservoirs', title: '水库管理', icon: 'Collection' },
@@ -12,6 +25,16 @@ export const appMenus: AppMenuItem[] = [
   { path: '/stations', name: 'stations', title: '站点管理', icon: 'Location' },
   { path: '/monitoring', name: 'monitoring', title: '监测数据', icon: 'Histogram' },
   { path: '/alarms', name: 'alarms', title: '告警记录', icon: 'Bell' },
-  { path: '/map', name: 'map', title: '地图展示', icon: 'MapLocation' },
-  { path: '/user-center', name: 'userCenter', title: '用户中心', icon: 'User' }
+  { path: '/map', name: 'map', title: '地图展示', icon: 'MapLocation' }
+]
+
+export const settingsMenuGroups: SettingsMenuGroup[] = [
+  {
+    id: 'profile',
+    items: [{ path: '/user-center', name: 'userCenter', title: '个人中心', icon: 'User' }]
+  },
+  {
+    id: 'session',
+    items: [{ name: 'logout', title: '退出登录', icon: 'SwitchButton', action: 'logout' }]
+  }
 ]
