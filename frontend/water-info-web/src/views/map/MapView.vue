@@ -108,12 +108,17 @@
           </SideInfoPanel>
 
           <SideInfoPanel
-            v-if="activePoint && pointInsight"
+            v-if="activePoint && pointInsight && activeStatusMeta"
             :title="activePoint.name"
             :subtitle="pointTypeLabel(activePoint)"
           >
             <template #status>
-              <StatusTag :category="activeStatus.category" :value="activeStatus.value" />
+              <StatusTag
+                v-if="activeStatusMeta.kind === 'status'"
+                :category="activeStatusMeta.category"
+                :value="activeStatusMeta.value"
+              />
+              <span v-else class="entity-pill">{{ activeStatusMeta.label }}</span>
             </template>
             <template #meta>
               <div :class="`entity-state-note entity-state-note--${pointInsight.tone}`">
@@ -186,7 +191,7 @@ import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
 import { visualizationTokens } from '@/theme/tokens'
 import { fetchMapPoints } from '@/api/modules/map'
-import { buildMapOverview, getMapPointInsight, pointTypeLabel } from './mapPresentation'
+import { buildMapOverview, getMapPointInsight, getMapPointStatusMeta, pointTypeLabel } from './mapPresentation'
 import type { MapPoint } from '@/types/models'
 
 const mapRef = ref<HTMLDivElement | null>(null)
@@ -197,21 +202,13 @@ let markerLayer: L.LayerGroup | null = null
 
 const overview = computed(() => buildMapOverview(points.value, activePoint.value))
 const pointInsight = computed(() => (activePoint.value ? getMapPointInsight(activePoint.value) : null))
-const activeStatus = computed(() => {
-  if (activePoint.value?.status === 'Offline') {
-    return { category: 'stationStatus' as const, value: 'Offline' }
-  }
-
-  if (activePoint.value?.status === 'Warning') {
-    return { category: 'riskStatus' as const, value: 'Warning' }
-  }
-
-  return { category: 'riskStatus' as const, value: 'Normal' }
-})
+const activeStatusMeta = computed(() => (activePoint.value ? getMapPointStatusMeta(activePoint.value) : null))
 const activeStatusLabel = computed(() => {
-  if (activePoint.value?.status === 'Offline') return '离线'
-  if (activePoint.value?.status === 'Warning') return '预警'
-  return activePoint.value?.source === 'station' ? '正常' : '已纳入监测'
+  if (!activePoint.value) return '--'
+  if (activePoint.value.source !== 'station') return pointTypeLabel(activePoint.value)
+  if (activePoint.value.status === 'Offline') return '离线'
+  if (activePoint.value.status === 'Warning') return '预警'
+  return '正常'
 })
 
 function sourceLabel(source: string) {

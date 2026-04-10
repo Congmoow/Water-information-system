@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildMapOverview,
   getMapPointInsight,
+  getMapPointStatusMeta,
   pointTypeLabel
 } from './mapPresentation'
 import type { MapPoint } from '@/types/models'
@@ -78,5 +79,16 @@ describe('mapPresentation', () => {
     expect(pointTypeLabel(points[0])).toBe('水库工程')
     expect(pointTypeLabel(points[1])).toBe('河道工程')
     expect(pointTypeLabel(points[2])).toBe('监测站点 / WaterLevel')
+  })
+  it('uses neutral identity badges for engineering objects and real status tags for stations', () => {
+    expect(getMapPointStatusMeta(points[0])).toMatchObject({
+      kind: 'identity',
+      label: '水库工程'
+    })
+    expect(getMapPointStatusMeta(points[2])).toMatchObject({
+      kind: 'status',
+      category: 'riskStatus',
+      value: 'Warning'
+    })
   })
 })

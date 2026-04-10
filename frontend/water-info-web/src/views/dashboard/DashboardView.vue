@@ -39,28 +39,28 @@
     <div class="page-grid dashboard-focus-grid">
       <ChartSection
         class="dashboard-main-chart"
-        title="水位趋势"
-        description="作为首页主分析区，聚焦最近监测样本按日期聚合后的变化走势。"
+        :title="waterLevelMeta.label"
+        description="作为首页主分析区，聚焦最近监测样本按日期聚合后的变化趋势。"
       >
         <template #actions>
           <div class="trend-summary-group">
             <div class="trend-summary-card">
               <span>最新水位</span>
-              <strong>{{ waterTrendSummary.currentValue }}</strong>
+              <strong>{{ formatValueWithUnit(waterTrendSummary.currentValue, waterLevelMeta.unit) }}</strong>
               <em :class="`trend-summary-card__delta trend-summary-card__delta--${waterTrendSummary.direction}`">
-                {{ formatSignedValue(waterTrendSummary.delta) }}
+                {{ formatSignedValue(waterTrendSummary.delta, waterLevelMeta.unit) }}
               </em>
             </div>
             <div class="trend-summary-card trend-summary-card--muted">
               <span>最新雨量</span>
-              <strong>{{ rainfallTrendSummary.currentValue }}</strong>
+              <strong>{{ formatValueWithUnit(rainfallTrendSummary.currentValue, rainfallMeta.unit) }}</strong>
               <em :class="`trend-summary-card__delta trend-summary-card__delta--${rainfallTrendSummary.direction}`">
-                {{ formatSignedValue(rainfallTrendSummary.delta) }}
+                {{ formatSignedValue(rainfallTrendSummary.delta, rainfallMeta.unit) }}
               </em>
             </div>
           </div>
         </template>
-        <TrendLineChart :points="overview.waterLevelTrend" series-type="waterLevel" unit="" />
+        <TrendLineChart :points="overview.waterLevelTrend" series-type="waterLevel" :unit="waterLevelMeta.unit" />
       </ChartSection>
 
       <SideInfoPanel title="告警关注" subtitle="首页响应摘要">
@@ -94,8 +94,8 @@
     </div>
 
     <div class="page-grid dashboard-support-grid">
-      <ChartSection title="雨量统计" description="作为次级趋势区，展示最近雨量采样的累计变化。">
-        <TrendLineChart :points="overview.rainfallTrend" series-type="rainfall" unit="" />
+      <ChartSection :title="rainfallMeta.label" description="作为次级趋势区，展示最近雨量采样的累计变化。">
+        <TrendLineChart :points="overview.rainfallTrend" series-type="rainfall" :unit="rainfallMeta.unit" />
       </ChartSection>
 
       <div class="dashboard-support-grid__stack">
@@ -106,12 +106,44 @@
         <ChartSection title="站点运行状态" description="在线、离线与预警站点分布。">
           <StatDonutChart :items="overview.stationStatusStats" palette="stationStatus" />
         </ChartSection>
+
+        <SideInfoPanel title="空间分布入口" subtitle="首页空间摘要">
+          <template #meta>
+            <div class="dashboard-spatial-meta">
+              <div>
+                <span>水库对象</span>
+                <strong>{{ spatialSnapshot.reservoirCount }}</strong>
+              </div>
+              <div>
+                <span>河道对象</span>
+                <strong>{{ spatialSnapshot.riverCount }}</strong>
+              </div>
+              <div>
+                <span>监测站点</span>
+                <strong>{{ spatialSnapshot.stationCount }}</strong>
+              </div>
+            </div>
+          </template>
+          <div class="dashboard-spatial-copy">
+            <p class="dashboard-spatial-copy__title">空间维度</p>
+            <p>首页保留空间分布摘要，便于从总览切换到地图工作台，继续查看点位分布与异常状态。</p>
+          </div>
+          <template #footer>
+            <div class="entity-panel-footer">
+              <div>
+                <span>快速入口</span>
+                <strong>{{ spatialSnapshot.emphasis }}</strong>
+              </div>
+              <el-button type="primary" @click="openMapView">查看地图</el-button>
+            </div>
+          </template>
+        </SideInfoPanel>
       </div>
     </div>
 
     <TableSection
       title="最近告警"
-      description="展示最新触发的告警记录，便于首页快速追踪"
+      description="展示最新触发的告警记录，便于首页快速追踪。"
       :loading="loading"
       :has-data="overview.recentAlarms.length > 0"
       :total="overview.recentAlarms.length"
@@ -141,6 +173,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import dayjs from 'dayjs'
+import { useRouter } from 'vue-router'
 import ChartSection from '@/components/common/ChartSection.vue'
 import MetricCard from '@/components/common/MetricCard.vue'
 import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
@@ -150,9 +183,16 @@ import TrendLineChart from '@/components/charts/TrendLineChart.vue'
 import StatBarChart from '@/components/charts/StatBarChart.vue'
 import StatDonutChart from '@/components/charts/StatDonutChart.vue'
 import { fetchDashboardOverview } from '@/api/modules/dashboard'
-import { buildDashboardAlarmSnapshot, buildDashboardMetrics, buildTrendSummary } from './dashboardPresentation'
+import {
+  buildDashboardAlarmSnapshot,
+  buildDashboardMetrics,
+  buildDashboardSpatialSnapshot,
+  buildTrendSummary,
+  getDashboardMeasurementMeta
+} from './dashboardPresentation'
 import type { DashboardOverview } from '@/types/models'
 
+const router = useRouter()
 const loading = ref(false)
 const overview = reactive<DashboardOverview>({
   reservoirCount: 0,
@@ -169,6 +209,7 @@ const overview = reactive<DashboardOverview>({
 
 const metrics = computed(() => buildDashboardMetrics(overview))
 const alarmSnapshot = computed(() => buildDashboardAlarmSnapshot(overview))
+const spatialSnapshot = computed(() => buildDashboardSpatialSnapshot(overview))
 const waterTrendSummary = computed(() => buildTrendSummary(overview.waterLevelTrend))
 const rainfallTrendSummary = computed(() => buildTrendSummary(overview.rainfallTrend))
 const onlineCoverage = computed(() => {
@@ -176,13 +217,24 @@ const onlineCoverage = computed(() => {
   return `${Math.round((overview.onlineStationCount / overview.stationCount) * 100)}%`
 })
 
+const waterLevelMeta = getDashboardMeasurementMeta('waterLevel')
+const rainfallMeta = getDashboardMeasurementMeta('rainfall')
+
 function formatDateTime(value?: string) {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm') : '--'
 }
 
-function formatSignedValue(value: number) {
-  if (value > 0) return `+${value}`
-  return `${value}`
+function formatValueWithUnit(value: number, unit: string) {
+  return `${value} ${unit}`.trim()
+}
+
+function formatSignedValue(value: number, unit: string) {
+  const prefix = value > 0 ? '+' : ''
+  return `${prefix}${value} ${unit}`.trim()
+}
+
+async function openMapView() {
+  await router.push('/map')
 }
 
 async function loadData() {
@@ -320,7 +372,8 @@ onMounted(loadData)
   font-size: 18px;
 }
 
-.dashboard-alert-meta {
+.dashboard-alert-meta,
+.dashboard-spatial-meta {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
@@ -342,14 +395,16 @@ onMounted(loadData)
   }
 }
 
-.dashboard-alert-copy__title {
+.dashboard-alert-copy__title,
+.dashboard-spatial-copy__title {
   margin: 0 0 8px;
   color: var(--wi-text-primary);
   font-size: 14px;
   font-weight: 600;
 }
 
-.dashboard-alert-copy p:last-child {
+.dashboard-alert-copy p:last-child,
+.dashboard-spatial-copy p:last-child {
   margin: 0;
   color: var(--wi-text-secondary);
   line-height: 1.8;
@@ -373,7 +428,8 @@ onMounted(loadData)
   }
 
   .trend-summary-group,
-  .dashboard-alert-meta {
+  .dashboard-alert-meta,
+  .dashboard-spatial-meta {
     grid-template-columns: 1fr;
     display: grid;
   }

@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import {
   buildDashboardAlarmSnapshot,
   buildDashboardMetrics,
+  buildDashboardSpatialSnapshot,
+  getDashboardMeasurementMeta,
   buildTrendSummary
 } from './dashboardPresentation'
 import type { DashboardOverview } from '@/types/models'
@@ -83,6 +85,23 @@ describe('dashboardPresentation', () => {
       currentValue: 18,
       delta: -4,
       direction: 'down'
+    })
+  })
+
+  it('returns measurement metadata and spatial snapshot for dashboard support panels', () => {
+    expect(getDashboardMeasurementMeta('waterLevel')).toMatchObject({
+      label: '水位趋势',
+      unit: 'm'
+    })
+    expect(getDashboardMeasurementMeta('rainfall')).toMatchObject({
+      label: '雨量统计',
+      unit: 'mm'
+    })
+    expect(buildDashboardSpatialSnapshot(overview)).toMatchObject({
+      reservoirCount: 12,
+      riverCount: 5,
+      stationCount: 24,
+      emphasis: '进入空间分布'
     })
   })
 })

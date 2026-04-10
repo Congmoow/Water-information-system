@@ -17,6 +17,17 @@ export interface MapPointInsight {
   tone: 'success' | 'warning' | 'info'
 }
 
+export type MapPointStatusMeta =
+  | {
+      kind: 'status'
+      category: 'riskStatus' | 'stationStatus'
+      value: 'Warning' | 'Offline' | 'Normal'
+    }
+  | {
+      kind: 'identity'
+      label: string
+    }
+
 export function pointTypeLabel(point: MapPoint) {
   if (point.source === 'reservoir') return '水库工程'
   if (point.source === 'river') return '河道工程'
@@ -59,5 +70,36 @@ export function getMapPointInsight(point: MapPoint): MapPointInsight {
       ? '该监测站点当前未显示离线或预警状态，可继续结合地图与详情面板查看。'
       : '该空间对象已纳入统一地图视图，可在侧栏继续查看对象属性与说明信息。',
     tone: 'success'
+  }
+}
+
+export function getMapPointStatusMeta(point: MapPoint): MapPointStatusMeta {
+  if (point.source !== 'station') {
+    return {
+      kind: 'identity',
+      label: pointTypeLabel(point)
+    }
+  }
+
+  if (point.status === 'Offline') {
+    return {
+      kind: 'status',
+      category: 'stationStatus',
+      value: 'Offline'
+    }
+  }
+
+  if (point.status === 'Warning') {
+    return {
+      kind: 'status',
+      category: 'riskStatus',
+      value: 'Warning'
+    }
+  }
+
+  return {
+    kind: 'status',
+    category: 'riskStatus',
+    value: 'Normal'
   }
 }

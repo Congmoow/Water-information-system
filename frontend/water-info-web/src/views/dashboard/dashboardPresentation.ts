@@ -24,6 +24,18 @@ export interface TrendSummary {
   direction: 'up' | 'down' | 'flat'
 }
 
+export interface DashboardMeasurementMeta {
+  label: string
+  unit: string
+}
+
+export interface DashboardSpatialSnapshot {
+  reservoirCount: number
+  riverCount: number
+  stationCount: number
+  emphasis: string
+}
+
 function getCategoryValue(items: CategoryCount[], keys: string[]) {
   const normalizedKeys = keys.map((item) => item.toLowerCase())
   return items.reduce((total, item) => {
@@ -96,5 +108,28 @@ export function buildTrendSummary(points: TrendPoint[]): TrendSummary {
     previousValue: previous,
     delta,
     direction: delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat'
+  }
+}
+
+export function getDashboardMeasurementMeta(metric: 'waterLevel' | 'rainfall'): DashboardMeasurementMeta {
+  if (metric === 'rainfall') {
+    return {
+      label: '雨量统计',
+      unit: 'mm'
+    }
+  }
+
+  return {
+    label: '水位趋势',
+    unit: 'm'
+  }
+}
+
+export function buildDashboardSpatialSnapshot(overview: DashboardOverview): DashboardSpatialSnapshot {
+  return {
+    reservoirCount: overview.reservoirCount,
+    riverCount: overview.riverCount,
+    stationCount: overview.stationCount,
+    emphasis: '进入空间分布'
   }
 }
