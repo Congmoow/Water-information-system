@@ -1,28 +1,106 @@
 <template>
-  <div class="page-shell">
-    <PageCard title="地图展示" subtitle="展示工程点位与监测站点点位，点击后查看详细信息">
-      <div class="map-layout">
-        <div class="map-canvas-wrap">
+  <div class="page-shell map-page-shell">
+    <div class="map-summary-layout">
+      <div class="map-summary-layout__cards">
+        <MetricCard
+          label="空间点位总数"
+          :value="overview.total"
+          description="当前地图已加载的全部空间对象与监测站点数量。"
+          highlight="全局分布"
+          tone="info"
+        />
+        <MetricCard
+          label="工程对象"
+          :value="overview.engineeringCount"
+          description="水库与河道等工程对象在地图上的分布规模。"
+          highlight="空间对象"
+          tone="info"
+        />
+        <MetricCard
+          label="预警点位"
+          :value="overview.warningCount"
+          description="地图上当前显示为预警状态的监测站点数量。"
+          :highlight="overview.warningCount > 0 ? '需关注' : '运行平稳'"
+          :tone="overview.warningCount > 0 ? 'warning' : 'success'"
+        />
+        <MetricCard
+          label="离线点位"
+          :value="overview.offlineCount"
+          description="地图上当前未在线的监测站点数量。"
+          :highlight="overview.offlineCount > 0 ? '需排查' : '通信正常'"
+          tone="info"
+        />
+      </div>
+
+      <SideInfoPanel title="空间态势摘要" subtitle="地图工作台">
+        <template #status>
+          <StatusTag category="riskStatus" :value="overview.warningCount > 0 ? 'Warning' : 'Normal'" />
+        </template>
+        <template #meta>
+          <div class="entity-facts-grid entity-facts-grid--2 map-summary-meta">
+            <div class="entity-facts-grid__item">
+              <span>监测站点</span>
+              <strong>{{ overview.stationCount }}</strong>
+            </div>
+            <div class="entity-facts-grid__item">
+              <span>水库对象</span>
+              <strong>{{ overview.reservoirCount }}</strong>
+            </div>
+            <div class="entity-facts-grid__item">
+              <span>河道对象</span>
+              <strong>{{ overview.riverCount }}</strong>
+            </div>
+            <div class="entity-facts-grid__item">
+              <span>当前焦点</span>
+              <strong>{{ overview.activePointName }}</strong>
+            </div>
+          </div>
+        </template>
+        <div class="map-summary-copy">
+          <p class="map-summary-copy__title">页面阅读顺序</p>
+          <p>先看顶部摘要判断空间分布与异常数量，再在主画布定位对象，最后结合右侧图例和详情面板确认对象属性与当前状态。</p>
+        </div>
+      </SideInfoPanel>
+    </div>
+
+    <section class="map-workbench panel">
+      <header class="map-workbench__header">
+        <div class="map-workbench__copy">
+          <h3>空间监测主画布</h3>
+          <p>地图作为主视图呈现对象分布与状态差异，右侧侧栏负责解释图例规则、状态语义和当前选中对象的详细信息。</p>
+        </div>
+        <div class="map-workbench__actions">
+          <span class="entity-pill">点位总数 {{ overview.total }}</span>
+          <span class="entity-pill">当前焦点 {{ overview.activePointName }}</span>
+        </div>
+      </header>
+
+      <div class="map-workbench__body">
+        <div class="map-stage">
+          <div class="map-stage__overlay">
+            <span>空间分布闭环</span>
+            <strong>点击地图点位查看右侧详情</strong>
+          </div>
           <div ref="mapRef" class="map-canvas"></div>
         </div>
 
-        <div class="map-sidebar">
-          <SideInfoPanel title="空间态势总览" subtitle="地图摘要">
+        <div class="map-side-stack">
+          <SideInfoPanel title="图例与状态说明" subtitle="空间语义规则">
             <template #meta>
-              <div class="map-summary-grid">
-                <div>
-                  <span>工程点位</span>
-                  <strong>{{ engineeringCount }}</strong>
+              <div class="entity-facts-grid entity-facts-grid--2 map-legend-meta">
+                <div class="entity-facts-grid__item">
+                  <span>预警点位</span>
+                  <strong>{{ overview.warningCount }}</strong>
                 </div>
-                <div>
-                  <span>站点点位</span>
-                  <strong>{{ stationCount }}</strong>
+                <div class="entity-facts-grid__item">
+                  <span>离线点位</span>
+                  <strong>{{ overview.offlineCount }}</strong>
                 </div>
               </div>
             </template>
             <ul class="legend-list">
-              <li><i class="legend-dot legend-dot--reservoir"></i> 水库点位</li>
-              <li><i class="legend-dot legend-dot--river"></i> 河道点位</li>
+              <li><i class="legend-dot legend-dot--reservoir"></i> 水库工程</li>
+              <li><i class="legend-dot legend-dot--river"></i> 河道工程</li>
               <li><i class="legend-dot legend-dot--station"></i> 监测站点</li>
               <li><i class="legend-dot legend-dot--warning"></i> 预警站点</li>
               <li><i class="legend-dot legend-dot--offline"></i> 离线站点</li>
@@ -30,43 +108,72 @@
           </SideInfoPanel>
 
           <SideInfoPanel
-            v-if="activePoint"
+            v-if="activePoint && pointInsight"
             :title="activePoint.name"
             :subtitle="pointTypeLabel(activePoint)"
           >
             <template #status>
-              <StatusTag
-                v-if="activePoint.status"
-                :category="activePoint.status === 'Offline' ? 'stationStatus' : 'riskStatus'"
-                :value="activePoint.status === 'Offline' ? activePoint.status : activePoint.status === 'Warning' ? 'Warning' : 'Normal'"
-              />
+              <StatusTag :category="activeStatus.category" :value="activeStatus.value" />
             </template>
             <template #meta>
-              <div class="detail-meta-grid">
-                <div>
-                  <span>坐标</span>
-                  <strong>{{ activePoint.latitude.toFixed(4) }}, {{ activePoint.longitude.toFixed(4) }}</strong>
+              <div :class="`entity-state-note entity-state-note--${pointInsight.tone}`">
+                <span class="entity-state-note__eyebrow">状态摘要</span>
+                <strong>{{ pointInsight.heading }}</strong>
+                <p>{{ pointInsight.description }}</p>
+              </div>
+              <div class="entity-facts-grid entity-facts-grid--2 map-point-meta">
+                <div class="entity-facts-grid__item">
+                  <span>对象来源</span>
+                  <strong>{{ sourceLabel(activePoint.source) }}</strong>
                 </div>
-                <div>
-                  <span>来源</span>
-                  <strong>{{ activePoint.source }}</strong>
+                <div class="entity-facts-grid__item">
+                  <span>对象类型</span>
+                  <strong>{{ pointTypeLabel(activePoint) }}</strong>
+                </div>
+                <div class="entity-facts-grid__item">
+                  <span>纬度</span>
+                  <strong>{{ activePoint.latitude.toFixed(4) }}</strong>
+                </div>
+                <div class="entity-facts-grid__item">
+                  <span>经度</span>
+                  <strong>{{ activePoint.longitude.toFixed(4) }}</strong>
                 </div>
               </div>
             </template>
-            <dl class="map-detail-list">
+            <dl class="entity-detail-list">
               <div>
-                <dt>说明</dt>
+                <dt>空间说明</dt>
                 <dd>{{ activePoint.description || '暂无说明' }}</dd>
               </div>
+              <div>
+                <dt>状态提示</dt>
+                <dd>{{ pointInsight.description }}</dd>
+              </div>
+              <div>
+                <dt>阅读建议</dt>
+                <dd>先结合主画布确认点位位置，再通过当前详情面板判断对象身份、状态语义与补充说明。</dd>
+              </div>
             </dl>
+            <template #footer>
+              <div class="entity-panel-footer">
+                <div>
+                  <span>当前选中对象</span>
+                  <strong>{{ overview.activePointName }}</strong>
+                </div>
+                <div>
+                  <span>状态判定</span>
+                  <strong>{{ activeStatusLabel }}</strong>
+                </div>
+              </div>
+            </template>
           </SideInfoPanel>
 
-          <section v-else class="map-sidebar__detail panel">
-            <el-empty description="点击地图中的点位查看详细信息" />
+          <section v-else class="map-empty panel">
+            <el-empty description="点击地图中的点位查看空间对象详情" />
           </section>
         </div>
       </div>
-    </PageCard>
+    </section>
   </div>
 </template>
 
@@ -74,11 +181,12 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import PageCard from '@/components/common/PageCard.vue'
+import MetricCard from '@/components/common/MetricCard.vue'
 import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
 import { visualizationTokens } from '@/theme/tokens'
 import { fetchMapPoints } from '@/api/modules/map'
+import { buildMapOverview, getMapPointInsight, pointTypeLabel } from './mapPresentation'
 import type { MapPoint } from '@/types/models'
 
 const mapRef = ref<HTMLDivElement | null>(null)
@@ -87,13 +195,29 @@ const activePoint = ref<MapPoint | null>(null)
 let mapInstance: L.Map | null = null
 let markerLayer: L.LayerGroup | null = null
 
-const engineeringCount = computed(() => points.value.filter((item) => item.source !== 'station').length)
-const stationCount = computed(() => points.value.filter((item) => item.source === 'station').length)
+const overview = computed(() => buildMapOverview(points.value, activePoint.value))
+const pointInsight = computed(() => (activePoint.value ? getMapPointInsight(activePoint.value) : null))
+const activeStatus = computed(() => {
+  if (activePoint.value?.status === 'Offline') {
+    return { category: 'stationStatus' as const, value: 'Offline' }
+  }
 
-function pointTypeLabel(point: MapPoint) {
-  if (point.source === 'reservoir') return '水库工程'
-  if (point.source === 'river') return '河道工程'
-  return `监测站点 / ${point.type}`
+  if (activePoint.value?.status === 'Warning') {
+    return { category: 'riskStatus' as const, value: 'Warning' }
+  }
+
+  return { category: 'riskStatus' as const, value: 'Normal' }
+})
+const activeStatusLabel = computed(() => {
+  if (activePoint.value?.status === 'Offline') return '离线'
+  if (activePoint.value?.status === 'Warning') return '预警'
+  return activePoint.value?.source === 'station' ? '正常' : '已纳入监测'
+})
+
+function sourceLabel(source: string) {
+  if (source === 'reservoir') return '水库'
+  if (source === 'river') return '河道'
+  return '站点'
 }
 
 function markerColor(point: MapPoint) {
@@ -163,115 +287,147 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-.map-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
-  gap: 18px;
+.map-page-shell {
+  gap: 24px;
 }
 
-.map-canvas-wrap {
-  padding: 12px;
+.map-summary-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.6fr);
+  gap: 24px;
+}
+
+.map-summary-layout__cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.map-summary-copy__title {
+  margin: 0 0 8px;
+  color: var(--wi-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.map-summary-copy p:last-child {
+  margin: 0;
+  color: var(--wi-text-secondary);
+  line-height: 1.8;
+}
+
+.map-workbench {
+  padding: 22px 24px;
+}
+
+.map-workbench__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--wi-app-border-subtle);
+}
+
+.map-workbench__copy h3 {
+  margin: 0;
+  color: var(--wi-text-primary);
+  font-size: 18px;
+}
+
+.map-workbench__copy p {
+  margin: 8px 0 0;
+  color: var(--wi-text-secondary);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.map-workbench__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.map-workbench__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.55fr);
+  gap: 22px;
+  align-items: flex-start;
+}
+
+.map-stage {
+  position: relative;
+  min-height: 660px;
+  padding: 14px;
   border-radius: 28px;
-  background: linear-gradient(180deg, var(--wi-surface-raised), var(--wi-surface-panel));
-  border: 1px solid var(--wi-border-default);
+  background: var(--wi-app-surface-secondary);
+  border: 1px solid var(--wi-app-border-subtle);
+}
+
+.map-stage__overlay {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: var(--wi-app-radius-md);
+  background: color-mix(in srgb, var(--wi-surface-panel) 92%, transparent);
+  border: 1px solid var(--wi-app-border-subtle);
+  box-shadow: var(--wi-shadow-sm);
+}
+
+.map-stage__overlay span,
+.map-stage__overlay strong {
+  display: block;
+}
+
+.map-stage__overlay span {
+  color: var(--wi-text-tertiary);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.map-stage__overlay strong {
+  color: var(--wi-text-primary);
+  font-size: 14px;
 }
 
 .map-canvas {
-  min-height: 560px;
+  min-height: 632px;
   border-radius: 22px;
   overflow: hidden;
 }
 
-.map-sidebar {
+.map-side-stack {
   display: grid;
   gap: 18px;
 }
 
-.map-sidebar__summary,
-.map-sidebar__detail {
-  padding: 22px;
-  background: var(--wi-map-panel-bg);
-}
-
-.map-sidebar__detail {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.map-summary-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-
-  div {
-    padding: 4px 0;
-  }
-
-  span {
-    display: block;
-    color: var(--wi-text-secondary);
-    font-size: 13px;
-  }
-
-  strong {
-    display: block;
-    margin-top: 10px;
-    font-size: 30px;
-    color: var(--wi-primary-active);
-  }
-}
-
-.detail-meta-grid {
-  display: grid;
-  gap: 14px;
-
-  span {
-    display: block;
-    color: var(--wi-text-tertiary);
-    font-size: 12px;
-  }
-
-  strong {
-    display: block;
-    margin-top: 6px;
-    color: var(--wi-text-primary);
-    font-size: 14px;
-    line-height: 1.7;
-  }
-}
-
-.map-detail-list {
-  display: grid;
-  gap: 16px;
-  margin: 0;
-
-  dt {
-    margin-bottom: 6px;
-    color: var(--wi-text-tertiary);
-    font-size: 12px;
-  }
-
-  dd {
-    margin: 0;
-    line-height: 1.8;
-    color: var(--wi-text-primary);
-  }
+.map-summary-meta,
+.map-legend-meta,
+.map-point-meta {
+  gap: 12px;
 }
 
 .legend-list {
-  margin: 18px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
   gap: 12px;
+}
 
-  li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--wi-text-secondary);
-  }
+.legend-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--wi-text-secondary);
 }
 
 .legend-dot {
@@ -301,13 +457,37 @@ onBeforeUnmount(() => {
   background: var(--wi-map-offline);
 }
 
-@media (max-width: 1180px) {
-  .map-layout {
+.map-empty {
+  padding: 22px;
+}
+
+@media (max-width: 1200px) {
+  .map-summary-layout,
+  .map-summary-layout__cards,
+  .map-workbench__body {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  .map-workbench {
+    padding: 18px;
+  }
+
+  .map-workbench__header {
+    flex-direction: column;
+  }
+
+  .map-workbench__actions {
+    justify-content: flex-start;
+  }
+
+  .map-stage {
+    min-height: 460px;
   }
 
   .map-canvas {
-    min-height: 420px;
+    min-height: 432px;
   }
 }
 </style>

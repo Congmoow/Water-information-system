@@ -60,7 +60,7 @@ const pageDescriptionMap: Record<string, string> = {
   monitoring: '按站点与时间维度查看监测数据和历史变化。',
   alarms: '聚焦预警分级、处置进度和告警闭环。',
   map: '从空间视角查看工程、站点和异常状态分布。',
-  userCenter: '查看当前账号信息与系统角色说明。'
+  userCenter: '查看当前账号资料、权限身份说明与会话入口。'
 }
 const currentDate = computed(() => dayjs().format('YYYY年MM月DD日 dddd'))
 const pageTitle = computed(() => String(route.meta.title ?? '水利信息管理系统'))
