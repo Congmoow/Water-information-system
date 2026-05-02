@@ -69,12 +69,12 @@ public class AlarmService : IAlarmService
         return MapDetail(entity);
     }
 
-    public async Task<AlarmDetailDto> HandleAsync(Guid id, AlarmHandleDto request, CancellationToken cancellationToken)
+    public async Task<AlarmDetailDto> HandleAsync(Guid id, AlarmHandleDto request, Guid handledByUserId, CancellationToken cancellationToken)
     {
         var entity = await GetRequiredAsync(id, cancellationToken);
         entity.Status = request.Status;
         entity.HandleRemark = request.HandleRemark;
-        entity.HandledByUserId = request.HandledByUserId;
+        entity.HandledByUserId = handledByUserId;
         entity.HandledAt = DateTime.UtcNow;
         entity.UpdatedAt = DateTime.UtcNow;
 

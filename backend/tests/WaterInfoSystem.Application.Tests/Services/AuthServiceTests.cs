@@ -1,6 +1,5 @@
 using WaterInfoSystem.Application.Contracts.Auth;
-using WaterInfoSystem.Application.Interfaces.Repositories;
-using WaterInfoSystem.Application.Interfaces.Security;
+using WaterInfoSystem.Application.Tests.Fakes;
 using WaterInfoSystem.Application.Services;
 using WaterInfoSystem.Domain.Entities;
 using WaterInfoSystem.Domain.Enums;
@@ -61,63 +60,5 @@ public class AuthServiceTests
 
         await Assert.ThrowsAsync<NotFoundException>(() =>
             service.GetProfileAsync(Guid.NewGuid(), CancellationToken.None));
-    }
-
-    private sealed class FakeUserRepository : IUserRepository
-    {
-        private readonly User? _user;
-
-        public FakeUserRepository(User? user)
-        {
-            _user = user;
-        }
-
-        public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_user?.Username == username ? _user : null);
-        }
-
-        public Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_user?.Id == userId ? _user : null);
-        }
-
-        public Task<bool> AnyAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_user is not null);
-        }
-
-        public Task AddRangeAsync(IEnumerable<User> users, CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
-    private sealed class FakePasswordHasher : IPasswordHasher
-    {
-        private readonly bool _isValid;
-
-        public FakePasswordHasher(bool isValid)
-        {
-            _isValid = isValid;
-        }
-
-        public string HashPassword(string password)
-        {
-            return password;
-        }
-
-        public bool Verify(string password, string passwordHash)
-        {
-            return _isValid;
-        }
-    }
-
-    private sealed class FakeTokenService : ITokenService
-    {
-        public (string Token, DateTime ExpiresAt) CreateToken(User user)
-        {
-            return ($"token-{user.Username}", new DateTime(2026, 4, 7, 9, 0, 0, DateTimeKind.Utc));
-        }
     }
 }

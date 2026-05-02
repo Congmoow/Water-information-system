@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { TOKEN_STORAGE_KEY, USER_STORAGE_KEY } from '@/constants/storage'
+import router from '@/router'
 
 // 扩展 AxiosRequestConfig 以支持跳过全局错误提示
 declare module 'axios' {
@@ -34,7 +35,7 @@ http.interceptors.response.use(
       localStorage.removeItem(TOKEN_STORAGE_KEY)
       localStorage.removeItem(USER_STORAGE_KEY)
       if (window.location.pathname !== '/login') {
-        window.location.href = '/login'
+        router.push('/login')
       }
       return Promise.reject(error)
     }

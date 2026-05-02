@@ -34,12 +34,25 @@ public class AlarmServiceTests
 
         var result = await service.HandleAsync(
             alarm.Id,
-            new AlarmHandleDto(AlarmStatus.Resolved, "verified and closed", handledBy),
+            new AlarmHandleDto(AlarmStatus.Resolved, "verified and closed"),
+            handledBy,
             CancellationToken.None);
 
         Assert.Equal(AlarmStatus.Resolved, result.Status);
         Assert.NotNull(result.HandledAt);
         Assert.Equal(handledBy, alarm.HandledByUserId);
         Assert.Equal("verified and closed", alarm.HandleRemark);
+    }
+
+    [Fact]
+    public async Task SearchAsync_ShouldReturnEmpty_WhenNoAlarms()
+    {
+        var service = new AlarmService(new FakeAlarmRepository(), new FakeStationRepository(), new FakeUnitOfWork());
+        var query = new AlarmQueryDto();
+
+        var result = await service.SearchAsync(query, CancellationToken.None);
+
+        Assert.Empty(result.Items);
+        Assert.Equal(0, result.Total);
     }
 }
