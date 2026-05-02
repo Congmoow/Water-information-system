@@ -4,11 +4,11 @@ public class JwtOptions
 {
     public const string SectionName = "Jwt";
 
-    public string Issuer { get; set; } = "WaterInfoSystem";
+    public string Issuer { get; set; } = string.Empty;
 
-    public string Audience { get; set; } = "WaterInfoSystemClient";
+    public string Audience { get; set; } = string.Empty;
 
-    public string SigningKey { get; set; } = "WaterInfoSystemSigningKey1234567890";
+    public string SigningKey { get; set; } = string.Empty;
 
     public int ExpiryMinutes { get; set; } = 480;
 }

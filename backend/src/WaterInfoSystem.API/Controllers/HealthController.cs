@@ -15,7 +15,7 @@ public class HealthController : ControllerBase
         return Ok(ApiResponse<object>.Success(new
         {
             status = "ok",
-            timestamp = DateTime.Now
+            timestamp = DateTime.UtcNow
         }));
     }
 }

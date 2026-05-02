@@ -73,9 +73,4 @@ public class MonitoringRepository : IMonitoringRepository
     {
         await _dbContext.MonitoringDatas.AddAsync(monitoringData, cancellationToken);
     }
-
-    public Task SaveChangesAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
-    }
 }

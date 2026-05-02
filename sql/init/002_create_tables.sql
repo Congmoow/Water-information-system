@@ -36,8 +36,8 @@ BEGIN
         [Location] NVARCHAR(150) NOT NULL,
         [Capacity] DECIMAL(18, 2) NOT NULL,
         [ManagementUnit] NVARCHAR(150) NOT NULL,
-        [Latitude] FLOAT NOT NULL,
-        [Longitude] FLOAT NOT NULL,
+        [Latitude] DECIMAL(9, 6) NOT NULL,
+        [Longitude] DECIMAL(9, 6) NOT NULL,
         [Description] NVARCHAR(500) NOT NULL,
         [CreatedAt] DATETIME2(7) NOT NULL,
         [UpdatedAt] DATETIME2(7) NOT NULL
@@ -53,8 +53,8 @@ BEGIN
         [Name] NVARCHAR(100) NOT NULL,
         [Length] DECIMAL(18, 2) NOT NULL,
         [Basin] NVARCHAR(100) NOT NULL,
-        [Latitude] FLOAT NOT NULL,
-        [Longitude] FLOAT NOT NULL,
+        [Latitude] DECIMAL(9, 6) NOT NULL,
+        [Longitude] DECIMAL(9, 6) NOT NULL,
         [Description] NVARCHAR(500) NOT NULL,
         [CreatedAt] DATETIME2(7) NOT NULL,
         [UpdatedAt] DATETIME2(7) NOT NULL
@@ -69,8 +69,8 @@ BEGIN
         [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
         [Name] NVARCHAR(100) NOT NULL,
         [Type] NVARCHAR(30) NOT NULL,
-        [Longitude] FLOAT NOT NULL,
-        [Latitude] FLOAT NOT NULL,
+        [Longitude] DECIMAL(9, 6) NOT NULL,
+        [Latitude] DECIMAL(9, 6) NOT NULL,
         [Status] NVARCHAR(30) NOT NULL,
         [WarningThreshold] DECIMAL(18, 2) NOT NULL,
         [CriticalThreshold] DECIMAL(18, 2) NOT NULL,
@@ -132,11 +132,14 @@ BEGIN
         CONSTRAINT [FK_AlarmRecords_Stations_StationId]
             FOREIGN KEY ([StationId]) REFERENCES [dbo].[Stations]([Id]) ON DELETE NO ACTION,
         CONSTRAINT [FK_AlarmRecords_MonitoringDatas_MonitoringDataId]
-            FOREIGN KEY ([MonitoringDataId]) REFERENCES [dbo].[MonitoringDatas]([Id]) ON DELETE NO ACTION
+            FOREIGN KEY ([MonitoringDataId]) REFERENCES [dbo].[MonitoringDatas]([Id]) ON DELETE NO ACTION,
+        CONSTRAINT [FK_AlarmRecords_Users]
+            FOREIGN KEY ([HandledByUserId]) REFERENCES [dbo].[Users]([Id]) ON DELETE NO ACTION
     );
 
     CREATE INDEX [IX_AlarmRecords_StationId] ON [dbo].[AlarmRecords]([StationId]);
     CREATE INDEX [IX_AlarmRecords_MonitoringDataId] ON [dbo].[AlarmRecords]([MonitoringDataId]);
+    CREATE INDEX [IX_AlarmRecords_HandledByUserId] ON [dbo].[AlarmRecords]([HandledByUserId]);
 END;
 GO
 

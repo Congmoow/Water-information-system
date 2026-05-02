@@ -5,7 +5,11 @@
       <AppHeader />
       <main class="layout-content">
         <div class="layout-content__inner">
-          <router-view />
+          <router-view v-slot="{ Component }">
+            <transition name="page" mode="out-in">
+              <component :is="Component" />
+            </transition>
+          </router-view>
         </div>
       </main>
     </div>
@@ -48,7 +52,8 @@ import SidebarNav from '@/layout/components/SidebarNav.vue'
   min-height: 100%;
   max-width: var(--wi-app-content-max-width);
   margin: 0 auto;
-  padding-top: 20px;
+  padding-top: var(--wi-space-4, 16px);
+  padding-bottom: var(--wi-space-2, 8px);
 }
 
 @media (max-width: 1080px) {

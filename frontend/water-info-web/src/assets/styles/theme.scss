@@ -1,306 +1,63 @@
+/*
+ * 主题变量：非颜色部分。
+ * 颜色 CSS 变量由 src/theme/applyCssVariables.ts 从 tokens.ts 唯一生成，
+ * 在 main.ts 中 Vue 挂载前同步写入 :root。
+ */
 :root {
   color-scheme: light;
 
-  --wi-color-brand-50: #eef5fb;
-  --wi-color-brand-100: #d9e9f7;
-  --wi-color-brand-200: #b8d4ee;
-  --wi-color-brand-300: #8db8e2;
-  --wi-color-brand-400: #5d96d2;
-  --wi-color-brand-500: #2f7dc1;
-  --wi-color-brand-600: #1a6fb5;
-  --wi-color-brand-700: #155b95;
-  --wi-color-brand-800: #124a79;
-  --wi-color-brand-900: #103b61;
-
-  --wi-color-neutral-0: #ffffff;
-  --wi-color-neutral-50: #f7fafc;
-  --wi-color-neutral-100: #f1f5f9;
-  --wi-color-neutral-200: #e2e8f0;
-  --wi-color-neutral-300: #cbd5e1;
-  --wi-color-neutral-400: #94a3b8;
-  --wi-color-neutral-500: #64748b;
-  --wi-color-neutral-600: #475569;
-  --wi-color-neutral-700: #334155;
-  --wi-color-neutral-800: #1f2937;
-  --wi-color-neutral-900: #0f172a;
-  --wi-color-neutral-950: #0a1220;
-
-  --wi-color-accent-100: #f6ead0;
-  --wi-color-accent-200: #ecd7aa;
-  --wi-color-accent-300: #dbbc74;
-  --wi-color-accent-400: #c99b43;
-  --wi-color-accent-500: #b9852f;
-  --wi-color-accent-600: #966a26;
-  --wi-color-accent-700: #72501f;
-
-  --wi-color-success-100: #dcf4e7;
-  --wi-color-success-500: #1f8a5b;
-  --wi-color-success-600: #176c47;
-
-  --wi-color-warning-100: #fce9cb;
-  --wi-color-warning-500: #c97d1f;
-  --wi-color-warning-600: #a46116;
-
-  --wi-color-danger-100: #fde2e2;
-  --wi-color-danger-500: #c84b4b;
-  --wi-color-danger-600: #a13c3c;
-
-  --wi-color-info-100: #ddeff7;
-  --wi-color-info-500: #4e7a95;
-  --wi-color-info-600: #3f6278;
-
-  --wi-bg-base: #f3f7fc;
-  --wi-bg-subtle: var(--wi-color-neutral-50);
-  --wi-bg-muted: #eaf1f8;
-
-  --wi-surface-raised: rgba(255, 255, 255, 0.72);
-  --wi-surface-panel: rgba(255, 255, 255, 0.92);
-  --wi-surface-overlay: var(--wi-color-neutral-0);
-  --wi-surface-strong: #fbfdff;
-  --wi-surface-inverse: rgba(26, 54, 93, 0.94);
-  --wi-surface-inverse-strong: #0e1e38;
-  --wi-surface-inverse-soft: rgba(247, 251, 253, 0.1);
-  --wi-surface-inverse-muted: rgba(247, 251, 253, 0.14);
-
-  --wi-text-primary: #183247;
-  --wi-text-secondary: #486276;
-  --wi-text-tertiary: #6c8192;
-  --wi-text-disabled: var(--wi-color-neutral-400);
-  --wi-text-inverse-primary: #eef5fb;
-  --wi-text-inverse-secondary: rgba(217, 233, 247, 0.78);
-
-  --wi-decorative-alpha-accent-glow-subtle: 0.08;
-  --wi-decorative-alpha-hero-overlay-soft: 0.1;
-  --wi-decorative-alpha-hero-overlay-medium: 0.15;
-  --wi-decorative-alpha-brand-glow: 0.18;
-  --wi-decorative-alpha-hero-overlay-strong: 0.2;
-  --wi-decorative-alpha-brand-glow-strong: 0.22;
-  --wi-decorative-alpha-hero-particle: 0.3;
-
-  --wi-gradient-page-background:
-    radial-gradient(circle at top left, rgba(26, 111, 181, 0.1), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(185, 133, 47, 0.05), transparent 22%),
-    linear-gradient(180deg, var(--wi-bg-subtle) 0%, var(--wi-bg-base) 44%, #edf4fa 100%);
-  --wi-gradient-inverse-hero: linear-gradient(135deg, var(--wi-surface-inverse-strong), var(--wi-surface-inverse));
-
-  --wi-overlay-decorative-strong: rgba(247, 251, 253, var(--wi-decorative-alpha-hero-overlay-strong));
-  --wi-overlay-decorative-medium: rgba(247, 251, 253, var(--wi-decorative-alpha-hero-overlay-medium));
-  --wi-overlay-decorative-soft: rgba(247, 251, 253, var(--wi-decorative-alpha-hero-overlay-soft));
-
-  --wi-glow-brand: rgba(93, 150, 210, var(--wi-decorative-alpha-brand-glow));
-  --wi-glow-brand-strong: rgba(47, 125, 193, var(--wi-decorative-alpha-brand-glow-strong));
-  --wi-glow-accent-subtle: rgba(201, 155, 67, var(--wi-decorative-alpha-accent-glow-subtle));
-
-  --wi-shadow-emphasis: 0 10px 24px rgba(26, 111, 181, 0.18);
-  --wi-shadow-inverse-strong: 0 10px 24px rgba(14, 30, 56, 0.32);
-  --wi-shadow-card: 0 18px 40px rgba(15, 23, 42, 0.08);
-  --wi-shadow-overlay: 0 24px 64px rgba(15, 23, 42, 0.14);
-
-  --wi-auth-hero-background: linear-gradient(135deg, #0e1e38 0%, #1a365d 50%, #2a5298 100%);
-  --wi-auth-hero-decorative-badge-bg: rgba(247, 251, 253, 0.1);
-  --wi-auth-hero-decorative-badge-border: rgba(217, 233, 247, 0.2);
-  --wi-auth-hero-decorative-title-shadow: 0 4px 12px rgba(10, 18, 32, 0.28);
-  --wi-auth-hero-overlay-strong: var(--wi-overlay-decorative-strong);
-  --wi-auth-hero-overlay-medium: var(--wi-overlay-decorative-medium);
-  --wi-auth-hero-overlay-soft: var(--wi-overlay-decorative-soft);
-  --wi-auth-hero-decorative-particle: rgba(247, 251, 253, var(--wi-decorative-alpha-hero-particle));
-  --wi-auth-glass-card-bg: rgba(255, 255, 255, 0.95);
-  --wi-auth-glass-card-shadow: 0 20px 60px rgba(10, 18, 32, 0.3);
-  --wi-auth-input-background: #f8fafc;
-  --wi-auth-input-focus-shadow: 0 0 0 3px rgba(26, 111, 181, 0.12);
-
-  --wi-auth-hero-bg: var(--wi-auth-hero-background);
-  --wi-auth-hero-badge-bg: var(--wi-auth-hero-decorative-badge-bg);
-  --wi-auth-hero-badge-border: var(--wi-auth-hero-decorative-badge-border);
-  --wi-auth-hero-title-shadow: var(--wi-auth-hero-decorative-title-shadow);
-  --wi-auth-hero-particle: var(--wi-auth-hero-decorative-particle);
-  --wi-auth-card-bg: var(--wi-auth-glass-card-bg);
-  --wi-auth-card-shadow: var(--wi-auth-glass-card-shadow);
-  --wi-auth-input-bg: var(--wi-auth-input-background);
-
-  --wi-app-bg: #f5f8fb;
-  --wi-app-bg-subtle: #eef3f8;
-  --wi-app-surface: #ffffff;
-  --wi-app-surface-secondary: #f8fbfd;
-  --wi-app-surface-tertiary: #f3f7fb;
-  --wi-app-border-subtle: rgba(72, 98, 118, 0.08);
-  --wi-app-border: rgba(72, 98, 118, 0.12);
-  --wi-app-border-strong: rgba(72, 98, 118, 0.18);
-  --wi-app-shadow-sm: 0 8px 20px rgba(15, 23, 42, 0.04);
-  --wi-app-shadow-md: 0 14px 32px rgba(15, 23, 42, 0.06);
-  --wi-app-sidebar-bg: #101b2d;
-  --wi-app-sidebar-surface: rgba(247, 251, 253, 0.06);
-  --wi-app-sidebar-surface-hover: rgba(247, 251, 253, 0.08);
-  --wi-app-sidebar-surface-active: rgba(247, 251, 253, 0.12);
-  --wi-app-sidebar-border: rgba(217, 233, 247, 0.12);
-  --wi-app-sidebar-text-secondary: rgba(217, 233, 247, 0.72);
-
-  --wi-app-sidebar-width: 248px;
+  --wi-app-sidebar-width: 256px;
   --wi-app-content-max-width: 1440px;
   --wi-app-page-padding-inline: 28px;
-  --wi-app-page-padding-block: 24px;
-  --wi-app-header-min-height: 92px;
-  --wi-app-radius-lg: 20px;
-  --wi-app-radius-md: 16px;
-  --wi-app-radius-sm: 12px;
+  --wi-app-page-padding-block: 28px;
+  --wi-app-header-min-height: 80px;
+  --wi-app-radius-lg: 18px;
+  --wi-app-radius-md: 14px;
+  --wi-app-radius-sm: 10px;
 
-  --wi-border-subtle: rgba(48, 79, 118, 0.08);
-  --wi-border-default: rgba(48, 79, 118, 0.14);
-  --wi-border-strong: rgba(48, 79, 118, 0.22);
-  --wi-border-inverse: rgba(217, 233, 247, 0.16);
+  --wi-font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
 
-  --wi-primary: var(--wi-color-brand-600);
-  --wi-primary-hover: var(--wi-color-brand-500);
-  --wi-primary-active: var(--wi-color-brand-700);
-  --wi-primary-soft: var(--wi-color-brand-100);
-  --wi-primary-contrast: var(--wi-color-neutral-0);
+  /* Design §7.2：页面与区块字阶 */
+  --wi-font-size-page-title: 28px;
+  --wi-font-size-section-title: 18px;
+  --wi-font-size-card-title: 16px;
+  --wi-font-weight-page-title: 600;
+  --wi-font-weight-section-title: 600;
+  --wi-font-weight-card-title: 600;
 
-  --wi-accent: var(--wi-color-accent-400);
-  --wi-accent-soft: var(--wi-color-accent-100);
+  /* === Framer Motion System === */
+  --wi-motion-duration-instant: 0.08s;
+  --wi-motion-duration-fast: 0.15s;
+  --wi-motion-duration-normal: 0.25s;
+  --wi-motion-duration-slow: 0.4s;
+  --wi-motion-duration-slower: 0.6s;
 
-  --wi-success: var(--wi-color-success-500);
-  --wi-success-soft: var(--wi-color-success-100);
-  --wi-warning: var(--wi-color-warning-500);
-  --wi-warning-soft: var(--wi-color-warning-100);
-  --wi-danger: var(--wi-color-danger-500);
-  --wi-danger-soft: var(--wi-color-danger-100);
-  --wi-info: var(--wi-color-info-500);
-  --wi-info-soft: var(--wi-color-info-100);
+  --wi-motion-ease-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --wi-motion-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --wi-motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --wi-motion-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --wi-motion-ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
+  --wi-motion-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --wi-motion-ease-enter: cubic-bezier(0, 0, 0.2, 1);
 
-  --wi-focus-ring: rgba(26, 111, 181, 0.22);
-  --wi-disabled-bg: #e8eef4;
-  --wi-disabled-border: #d7e0e8;
-  --wi-selection-bg: rgba(26, 111, 181, 0.18);
-  --wi-emphasis-outline: rgba(26, 111, 181, 0.08);
-  --wi-interactive-soft-hover: rgba(26, 111, 181, 0.04);
-  --wi-interactive-soft-active: rgba(26, 111, 181, 0.06);
-  --wi-shadow-primary: var(--wi-shadow-emphasis);
-  --wi-ring-accent: 0 0 0 3px rgba(201, 155, 67, 0.18);
+  /* === Framer Blue Accent === */
+  --wi-framer-blue: #0066ff;
+  --wi-framer-blue-dark: #0052cc;
+  --wi-framer-blue-light: #3385ff;
+  --wi-framer-glow: rgba(0, 102, 255, 0.3);
+  --wi-framer-glow-strong: rgba(0, 102, 255, 0.45);
 
-  --wi-chart-axis: rgba(72, 98, 118, 0.26);
-  --wi-chart-grid: rgba(72, 98, 118, 0.12);
-  --wi-chart-text: var(--wi-text-secondary);
-  --wi-chart-comparison-primary: var(--wi-primary);
-  --wi-chart-comparison-secondary: var(--wi-color-brand-400);
-  --wi-chart-comparison-secondary-muted: #7d92a5;
-  --wi-chart-trend-primary-line: var(--wi-chart-comparison-primary);
-  --wi-chart-trend-primary-area: rgba(26, 111, 181, 0.16);
-  --wi-chart-trend-secondary-line: var(--wi-chart-comparison-secondary);
-  --wi-chart-trend-secondary-area: rgba(93, 150, 210, 0.16);
-  --wi-chart-status-distribution-1: var(--wi-success);
-  --wi-chart-status-distribution-2: var(--wi-info);
-  --wi-chart-status-distribution-3: var(--wi-warning);
-  --wi-chart-status-distribution-4: var(--wi-danger);
-  --wi-chart-category-sequential-1: var(--wi-primary);
-  --wi-chart-category-sequential-2: var(--wi-color-brand-500);
-  --wi-chart-category-sequential-3: var(--wi-color-brand-400);
-  --wi-chart-category-sequential-4: var(--wi-color-brand-300);
-  --wi-chart-category-sequential-5: #7d92a5;
-  --wi-chart-series-primary: var(--wi-chart-comparison-primary);
-  --wi-chart-series-secondary: var(--wi-chart-comparison-secondary);
-  --wi-chart-series-accent: #8db8e2;
-  --wi-chart-series-neutral: var(--wi-chart-comparison-secondary-muted);
-  --wi-chart-series-success: var(--wi-success);
-  --wi-chart-series-info: var(--wi-info);
-  --wi-chart-series-warning: var(--wi-warning);
-  --wi-chart-series-danger: var(--wi-danger);
+  /* === Design §8.2：间距刻度 4–32 === */
+  --wi-space-1: 4px;
+  --wi-space-2: 8px;
+  --wi-space-3: 12px;
+  --wi-space-4: 16px;
+  --wi-space-5: 24px;
+  --wi-space-6: 32px;
 
-  --wi-map-engineering: var(--wi-primary);
-  --wi-map-river: #4c89ca;
-  --wi-map-station: #78abd9;
-  --wi-map-warning: var(--wi-warning);
-  --wi-map-offline: var(--wi-info);
-  --wi-map-marker-stroke: #ffffff;
-  --wi-map-panel-bg: rgba(255, 255, 255, 0.88);
-
-  --wi-bg: var(--wi-bg-base);
-  --wi-panel: var(--wi-surface-panel);
-  --wi-panel-strong: var(--wi-surface-overlay);
-  --wi-text: var(--wi-text-primary);
-  --wi-text-soft: var(--wi-text-secondary);
-  --wi-primary-strong: var(--wi-primary-active);
-  --wi-border: var(--wi-border-default);
-  --wi-shadow: var(--wi-shadow-card);
-
-  --el-color-primary: var(--wi-primary);
-  --el-color-primary-dark-2: var(--wi-primary-active);
-  --el-color-primary-light-3: var(--wi-color-brand-400);
-  --el-color-primary-light-5: var(--wi-color-brand-300);
-  --el-color-primary-light-7: var(--wi-color-brand-200);
-  --el-color-primary-light-8: var(--wi-color-brand-100);
-  --el-color-primary-light-9: var(--wi-color-brand-50);
-
-  --el-color-success: var(--wi-success);
-  --el-color-success-dark-2: var(--wi-color-success-600);
-  --el-color-success-light-3: #7cb79b;
-  --el-color-success-light-5: #a5d2ba;
-  --el-color-success-light-7: #c7e5d4;
-  --el-color-success-light-8: #d8efe2;
-  --el-color-success-light-9: var(--wi-success-soft);
-
-  --el-color-warning: var(--wi-warning);
-  --el-color-warning-dark-2: var(--wi-color-warning-600);
-  --el-color-warning-light-3: #d7a15b;
-  --el-color-warning-light-5: #e3bb84;
-  --el-color-warning-light-7: #efd4ad;
-  --el-color-warning-light-8: #f5e0c0;
-  --el-color-warning-light-9: var(--wi-warning-soft);
-
-  --el-color-danger: var(--wi-danger);
-  --el-color-danger-dark-2: var(--wi-color-danger-600);
-  --el-color-danger-light-3: #d98787;
-  --el-color-danger-light-5: #e4aaaa;
-  --el-color-danger-light-7: #efcccc;
-  --el-color-danger-light-8: #f5dddd;
-  --el-color-danger-light-9: var(--wi-danger-soft);
-
-  --el-color-info: var(--wi-info);
-  --el-color-info-dark-2: var(--wi-color-info-600);
-  --el-color-info-light-3: #7a9aad;
-  --el-color-info-light-5: #9db6c4;
-  --el-color-info-light-7: #c1d3dd;
-  --el-color-info-light-8: #d2e0e8;
-  --el-color-info-light-9: var(--wi-info-soft);
-
-  --el-bg-color: var(--wi-surface-overlay);
-  --el-bg-color-page: var(--wi-bg-base);
-  --el-bg-color-overlay: var(--wi-surface-overlay);
-  --el-fill-color-blank: var(--wi-surface-overlay);
-  --el-fill-color-light: var(--wi-bg-muted);
-  --el-fill-color-lighter: rgba(234, 241, 248, 0.72);
-  --el-fill-color-extra-light: rgba(241, 245, 249, 0.82);
-  --el-fill-color-dark: rgba(24, 50, 71, 0.08);
-  --el-fill-color-darker: rgba(24, 50, 71, 0.14);
-
-  --el-text-color-primary: var(--wi-text-primary);
-  --el-text-color-regular: var(--wi-text-secondary);
-  --el-text-color-secondary: var(--wi-text-tertiary);
-  --el-text-color-placeholder: var(--wi-text-tertiary);
-  --el-text-color-disabled: var(--wi-text-disabled);
-
-  --el-border-color: var(--wi-border-default);
-  --el-border-color-light: var(--wi-border-subtle);
-  --el-border-color-lighter: rgba(48, 79, 118, 0.06);
-  --el-border-color-extra-light: rgba(48, 79, 118, 0.04);
-  --el-border-color-dark: var(--wi-border-strong);
-  --el-border-color-darker: rgba(51, 84, 106, 0.28);
-
-  --el-box-shadow: var(--wi-shadow-overlay);
-  --el-box-shadow-light: var(--wi-shadow-card);
-  --el-mask-color: rgba(15, 23, 42, 0.48);
-  --el-mask-color-extra-light: rgba(15, 23, 42, 0.24);
-
-  --el-disabled-bg-color: var(--wi-disabled-bg);
-  --el-disabled-border-color: var(--wi-disabled-border);
-  --el-disabled-text-color: var(--wi-text-disabled);
-
-  --el-border-radius-base: 14px;
-  --el-border-radius-small: 12px;
-  --el-border-radius-round: 999px;
-}
-
-body {
-  margin: 0;
-  background: var(--wi-gradient-page-background);
-  color: var(--wi-text-primary);
+  /*
+   * 颜色相关变量（palette / semantic / chart / map / el-* 等）
+   * 由 applyCssVariables.ts 在运行时从 tokens.ts 写入。
+   * 此处不重复定义，避免与 tokens.ts 双重维护。
+   */
 }

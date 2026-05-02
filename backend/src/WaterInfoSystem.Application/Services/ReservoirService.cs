@@ -1,4 +1,5 @@
 using WaterInfoSystem.Application.Contracts.Reservoirs;
+using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Application.Interfaces.Services;
 using WaterInfoSystem.Domain.Entities;
@@ -10,10 +11,12 @@ namespace WaterInfoSystem.Application.Services;
 public class ReservoirService : IReservoirService
 {
     private readonly IReservoirRepository _reservoirRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ReservoirService(IReservoirRepository reservoirRepository)
+    public ReservoirService(IReservoirRepository reservoirRepository, IUnitOfWork unitOfWork)
     {
         _reservoirRepository = reservoirRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<PagedResult<ReservoirListItemDto>> SearchAsync(ReservoirQueryDto query, CancellationToken cancellationToken)
@@ -32,11 +35,11 @@ public class ReservoirService : IReservoirService
     {
         var entity = new Reservoir();
         ApplyChanges(entity, request);
-        entity.CreatedAt = DateTime.Now;
-        entity.UpdatedAt = DateTime.Now;
+        entity.CreatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = DateTime.UtcNow;
 
         await _reservoirRepository.AddAsync(entity, cancellationToken);
-        await _reservoirRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return MapDetail(entity);
     }
 
@@ -44,9 +47,9 @@ public class ReservoirService : IReservoirService
     {
         var entity = await GetRequiredEntityAsync(id, cancellationToken);
         ApplyChanges(entity, request);
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
 
-        await _reservoirRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return MapDetail(entity);
     }
 
@@ -54,7 +57,7 @@ public class ReservoirService : IReservoirService
     {
         var entity = await GetRequiredEntityAsync(id, cancellationToken);
         await _reservoirRepository.DeleteAsync(entity, cancellationToken);
-        await _reservoirRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     private async Task<Reservoir> GetRequiredEntityAsync(Guid id, CancellationToken cancellationToken)

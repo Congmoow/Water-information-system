@@ -1,4 +1,5 @@
 using WaterInfoSystem.Application.Contracts.Stations;
+using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Application.Interfaces.Services;
 using WaterInfoSystem.Domain.Entities;
@@ -12,15 +13,18 @@ public class StationService : IStationService
     private readonly IStationRepository _stationRepository;
     private readonly IReservoirRepository _reservoirRepository;
     private readonly IRiverRepository _riverRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public StationService(
         IStationRepository stationRepository,
         IReservoirRepository reservoirRepository,
-        IRiverRepository riverRepository)
+        IRiverRepository riverRepository,
+        IUnitOfWork unitOfWork)
     {
         _stationRepository = stationRepository;
         _reservoirRepository = reservoirRepository;
         _riverRepository = riverRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<PagedResult<StationListItemDto>> SearchAsync(StationQueryDto query, CancellationToken cancellationToken)
@@ -46,17 +50,17 @@ public class StationService : IStationService
     {
         var entity = new Station
         {
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow
         };
 
         var parents = await ResolveParentsAsync(request, cancellationToken);
         ApplyChanges(entity, request);
         entity.Reservoir = parents.Reservoir;
         entity.River = parents.River;
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
 
         await _stationRepository.AddAsync(entity, cancellationToken);
-        await _stationRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var created = await GetRequiredEntityAsync(entity.Id, cancellationToken);
         return MapDetail(created);
@@ -69,9 +73,9 @@ public class StationService : IStationService
         ApplyChanges(entity, request);
         entity.Reservoir = parents.Reservoir;
         entity.River = parents.River;
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
 
-        await _stationRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return MapDetail(entity);
     }
 
@@ -79,7 +83,7 @@ public class StationService : IStationService
     {
         var entity = await GetRequiredEntityAsync(id, cancellationToken);
         await _stationRepository.DeleteAsync(entity, cancellationToken);
-        await _stationRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     private async Task<(Reservoir? Reservoir, River? River)> ResolveParentsAsync(StationUpsertDto request, CancellationToken cancellationToken)
@@ -139,10 +143,10 @@ public class StationService : IStationService
         return new StationListItemDto(
             entity.Id,
             entity.Name,
-            entity.Type.ToString(),
+            entity.Type,
             entity.Longitude,
             entity.Latitude,
-            entity.Status.ToString(),
+            entity.Status,
             entity.WarningThreshold,
             entity.CriticalThreshold,
             entity.Description,
@@ -156,10 +160,10 @@ public class StationService : IStationService
         return new StationDetailDto(
             entity.Id,
             entity.Name,
-            entity.Type.ToString(),
+            entity.Type,
             entity.Longitude,
             entity.Latitude,
-            entity.Status.ToString(),
+            entity.Status,
             entity.WarningThreshold,
             entity.CriticalThreshold,
             entity.Description,

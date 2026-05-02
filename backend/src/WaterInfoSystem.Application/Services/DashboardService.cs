@@ -30,17 +30,36 @@ public class DashboardService : IDashboardService
 
     public async Task<DashboardOverviewDto> GetOverviewAsync(CancellationToken cancellationToken)
     {
-        var reservoirCount = await _reservoirRepository.CountAsync(cancellationToken);
-        var riverCount = await _riverRepository.CountAsync(cancellationToken);
-        var stationCount = await _stationRepository.CountAsync(cancellationToken);
-        var stationItems = await _stationRepository.GetAllAsync(cancellationToken);
-        var todayAlarmItems = await _alarmRepository.GetTriggeredOnDateAsync(DateOnly.FromDateTime(DateTime.Today), cancellationToken);
-        var recentAlarmItems = await _alarmRepository.GetRecentAsync(6, cancellationToken);
-        var waterLevelItems = await _monitoringRepository.GetRecentByTypeAsync(MonitoringDataType.WaterLevel, 14, cancellationToken);
-        var rainfallItems = await _monitoringRepository.GetRecentByTypeAsync(MonitoringDataType.Rainfall, 14, cancellationToken);
-        var infoAlarm = await _alarmRepository.SearchAsync(null, AlarmLevel.Info, null, null, null, 1, 1, cancellationToken);
-        var warningAlarm = await _alarmRepository.SearchAsync(null, AlarmLevel.Warning, null, null, null, 1, 1, cancellationToken);
-        var criticalAlarm = await _alarmRepository.SearchAsync(null, AlarmLevel.Critical, null, null, null, 1, 1, cancellationToken);
+        var reservoirCountTask = _reservoirRepository.CountAsync(cancellationToken);
+        var riverCountTask = _riverRepository.CountAsync(cancellationToken);
+        var stationCountTask = _stationRepository.CountAsync(cancellationToken);
+        var stationItemsTask = _stationRepository.GetAllAsync(cancellationToken);
+        var alarmLevelCountsTask = _alarmRepository.GetLevelCountsAsync(cancellationToken);
+        var todayAlarmItemsTask = _alarmRepository.GetTriggeredOnDateAsync(DateOnly.FromDateTime(DateTime.UtcNow.Date), cancellationToken);
+        var recentAlarmItemsTask = _alarmRepository.GetRecentAsync(6, cancellationToken);
+        var waterLevelItemsTask = _monitoringRepository.GetRecentByTypeAsync(MonitoringDataType.WaterLevel, 14, cancellationToken);
+        var rainfallItemsTask = _monitoringRepository.GetRecentByTypeAsync(MonitoringDataType.Rainfall, 14, cancellationToken);
+
+        await Task.WhenAll(
+            reservoirCountTask,
+            riverCountTask,
+            stationCountTask,
+            stationItemsTask,
+            alarmLevelCountsTask,
+            todayAlarmItemsTask,
+            recentAlarmItemsTask,
+            waterLevelItemsTask,
+            rainfallItemsTask);
+
+        var reservoirCount = reservoirCountTask.Result;
+        var riverCount = riverCountTask.Result;
+        var stationCount = stationCountTask.Result;
+        var stationItems = stationItemsTask.Result;
+        var alarmLevelCounts = alarmLevelCountsTask.Result;
+        var todayAlarmItems = todayAlarmItemsTask.Result;
+        var recentAlarmItems = recentAlarmItemsTask.Result;
+        var waterLevelItems = waterLevelItemsTask.Result;
+        var rainfallItems = rainfallItemsTask.Result;
 
         return new DashboardOverviewDto(
             reservoirCount,
@@ -50,11 +69,7 @@ public class DashboardService : IDashboardService
             todayAlarmItems.Count,
             BuildAverageTrend(waterLevelItems),
             BuildRainfallTrend(rainfallItems),
-            [
-                new CategoryCountDto("Info", infoAlarm.Total),
-                new CategoryCountDto("Warning", warningAlarm.Total),
-                new CategoryCountDto("Critical", criticalAlarm.Total)
-            ],
+            alarmLevelCounts.Select(x => new CategoryCountDto(x.Category, x.Count)).ToList(),
             [
                 new CategoryCountDto("Online", stationItems.Count(x => x.Status == StationStatus.Online)),
                 new CategoryCountDto("Offline", stationItems.Count(x => x.Status == StationStatus.Offline)),
@@ -86,8 +101,8 @@ public class DashboardService : IDashboardService
         return new RecentAlarmDto(
             entity.Id,
             entity.Station?.Name ?? "--",
-            entity.Level.ToString(),
-            entity.Status.ToString(),
+            entity.Level,
+            entity.Status,
             entity.Message,
             entity.TriggeredAt);
     }

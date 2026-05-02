@@ -1,4 +1,5 @@
 using WaterInfoSystem.Application.Contracts.Alarms;
+using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Application.Interfaces.Services;
 using WaterInfoSystem.Domain.Entities;
@@ -12,11 +13,13 @@ public class AlarmService : IAlarmService
 {
     private readonly IAlarmRepository _alarmRepository;
     private readonly IStationRepository _stationRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public AlarmService(IAlarmRepository alarmRepository, IStationRepository stationRepository)
+    public AlarmService(IAlarmRepository alarmRepository, IStationRepository stationRepository, IUnitOfWork unitOfWork)
     {
         _alarmRepository = alarmRepository;
         _stationRepository = stationRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<PagedResult<AlarmListItemDto>> SearchAsync(AlarmQueryDto query, CancellationToken cancellationToken)
@@ -57,12 +60,12 @@ public class AlarmService : IAlarmService
             Status = AlarmStatus.Pending,
             Message = request.Message,
             TriggeredAt = request.TriggeredAt,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         await _alarmRepository.AddAsync(entity, cancellationToken);
-        await _alarmRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return MapDetail(entity);
     }
 
@@ -72,10 +75,10 @@ public class AlarmService : IAlarmService
         entity.Status = request.Status;
         entity.HandleRemark = request.HandleRemark;
         entity.HandledByUserId = request.HandledByUserId;
-        entity.HandledAt = DateTime.Now;
-        entity.UpdatedAt = DateTime.Now;
+        entity.HandledAt = DateTime.UtcNow;
+        entity.UpdatedAt = DateTime.UtcNow;
 
-        await _alarmRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return MapDetail(entity);
     }
 
@@ -96,9 +99,9 @@ public class AlarmService : IAlarmService
             entity.Id,
             entity.StationId,
             entity.Station?.Name ?? "--",
-            entity.AlarmType.ToString(),
-            entity.Level.ToString(),
-            entity.Status.ToString(),
+            entity.AlarmType,
+            entity.Level,
+            entity.Status,
             entity.Message,
             entity.TriggeredAt,
             entity.HandledAt);
@@ -110,9 +113,9 @@ public class AlarmService : IAlarmService
             entity.Id,
             entity.StationId,
             entity.Station?.Name ?? "--",
-            entity.AlarmType.ToString(),
-            entity.Level.ToString(),
-            entity.Status.ToString(),
+            entity.AlarmType,
+            entity.Level,
+            entity.Status,
             entity.Message,
             entity.TriggeredAt,
             entity.HandledAt,

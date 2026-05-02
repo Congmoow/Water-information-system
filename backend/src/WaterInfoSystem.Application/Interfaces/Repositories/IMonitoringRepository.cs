@@ -17,6 +17,4 @@ public interface IMonitoringRepository
     Task<IReadOnlyList<MonitoringData>> GetRecentByTypeAsync(MonitoringDataType dataType, int take, CancellationToken cancellationToken);
 
     Task AddAsync(MonitoringData monitoringData, CancellationToken cancellationToken);
-
-    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -42,9 +42,10 @@ const pageDescription = computed(() => {
 <style scoped lang="scss">
 .app-header {
   flex-shrink: 0;
-  padding: 18px var(--wi-app-page-padding-inline) 18px;
-  background:
-    linear-gradient(180deg, var(--wi-app-bg) 0%, color-mix(in srgb, var(--wi-app-bg) 88%, transparent) 100%);
+  padding: var(--wi-space-5, 24px) var(--wi-app-page-padding-inline) var(--wi-space-3, 12px);
+  background: color-mix(in srgb, var(--wi-app-bg) 82%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .app-header__inner {
@@ -52,8 +53,9 @@ const pageDescription = computed(() => {
   max-width: var(--wi-app-content-max-width);
   min-height: var(--wi-app-header-min-height);
   margin: 0 auto;
-  padding: 0 0 18px;
+  padding: 0 0 var(--wi-space-4, 16px);
   border-bottom: 1px solid var(--wi-app-border-subtle);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 @media (max-width: 1080px) {

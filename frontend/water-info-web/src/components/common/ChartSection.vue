@@ -1,5 +1,5 @@
 <template>
-  <section class="chart-section panel">
+  <section class="chart-section panel scale-in">
     <header class="chart-section__header">
       <div class="chart-section__copy">
         <h3>{{ title }}</h3>
@@ -30,28 +30,38 @@ withDefaults(
 
 <style scoped lang="scss">
 .chart-section {
-  padding: 22px 24px;
+  padding: var(--wi-space-5, 24px) var(--wi-space-5, 24px);
+}
+
+.chart-section__header,
+.chart-section__body {
+  position: relative;
+  z-index: 1;
 }
 
 .chart-section__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: var(--wi-space-4, 16px);
+  margin-bottom: var(--wi-space-4, 16px);
+  padding-bottom: var(--wi-space-3, 12px);
+  border-bottom: 1px solid var(--wi-app-border-subtle);
 }
 
 .chart-section__copy h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--wi-font-size-section-title, 18px);
+  font-weight: var(--wi-font-weight-section-title, 600);
+  letter-spacing: -0.01em;
   color: var(--wi-text-primary);
 }
 
 .chart-section__copy p {
-  margin: 8px 0 0;
+  margin: var(--wi-space-2, 8px) 0 0;
   color: var(--wi-text-secondary);
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 .chart-section__actions {
@@ -64,7 +74,7 @@ withDefaults(
 
 @media (max-width: 960px) {
   .chart-section {
-    padding: 18px;
+    padding: var(--wi-space-4, 16px);
   }
 
   .chart-section__header {

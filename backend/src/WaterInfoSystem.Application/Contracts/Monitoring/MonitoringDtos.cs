@@ -21,7 +21,7 @@ public record MonitoringListItemDto(
     Guid Id,
     Guid StationId,
     string StationName,
-    string DataType,
+    MonitoringDataType DataType,
     decimal Value,
     DateTime CollectedAt,
     bool TriggeredAlarm,

@@ -25,6 +25,7 @@ const option = computed(() => ({
   },
   legend: {
     bottom: 0,
+    orient: 'horizontal',
     textStyle: {
       color: visualizationTokens.chart.text
     }
@@ -32,11 +33,19 @@ const option = computed(() => ({
   series: [
     {
       type: 'pie',
-      radius: ['54%', '74%'],
-      center: ['50%', '44%'],
+      radius: ['40%', '65%'],
+      center: ['50%', '45%'],
       label: {
-        formatter: '{b}\n{c}',
-        color: visualizationTokens.chart.text
+        show: true,
+        position: 'outside',
+        formatter: '{b}: {c}',
+        color: visualizationTokens.chart.text,
+        fontSize: 11
+      },
+      labelLine: {
+        show: true,
+        length: 8,
+        length2: 4
       },
       data: props.items.map((item, index) => ({
         name: item.name,

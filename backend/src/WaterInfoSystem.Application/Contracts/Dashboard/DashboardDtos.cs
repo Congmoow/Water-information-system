@@ -1,3 +1,5 @@
+using WaterInfoSystem.Domain.Enums;
+
 namespace WaterInfoSystem.Application.Contracts.Dashboard;
 
 public record TrendPointDto(string Label, decimal Value);
@@ -7,8 +9,8 @@ public record CategoryCountDto(string Name, int Value);
 public record RecentAlarmDto(
     Guid Id,
     string StationName,
-    string Level,
-    string Status,
+    AlarmLevel Level,
+    AlarmStatus Status,
     string Message,
     DateTime TriggeredAt);
 

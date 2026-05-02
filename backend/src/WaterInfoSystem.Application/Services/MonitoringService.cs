@@ -1,4 +1,5 @@
 using WaterInfoSystem.Application.Contracts.Monitoring;
+using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Application.Interfaces.Services;
 using WaterInfoSystem.Domain.Entities;
@@ -13,15 +14,18 @@ public class MonitoringService : IMonitoringService
     private readonly IMonitoringRepository _monitoringRepository;
     private readonly IStationRepository _stationRepository;
     private readonly IAlarmRepository _alarmRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public MonitoringService(
         IMonitoringRepository monitoringRepository,
         IStationRepository stationRepository,
-        IAlarmRepository alarmRepository)
+        IAlarmRepository alarmRepository,
+        IUnitOfWork unitOfWork)
     {
         _monitoringRepository = monitoringRepository;
         _stationRepository = stationRepository;
         _alarmRepository = alarmRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<PagedResult<MonitoringListItemDto>> SearchAsync(MonitoringQueryDto query, CancellationToken cancellationToken)
@@ -73,19 +77,19 @@ public class MonitoringService : IMonitoringService
             Value = request.Value,
             CollectedAt = request.CollectedAt,
             Remark = request.Remark,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         await _monitoringRepository.AddAsync(entity, cancellationToken);
 
         station.LastActiveAt = request.CollectedAt;
         station.Status = StationStatus.Online;
-        station.UpdatedAt = DateTime.Now;
+        station.UpdatedAt = DateTime.UtcNow;
 
         var (triggeredAlarm, alarmId, message) = await TryCreateThresholdAlarmAsync(station, entity, cancellationToken);
 
-        await _monitoringRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new MonitoringCreateResultDto(entity.Id, triggeredAlarm, alarmId, message);
     }
@@ -110,8 +114,8 @@ public class MonitoringService : IMonitoringService
             Status = AlarmStatus.Pending,
             Message = $"{station.Name}监测值 {entity.Value} 超过阈值 {threshold}",
             TriggeredAt = entity.CollectedAt,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         entity.AlarmRecords.Add(alarm);
@@ -143,7 +147,7 @@ public class MonitoringService : IMonitoringService
             entity.Id,
             entity.StationId,
             entity.Station?.Name ?? "--",
-            entity.DataType.ToString(),
+            entity.DataType,
             entity.Value,
             entity.CollectedAt,
             entity.AlarmRecords.Any(),

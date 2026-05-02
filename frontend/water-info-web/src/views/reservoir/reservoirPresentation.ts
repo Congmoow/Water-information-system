@@ -30,5 +30,9 @@ export function getReservoirPanelMeta(detail: ReservoirDetail) {
 }
 
 export function getReservoirFormSections() {
-  return ['基础信息', '空间信息', '补充说明']
+  return {
+    basic: { title: '基础信息', description: '定义名称、所在位置、容量和管理单位等核心资产属性。' },
+    spatial: { title: '空间信息', description: '维护资产空间坐标，保证对象在地图和档案中的位置一致。' },
+    supplement: { title: '补充说明', description: '补充说明资产用途、现场情况或维护备注。' }
+  } as const
 }

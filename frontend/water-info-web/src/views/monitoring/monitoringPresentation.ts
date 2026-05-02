@@ -68,6 +68,16 @@ export function buildMonitoringOverview(
   }
 }
 
-export function getMonitoringDialogSections() {
-  return ['采集信息', '监测数值', '补充说明']
+export interface MonitoringDialogSections {
+  collect: { title: string; description: string }
+  value: { title: string; description: string }
+  supplement: { title: string; description: string }
+}
+
+export function getMonitoringDialogSections(): MonitoringDialogSections {
+  return {
+    collect: { title: '采集信息', description: '定义采样归属的站点、监测指标与采集时间。' },
+    value: { title: '监测数值', description: '录入本次采样的监测值，系统会沿用当前阈值规则进行风险判断。' },
+    supplement: { title: '补充说明', description: '补充记录采样背景、现场情况或需要在历史记录中保留的说明。' }
+  }
 }

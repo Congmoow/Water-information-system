@@ -24,8 +24,7 @@ export const appMenus: AppMenuItem[] = [
   { path: '/rivers', name: 'rivers', title: '河道管理', icon: 'Guide' },
   { path: '/stations', name: 'stations', title: '站点管理', icon: 'Location' },
   { path: '/monitoring', name: 'monitoring', title: '监测数据', icon: 'Histogram' },
-  { path: '/alarms', name: 'alarms', title: '告警记录', icon: 'Bell' },
-  { path: '/map', name: 'map', title: '地图展示', icon: 'MapLocation' }
+  { path: '/alarms', name: 'alarms', title: '告警记录', icon: 'Bell' }
 ]
 
 export const settingsMenuGroups: SettingsMenuGroup[] = [

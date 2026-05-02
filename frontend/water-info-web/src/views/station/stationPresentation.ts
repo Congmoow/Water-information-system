@@ -40,6 +40,18 @@ export function getStationStatusInsight(detail: StationDetail) {
   }
 }
 
-export function getStationFormSections() {
-  return ['基础信息', '运行状态', '归属关系', '补充说明']
+export interface StationFormSections {
+  basic: { title: string; description: string }
+  status: { title: string; description: string }
+  affiliation: { title: string; description: string }
+  supplement: { title: string; description: string }
+}
+
+export function getStationFormSections(): StationFormSections {
+  return {
+    basic: { title: '基础信息', description: '定义站点名称与监测类型，作为对象档案的基础标识。' },
+    status: { title: '运行状态', description: '设置当前运行状态、最近活跃时间以及告警阈值。' },
+    affiliation: { title: '归属关系', description: '维护站点的空间坐标以及归属工程关系。' },
+    supplement: { title: '补充说明', description: '补充说明当前站点用途、现场情况或维护备注。' }
+  }
 }

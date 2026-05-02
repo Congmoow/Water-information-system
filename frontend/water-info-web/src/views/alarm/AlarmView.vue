@@ -1,63 +1,8 @@
 <template>
   <div class="page-shell">
-    <div class="alarm-summary-grid">
-      <div class="alarm-summary-grid__cards">
-        <MetricCard
-          label="当前告警总数"
-          :value="alarmSummary.total"
-          description="基于当前筛选条件返回的告警总量。"
-          highlight="筛选结果"
-          tone="info"
-        />
-        <MetricCard
-          label="待处理"
-          :value="alarmSummary.pendingCount"
-          description="包含待处理与处理中事件，需要继续跟踪。"
-          highlight="需介入"
-          tone="warning"
-        />
-        <MetricCard
-          label="严重告警"
-          :value="alarmSummary.criticalCount"
-          description="等级为严重的告警事件数量。"
-          highlight="高风险"
-          tone="danger"
-        />
-        <MetricCard
-          label="已解决"
-          :value="alarmSummary.resolvedCount"
-          description="当前结果中已形成处置结论的事件。"
-          highlight="已闭环"
-          tone="success"
-        />
-      </div>
-
-      <SideInfoPanel title="处置焦点" subtitle="告警中心摘要">
-        <template #status>
-          <StatusTag category="alarmStatus" :value="alarmSummary.pendingCount > 0 ? 'Pending' : 'Resolved'" />
-        </template>
-        <template #meta>
-          <div class="alarm-focus-meta">
-            <div>
-              <span>最近更新时间</span>
-              <strong>{{ formatDateTime(alarmSummary.latestTriggeredAt) }}</strong>
-            </div>
-            <div>
-              <span>当前关注</span>
-              <strong>{{ alarmSummary.pendingCount > 0 ? '优先处理待办告警' : '当前结果已闭环' }}</strong>
-            </div>
-          </div>
-        </template>
-        <div class="alarm-focus-copy">
-          <p class="alarm-focus-copy__title">本页阅读顺序</p>
-          <p>先看顶部摘要判断风险状态，再结合下方筛选和事件列表定位站点与处置进度。</p>
-        </div>
-      </SideInfoPanel>
-    </div>
-
     <TableSection
       title="告警事件列表"
-      description="展示超阈值告警记录，支持按等级与状态筛选，并在详情区查看处理上下文。"
+      description="支持按等级与状态筛选，查看处理上下文。"
       :loading="loading"
       :has-data="rows.length > 0"
       :total="total"
@@ -211,17 +156,15 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import dayjs from 'dayjs'
 import { ElMessage } from 'element-plus'
 import FilterBar from '@/components/common/FilterBar.vue'
-import MetricCard from '@/components/common/MetricCard.vue'
-import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
 import TableSection from '@/components/common/TableSection.vue'
 import { fetchAlarmDetail, fetchAlarms, handleAlarm } from '@/api/modules/alarm'
 import { useStationOptions } from '@/composables/useStationOptions'
 import { useAuthStore } from '@/stores/auth'
-import { buildAlarmSummary, getAlarmLifecycleMeta } from './alarmPresentation'
+import { getAlarmLifecycleMeta } from './alarmPresentation'
+import { formatDateTime } from '@/utils/format'
 import type { AlarmDetail, AlarmItem } from '@/types/models'
 
 const authStore = useAuthStore()
@@ -259,7 +202,6 @@ const statusOptions = [
   { label: '处理中', value: 'Processing' },
   { label: '已解决', value: 'Resolved' }
 ]
-const alarmSummary = computed(() => buildAlarmSummary(rows.value, total.value))
 const lifecycleMeta = computed(() => (detail.value ? getAlarmLifecycleMeta(detail.value) : null))
 
 function levelLabel(value: string) {
@@ -268,10 +210,6 @@ function levelLabel(value: string) {
 
 function statusLabel(value: string) {
   return statusOptions.find((item) => item.value === value)?.label ?? value
-}
-
-function formatDateTime(value?: string) {
-  return value ? dayjs(value).format('YYYY-MM-DD HH:mm') : '--'
 }
 
 function buildQueryParams() {
@@ -336,53 +274,6 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.alarm-summary-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.6fr);
-  gap: 24px;
-}
-
-.alarm-summary-grid__cards {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.alarm-focus-meta {
-  display: grid;
-  gap: 14px;
-
-  span,
-  strong {
-    display: block;
-  }
-
-  span {
-    color: var(--wi-text-tertiary);
-    font-size: 12px;
-  }
-
-  strong {
-    margin-top: 8px;
-    color: var(--wi-text-primary);
-    font-size: 15px;
-    line-height: 1.6;
-  }
-}
-
-.alarm-focus-copy__title {
-  margin: 0 0 8px;
-  color: var(--wi-text-primary);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.alarm-focus-copy p:last-child {
-  margin: 0;
-  color: var(--wi-text-secondary);
-  line-height: 1.8;
-}
-
 .alarm-lifecycle {
   padding: 16px;
   border-radius: var(--wi-app-radius-md);

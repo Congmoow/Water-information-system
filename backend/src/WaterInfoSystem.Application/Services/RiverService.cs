@@ -1,4 +1,5 @@
 using WaterInfoSystem.Application.Contracts.Rivers;
+using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Application.Interfaces.Services;
 using WaterInfoSystem.Domain.Entities;
@@ -10,10 +11,14 @@ namespace WaterInfoSystem.Application.Services;
 public class RiverService : IRiverService
 {
     private readonly IRiverRepository _riverRepository;
+    private readonly IStationRepository _stationRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public RiverService(IRiverRepository riverRepository)
+    public RiverService(IRiverRepository riverRepository, IStationRepository stationRepository, IUnitOfWork unitOfWork)
     {
         _riverRepository = riverRepository;
+        _stationRepository = stationRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<PagedResult<RiverListItemDto>> SearchAsync(RiverQueryDto query, CancellationToken cancellationToken)
@@ -32,11 +37,11 @@ public class RiverService : IRiverService
     {
         var entity = new River();
         ApplyChanges(entity, request);
-        entity.CreatedAt = DateTime.Now;
-        entity.UpdatedAt = DateTime.Now;
+        entity.CreatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = DateTime.UtcNow;
 
         await _riverRepository.AddAsync(entity, cancellationToken);
-        await _riverRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return MapDetail(entity);
     }
 
@@ -44,17 +49,24 @@ public class RiverService : IRiverService
     {
         var entity = await GetRequiredEntityAsync(id, cancellationToken);
         ApplyChanges(entity, request);
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
 
-        await _riverRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return MapDetail(entity);
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var entity = await GetRequiredEntityAsync(id, cancellationToken);
+
+        var stations = await _stationRepository.GetAllAsync(cancellationToken);
+        if (stations.Any(s => s.RiverId == id))
+        {
+            throw new AppException("该河道下存在关联站点，无法删除");
+        }
+
         await _riverRepository.DeleteAsync(entity, cancellationToken);
-        await _riverRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     private async Task<River> GetRequiredEntityAsync(Guid id, CancellationToken cancellationToken)

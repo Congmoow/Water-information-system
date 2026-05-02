@@ -9,6 +9,14 @@
           <strong>水利信息系统</strong>
           <span>Hydrology Control Room</span>
         </div>
+        <button
+          type="button"
+          class="sidebar__collapse-btn"
+          :title="appStore.collapsed ? '展开侧栏' : '收起侧栏'"
+          @click="appStore.toggleCollapsed()"
+        >
+          <el-icon><Fold /></el-icon>
+        </button>
       </div>
 
       <div class="sidebar__menus">
@@ -99,6 +107,7 @@ import {
   Bell,
   Collection,
   DataAnalysis,
+  Fold,
   Guide,
   Histogram,
   Location,
@@ -110,10 +119,12 @@ import {
 import { useRoute, useRouter } from 'vue-router'
 import { appMenus, settingsMenuGroups } from '@/constants/menu'
 import { useAuthStore } from '@/stores/auth'
+import { useAppStore } from '@/stores/app'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const settingsRef = ref<HTMLElement | null>(null)
 const settingsExpanded = ref(route.name === 'userCenter')
 
@@ -121,6 +132,7 @@ const icons: Record<string, Component> = {
   Bell,
   Collection,
   DataAnalysis,
+  Fold,
   Guide,
   Histogram,
   Location,
@@ -187,11 +199,15 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .sidebar {
   height: 100vh;
-  padding: 22px 18px;
+  padding: 20px 16px;
   overflow: visible;
-  background: var(--wi-app-sidebar-bg);
+  background:
+    radial-gradient(ellipse 120% 90% at 0% 0%, rgba(47, 125, 193, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 100% 100%, rgba(14, 30, 56, 0.45) 0%, transparent 50%),
+    var(--wi-app-sidebar-bg);
   color: var(--wi-text-inverse-primary);
   border-right: 1px solid var(--wi-app-sidebar-border);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04);
 }
 
 .sidebar__inner {
@@ -213,21 +229,26 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 10px 12px 18px;
+  padding: 12px 12px 20px;
+  margin: 0 2px 4px;
+  border-radius: var(--wi-app-radius-md, 14px) var(--wi-app-radius-md, 14px) 0 0;
   border-bottom: 1px solid var(--wi-app-sidebar-border);
+  background: linear-gradient(180deg, rgba(247, 251, 253, 0.07) 0%, transparent 92%);
 
   strong {
     display: block;
     font-size: 16px;
     line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: 0.02em;
   }
 
   span {
     display: block;
     margin-top: 4px;
     color: var(--wi-app-sidebar-text-secondary);
-    font-size: 12px;
-    letter-spacing: 0.08em;
+    font-size: 11px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 }
@@ -241,9 +262,34 @@ onBeforeUnmount(() => {
 
 .brand__icon {
   display: block;
-  width: 640x;
+  width: 60px;
   height: 60px;
   object-fit: contain;
+}
+
+.sidebar__collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--wi-app-sidebar-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+
+  &:hover {
+    background: var(--wi-app-sidebar-surface-hover);
+    color: var(--wi-text-inverse-primary);
+    border-color: var(--wi-app-sidebar-border);
+  }
 }
 
 .sidebar__section {
@@ -279,7 +325,7 @@ onBeforeUnmount(() => {
   width: 100%;
   padding: 12px 14px 12px 16px;
   border: 0;
-  border-radius: 14px;
+  border-radius: var(--wi-app-radius-sm, 10px);
   background: transparent;
   color: var(--wi-app-sidebar-text-secondary);
   text-align: left;

@@ -1,39 +1,8 @@
 <template>
   <div class="page-shell">
-    <div class="entity-summary-grid station-summary-grid">
-      <MetricCard
-        label="站点总数"
-        :value="overview.total"
-        description="当前列表中的监测站点数量。"
-        highlight="监测节点"
-        tone="info"
-      />
-      <MetricCard
-        label="在线站点"
-        :value="overview.onlineCount"
-        description="当前在线且可持续采样的站点数量。"
-        highlight="运行正常"
-        tone="success"
-      />
-      <MetricCard
-        label="预警站点"
-        :value="overview.warningCount"
-        description="当前处于预警状态的监测节点。"
-        highlight="需关注"
-        tone="warning"
-      />
-      <MetricCard
-        label="离线站点"
-        :value="overview.offlineCount"
-        description="当前未在线的监测节点数量。"
-        highlight="需排查"
-        tone="info"
-      />
-    </div>
-
     <TableSection
-      title="监测站点对象管理"
-      description="统一维护站点档案、运行状态、阈值配置和归属工程关系。"
+      title="监测站点"
+      description="维护站点档案、运行状态、阈值配置。"
       :loading="loading"
       :has-data="rows.length > 0"
       :total="total"
@@ -108,8 +77,8 @@
 
         <section class="entity-form__section">
           <div class="entity-form__section-head">
-            <h4>{{ stationFormSections[0] }}</h4>
-            <p>定义站点名称与监测类型，作为对象档案的基础标识。</p>
+            <h4>{{ stationFormSections.basic.title }}</h4>
+            <p>{{ stationFormSections.basic.description }}</p>
           </div>
           <el-row :gutter="16">
             <el-col :span="12"><el-form-item label="站点名称"><el-input v-model="form.name" /></el-form-item></el-col>
@@ -119,8 +88,8 @@
 
         <section class="entity-form__section">
           <div class="entity-form__section-head">
-            <h4>{{ stationFormSections[1] }}</h4>
-            <p>设置当前运行状态、最近活跃时间以及告警阈值。</p>
+            <h4>{{ stationFormSections.status.title }}</h4>
+            <p>{{ stationFormSections.status.description }}</p>
           </div>
           <el-row :gutter="16">
             <el-col :span="12"><el-form-item label="运行状态"><el-select v-model="form.status" class="w-full"><el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value" /></el-select></el-form-item></el-col>
@@ -132,8 +101,8 @@
 
         <section class="entity-form__section">
           <div class="entity-form__section-head">
-            <h4>{{ stationFormSections[2] }}</h4>
-            <p>维护站点的空间坐标以及归属工程关系。</p>
+            <h4>{{ stationFormSections.affiliation.title }}</h4>
+            <p>{{ stationFormSections.affiliation.description }}</p>
           </div>
           <el-row :gutter="16">
             <el-col :span="12"><el-form-item label="纬度"><el-input-number v-model="form.latitude" :precision="6" class="w-full" /></el-form-item></el-col>
@@ -145,8 +114,8 @@
 
         <section class="entity-form__section">
           <div class="entity-form__section-head">
-            <h4>{{ stationFormSections[3] }}</h4>
-            <p>补充说明当前站点用途、现场情况或维护备注。</p>
+            <h4>{{ stationFormSections.supplement.title }}</h4>
+            <p>{{ stationFormSections.supplement.description }}</p>
           </div>
           <el-form-item label="描述">
             <el-input v-model="form.description" type="textarea" :rows="4" />
@@ -222,30 +191,82 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { computed, onMounted, ref } from 'vue'
 import FilterBar from '@/components/common/FilterBar.vue'
-import MetricCard from '@/components/common/MetricCard.vue'
 import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
 import TableSection from '@/components/common/TableSection.vue'
 import { fetchReservoirs } from '@/api/modules/reservoir'
 import { fetchRivers } from '@/api/modules/river'
 import { createStation, deleteStation, fetchStationDetail, fetchStations, updateStation, type StationFormModel } from '@/api/modules/station'
-import { useAuthStore } from '@/stores/auth'
+import { useCrudPage } from '@/composables/useCrudPage'
 import { buildStationOverview, getStationFormSections, getStationStatusInsight, stationTypeLabel } from './stationPresentation'
 import type { ReservoirItem, RiverItem, StationDetail, StationItem } from '@/types/models'
+import { formatDateTime } from '@/utils/format'
+import { DEFAULT_LATITUDE, DEFAULT_LONGITUDE } from '@/constants/coordinates'
 
-const authStore = useAuthStore()
-const isAdmin = computed(() => authStore.user?.role === 'Administrator')
-const loading = ref(false)
-const submitting = ref(false)
-const dialogVisible = ref(false)
-const detailVisible = ref(false)
-const editingId = ref<string | null>(null)
-const detail = ref<StationDetail | null>(null)
-const rows = ref<StationItem[]>([])
-const total = ref(0)
+const {
+  isAdmin,
+  loading,
+  submitting,
+  dialogVisible,
+  detailVisible,
+  editingId,
+  detail,
+  rows,
+  total,
+  query,
+  form,
+  loadData,
+  handlePageChange,
+  openCreateDialog,
+  openEditDialog,
+  submitForm,
+  removeRow,
+  showDetail
+} = useCrudPage<StationItem, StationDetail, StationFormModel, { page: number; pageSize: number; keyword: string; type: string; status: string }>({
+  api: {
+    fetchList: fetchStations,
+    fetchDetail: fetchStationDetail,
+    create: createStation,
+    update: updateStation,
+    remove: deleteStation
+  },
+  initialQuery: () => ({ page: 1, pageSize: 10, keyword: '', type: '', status: '' }),
+  initialForm: () => ({
+    name: '',
+    type: 'WaterLevel',
+    longitude: DEFAULT_LONGITUDE,
+    latitude: DEFAULT_LATITUDE,
+    status: 'Online',
+    warningThreshold: 18.5,
+    criticalThreshold: 20,
+    description: '',
+    lastActiveAt: '',
+    reservoirId: '',
+    riverId: ''
+  }),
+  deleteConfirmMessage: '确认删除该站点记录吗？',
+  createSuccessMessage: '站点已新增',
+  updateSuccessMessage: '站点信息已更新',
+  deleteSuccessMessage: '删除成功',
+  createDialogTitle: '新增监测站',
+  editDialogTitle: '维护站点资料',
+  mapDetailToForm: (detail, form) => {
+    Object.assign(form, {
+      ...detail,
+      reservoirId: detail.reservoirId || '',
+      riverId: detail.riverId || ''
+    })
+  },
+  mapFormToPayload: (form) => ({
+    ...form,
+    reservoirId: form.reservoirId || undefined,
+    riverId: form.riverId || undefined,
+    lastActiveAt: form.lastActiveAt || undefined
+  })
+})
+
 const reservoirOptions = ref<ReservoirItem[]>([])
 const riverOptions = ref<RiverItem[]>([])
 const typeOptions = [
@@ -258,53 +279,12 @@ const statusOptions = [
   { label: '离线', value: 'Offline' },
   { label: '预警', value: 'Warning' }
 ]
-const query = reactive({
-  page: 1,
-  pageSize: 10,
-  keyword: '',
-  type: '',
-  status: ''
-})
-const form = reactive<StationFormModel>({
-  name: '',
-  type: 'WaterLevel',
-  longitude: 114.347,
-  latitude: 30.625,
-  status: 'Online',
-  warningThreshold: 18.5,
-  criticalThreshold: 20,
-  description: '',
-  lastActiveAt: '',
-  reservoirId: '',
-  riverId: ''
-})
 const overview = computed(() => buildStationOverview(rows.value))
 const stationInsight = computed(() => (detail.value ? getStationStatusInsight(detail.value) : null))
 const stationFormSections = getStationFormSections()
 
 function statusLabel(value: string) {
   return statusOptions.find((item) => item.value === value)?.label ?? value
-}
-
-function formatDateTime(value?: string) {
-  if (!value) return '--'
-  return value.replace('T', ' ').slice(0, 16)
-}
-
-function resetForm() {
-  Object.assign(form, {
-    name: '',
-    type: 'WaterLevel',
-    longitude: 114.347,
-    latitude: 30.625,
-    status: 'Online',
-    warningThreshold: 18.5,
-    criticalThreshold: 20,
-    description: '',
-    lastActiveAt: '',
-    reservoirId: '',
-    riverId: ''
-  })
 }
 
 async function loadOptions() {
@@ -316,93 +296,10 @@ async function loadOptions() {
   riverOptions.value = riverResult.items
 }
 
-async function loadData() {
-  loading.value = true
-  try {
-    const result = await fetchStations({
-      page: query.page,
-      pageSize: query.pageSize,
-      keyword: query.keyword || undefined,
-      type: query.type || undefined,
-      status: query.status || undefined
-    })
-    rows.value = result.items
-    total.value = result.total
-  } finally {
-    loading.value = false
-  }
-}
-
-function handlePageChange(page: number) {
-  query.page = page
-  loadData()
-}
-
-function openCreateDialog() {
-  editingId.value = null
-  resetForm()
-  dialogVisible.value = true
-}
-
-async function openEditDialog(id: string) {
-  const result = await fetchStationDetail(id)
-  detailVisible.value = false
-  editingId.value = id
-  Object.assign(form, {
-    ...result,
-    reservoirId: result.reservoirId || '',
-    riverId: result.riverId || ''
-  })
-  dialogVisible.value = true
-}
-
-async function submitForm() {
-  submitting.value = true
-  try {
-    const payload = {
-      ...form,
-      reservoirId: form.reservoirId || undefined,
-      riverId: form.riverId || undefined,
-      lastActiveAt: form.lastActiveAt || undefined
-    }
-
-    if (editingId.value) {
-      await updateStation(editingId.value, payload)
-      ElMessage.success('站点信息已更新')
-    } else {
-      await createStation(payload)
-      ElMessage.success('站点已新增')
-    }
-
-    dialogVisible.value = false
-    await loadData()
-  } finally {
-    submitting.value = false
-  }
-}
-
-async function removeRow(id: string) {
-  await ElMessageBox.confirm('确认删除该站点记录吗？', '删除确认', { type: 'warning' })
-  await deleteStation(id)
-  ElMessage.success('删除成功')
-  await loadData()
-}
-
-async function showDetail(id: string) {
-  detail.value = await fetchStationDetail(id)
-  detailVisible.value = true
-}
-
-onMounted(async () => {
-  await Promise.all([loadOptions(), loadData()])
-})
+onMounted(loadOptions)
 </script>
 
 <style scoped lang="scss">
-.station-summary-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .station-panel-meta {
   margin-top: 16px;
 }

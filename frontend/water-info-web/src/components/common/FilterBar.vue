@@ -1,5 +1,5 @@
 <template>
-  <section class="filter-bar">
+  <section class="filter-bar slide-in-left">
     <div class="filter-bar__fields">
       <slot />
     </div>

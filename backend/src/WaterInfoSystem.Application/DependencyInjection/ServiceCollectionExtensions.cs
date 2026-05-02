@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using WaterInfoSystem.Application.Interfaces.Services;
 using WaterInfoSystem.Application.Services;
@@ -16,6 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAlarmService, AlarmService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IMapService, MapService>();
+        services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
         return services;
     }
 }

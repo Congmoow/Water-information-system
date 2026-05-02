@@ -3,6 +3,7 @@
 Thumbs.db
 .idea/
 .vscode/
+.claude
 *.suo
 *.user
 *.swp
@@ -19,9 +20,10 @@ logs/
 .frontendwater-info-web/
 docs/
 
-# Backend build outputs
+# Backend build outputs and secrets
 backend/**/bin/
 backend/**/obj/
+backend/**/appsettings.Development.json
 
 # Frontend dependencies and build outputs
 frontend/water-info-web/node_modules/
@@ -35,3 +37,12 @@ frontend/water-info-web/vite.config.d.ts
 # Test / coverage artifacts
 coverage/
 TestResults/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+.env.local
+.env.*.local

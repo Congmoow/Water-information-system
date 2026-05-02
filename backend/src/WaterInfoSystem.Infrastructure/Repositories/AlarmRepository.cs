@@ -64,6 +64,14 @@ public class AlarmRepository : IAlarmRepository
         return (items, total);
     }
 
+    public async Task<IReadOnlyList<(string Category, int Count)>> GetLevelCountsAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.AlarmRecords
+            .GroupBy(x => x.Level)
+            .Select(g => new ValueTuple<string, int>(g.Key.ToString(), g.Count()))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<AlarmRecord>> GetRecentAsync(int take, CancellationToken cancellationToken)
     {
         return await _dbContext.AlarmRecords
@@ -96,10 +104,5 @@ public class AlarmRepository : IAlarmRepository
     public async Task AddAsync(AlarmRecord alarmRecord, CancellationToken cancellationToken)
     {
         await _dbContext.AlarmRecords.AddAsync(alarmRecord, cancellationToken);
-    }
-
-    public Task SaveChangesAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

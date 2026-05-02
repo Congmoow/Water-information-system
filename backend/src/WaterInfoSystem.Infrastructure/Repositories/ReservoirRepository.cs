@@ -58,9 +58,4 @@ public class ReservoirRepository : IReservoirRepository
     {
         return _dbContext.Reservoirs.CountAsync(cancellationToken);
     }
-
-    public Task SaveChangesAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
-    }
 }

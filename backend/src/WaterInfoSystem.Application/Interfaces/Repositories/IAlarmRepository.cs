@@ -15,6 +15,8 @@ public interface IAlarmRepository
         int pageSize,
         CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<(string Category, int Count)>> GetLevelCountsAsync(CancellationToken cancellationToken);
+
     Task<IReadOnlyList<AlarmRecord>> GetRecentAsync(int take, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<AlarmRecord>> GetTriggeredOnDateAsync(DateOnly date, CancellationToken cancellationToken);
@@ -22,6 +24,4 @@ public interface IAlarmRepository
     Task<AlarmRecord?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     Task AddAsync(AlarmRecord alarmRecord, CancellationToken cancellationToken);
-
-    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -3,7 +3,7 @@ import type { ApiResponse } from '@/types/common'
 import type { LoginRequest, LoginResult, UserProfile } from '@/types/auth'
 
 export async function login(payload: LoginRequest): Promise<LoginResult> {
-  const response = await http.post<ApiResponse<LoginResult>>('/api/auth/login', payload)
+  const response = await http.post<ApiResponse<LoginResult>>('/api/auth/login', payload, { skipGlobalError: true })
   return response.data.data
 }
 

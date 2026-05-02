@@ -30,5 +30,9 @@ export function getRiverPanelMeta(detail: RiverDetail) {
 }
 
 export function getRiverFormSections() {
-  return ['基础信息', '空间信息', '补充说明']
+  return {
+    basic: { title: '基础信息', description: '定义河道名称、长度及所属流域等基础属性。' },
+    spatial: { title: '空间信息', description: '维护河道空间坐标，保证在地图和档案中的位置一致。' },
+    supplement: { title: '补充说明', description: '补充说明河道特征、水文情况或维护备注。' }
+  } as const
 }

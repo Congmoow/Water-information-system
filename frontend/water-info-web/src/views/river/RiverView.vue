@@ -1,32 +1,8 @@
 <template>
   <div class="page-shell">
-    <div class="entity-summary-grid river-summary-grid">
-      <MetricCard
-        label="河道总数"
-        :value="overview.total"
-        description="当前列表中的河道档案对象数量。"
-        highlight="线性对象"
-        tone="info"
-      />
-      <MetricCard
-        label="河道总长度"
-        :value="overview.totalLength"
-        description="当前结果中所有河道长度的汇总值。"
-        highlight="km"
-        tone="success"
-      />
-      <MetricCard
-        label="重点河段"
-        :value="overview.majorRiverName"
-        description="按长度识别的当前主要河道对象。"
-        highlight="长度优先"
-        tone="warning"
-      />
-    </div>
-
     <TableSection
-      title="河道对象管理"
-      description="统一维护河道档案、流域信息、空间位置和对象说明。"
+      title="河道档案"
+      description="维护河道档案、流域信息、空间位置。"
       :loading="loading"
       :has-data="rows.length > 0"
       :total="total"
@@ -83,8 +59,8 @@
 
         <section class="entity-form__section">
           <div class="entity-form__section-head">
-            <h4>{{ formSections[0] }}</h4>
-            <p>定义河道名称、所属流域和长度等核心对象属性。</p>
+            <h4>{{ formSections.basic.title }}</h4>
+            <p>{{ formSections.basic.description }}</p>
           </div>
           <el-row :gutter="16">
             <el-col :span="12"><el-form-item label="名称"><el-input v-model="form.name" /></el-form-item></el-col>
@@ -95,8 +71,8 @@
 
         <section class="entity-form__section">
           <div class="entity-form__section-head">
-            <h4>{{ formSections[1] }}</h4>
-            <p>维护河道中心点坐标，保证对象空间信息完整。</p>
+            <h4>{{ formSections.spatial.title }}</h4>
+            <p>{{ formSections.spatial.description }}</p>
           </div>
           <el-row :gutter="16">
             <el-col :span="12"><el-form-item label="纬度"><el-input-number v-model="form.latitude" :precision="6" class="w-full" /></el-form-item></el-col>
@@ -106,8 +82,8 @@
 
         <section class="entity-form__section">
           <div class="entity-form__section-head">
-            <h4>{{ formSections[2] }}</h4>
-            <p>补充河道用途、管理说明或现场情况备注。</p>
+            <h4>{{ formSections.supplement.title }}</h4>
+            <p>{{ formSections.supplement.description }}</p>
           </div>
           <el-form-item label="描述"><el-input v-model="form.description" type="textarea" :rows="4" /></el-form-item>
         </section>
@@ -165,36 +141,60 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { computed } from 'vue'
 import FilterBar from '@/components/common/FilterBar.vue'
-import MetricCard from '@/components/common/MetricCard.vue'
 import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
 import TableSection from '@/components/common/TableSection.vue'
 import { createRiver, deleteRiver, fetchRiverDetail, fetchRivers, updateRiver, type RiverFormModel } from '@/api/modules/river'
-import { useAuthStore } from '@/stores/auth'
+import { useCrudPage } from '@/composables/useCrudPage'
 import { buildRiverOverview, getRiverFormSections, getRiverPanelMeta } from './riverPresentation'
 import type { RiverDetail, RiverItem } from '@/types/models'
+import { formatDateTime } from '@/utils/format'
 
-const authStore = useAuthStore()
-const isAdmin = computed(() => authStore.user?.role === 'Administrator')
-const loading = ref(false)
-const submitting = ref(false)
-const dialogVisible = ref(false)
-const detailVisible = ref(false)
-const editingId = ref<string | null>(null)
-const detail = ref<RiverDetail | null>(null)
-const rows = ref<RiverItem[]>([])
-const total = ref(0)
-const query = reactive({ page: 1, pageSize: 10, keyword: '' })
-const form = reactive<RiverFormModel>({
-  name: '',
-  length: 0,
-  basin: '',
-  latitude: 30.595,
-  longitude: 114.398,
-  description: ''
+const {
+  isAdmin,
+  loading,
+  submitting,
+  dialogVisible,
+  detailVisible,
+  editingId,
+  detail,
+  rows,
+  total,
+  query,
+  form,
+  loadData,
+  handlePageChange,
+  openCreateDialog,
+  openEditDialog,
+  submitForm,
+  removeRow,
+  showDetail
+} = useCrudPage<RiverItem, RiverDetail, RiverFormModel, { page: number; pageSize: number; keyword: string }>({
+  api: {
+    fetchList: fetchRivers,
+    fetchDetail: fetchRiverDetail,
+    create: createRiver,
+    update: updateRiver,
+    remove: deleteRiver
+  },
+  initialQuery: () => ({ page: 1, pageSize: 10, keyword: '' }),
+  initialForm: () => ({
+    name: '',
+    length: 0,
+    basin: '',
+    latitude: 30.595,
+    longitude: 114.398,
+    description: ''
+  }),
+  deleteConfirmMessage: '确认删除该河道记录吗？',
+  createSuccessMessage: '河道已新增',
+  updateSuccessMessage: '河道信息已更新',
+  deleteSuccessMessage: '删除成功',
+  createDialogTitle: '新增河道对象',
+  editDialogTitle: '维护河道档案'
 })
+
 const overview = computed(() => buildRiverOverview(rows.value))
 const formSections = getRiverFormSections()
 const panelMeta = computed(() => detail.value ? getRiverPanelMeta(detail.value) : getRiverPanelMeta({
@@ -208,83 +208,9 @@ const panelMeta = computed(() => detail.value ? getRiverPanelMeta(detail.value) 
   updatedAt: '',
   createdAt: ''
 }))
-
-function formatDateTime(value?: string) {
-  if (!value) return '--'
-  return value.replace('T', ' ').slice(0, 16)
-}
-
-function resetForm() {
-  Object.assign(form, { name: '', length: 0, basin: '', latitude: 30.595, longitude: 114.398, description: '' })
-}
-
-async function loadData() {
-  loading.value = true
-  try {
-    const result = await fetchRivers(query)
-    rows.value = result.items
-    total.value = result.total
-  } finally {
-    loading.value = false
-  }
-}
-
-function handlePageChange(page: number) {
-  query.page = page
-  loadData()
-}
-
-function openCreateDialog() {
-  editingId.value = null
-  resetForm()
-  dialogVisible.value = true
-}
-
-async function openEditDialog(id: string) {
-  const result = await fetchRiverDetail(id)
-  detailVisible.value = false
-  editingId.value = id
-  Object.assign(form, result)
-  dialogVisible.value = true
-}
-
-async function submitForm() {
-  submitting.value = true
-  try {
-    if (editingId.value) {
-      await updateRiver(editingId.value, form)
-      ElMessage.success('河道信息已更新')
-    } else {
-      await createRiver(form)
-      ElMessage.success('河道已新增')
-    }
-    dialogVisible.value = false
-    await loadData()
-  } finally {
-    submitting.value = false
-  }
-}
-
-async function removeRow(id: string) {
-  await ElMessageBox.confirm('确认删除该河道记录吗？', '删除确认', { type: 'warning' })
-  await deleteRiver(id)
-  ElMessage.success('删除成功')
-  await loadData()
-}
-
-async function showDetail(id: string) {
-  detail.value = await fetchRiverDetail(id)
-  detailVisible.value = true
-}
-
-onMounted(loadData)
 </script>
 
 <style scoped lang="scss">
-.river-summary-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .river-panel-meta {
   margin-top: 16px;
 }

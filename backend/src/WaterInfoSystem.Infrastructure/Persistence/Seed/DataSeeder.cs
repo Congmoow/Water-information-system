@@ -19,7 +19,17 @@ public class DataSeeder
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
-        await _dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        // 优先使用 MigrateAsync 以保持迁移历史可追溯。
+        // 若数据库此前由 EnsureCreated 创建（无迁移历史表），回退 EnsureCreated 兼容。
+        try
+        {
+            await _dbContext.Database.MigrateAsync(cancellationToken);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("__EFMigrationsHistory"))
+        {
+            // 迁移历史表不存在时回退到 EnsureCreated，其他异常（连接超时、认证失败等）正常抛出。
+            await _dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        }
 
         if (await _dbContext.Users.AnyAsync(cancellationToken))
         {

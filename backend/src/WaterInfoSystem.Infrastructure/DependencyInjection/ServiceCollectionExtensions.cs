@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Application.Interfaces.Security;
 using WaterInfoSystem.Infrastructure.Identity;
@@ -21,6 +22,7 @@ public static class ServiceCollectionExtensions
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
 
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<WaterInfoDbContext>());
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IReservoirRepository, ReservoirRepository>();
         services.AddScoped<IRiverRepository, RiverRepository>();

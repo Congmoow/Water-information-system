@@ -15,6 +15,4 @@ public interface IRiverRepository
     Task DeleteAsync(River river, CancellationToken cancellationToken);
 
     Task<int> CountAsync(CancellationToken cancellationToken);
-
-    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

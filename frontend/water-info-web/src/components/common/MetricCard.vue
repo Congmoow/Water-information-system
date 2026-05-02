@@ -1,10 +1,12 @@
 <template>
-  <article class="metric-card panel" :class="`metric-card--${tone}`">
+  <article class="metric-card panel hover-lift metric-card-animated" :class="`metric-card--${tone}`">
     <div class="metric-card__label-row">
       <span class="metric-card__label">{{ label }}</span>
-      <slot name="badge" />
+      <div class="metric-card__header-right">
+        <slot name="badge" />
+        <span v-if="highlight" class="metric-card__highlight">{{ highlight }}</span>
+      </div>
     </div>
-    <span v-if="highlight" class="metric-card__highlight">{{ highlight }}</span>
     <strong class="metric-card__value">{{ value }}</strong>
     <p v-if="description" class="metric-card__description">{{ description }}</p>
     <div v-if="$slots.footer" class="metric-card__footer">
@@ -32,14 +34,20 @@ withDefaults(
 
 <style scoped lang="scss">
 .metric-card {
-  padding: 20px 22px;
+  padding: var(--wi-space-5, 24px) var(--wi-space-5, 24px);
 }
 
 .metric-card__label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--wi-space-3, 12px);
+}
+
+.metric-card__header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--wi-space-2, 8px);
 }
 
 .metric-card__label {
@@ -51,9 +59,12 @@ withDefaults(
 
 .metric-card__value {
   display: block;
-  margin-top: 10px;
-  font-size: 36px;
-  line-height: 1;
+  margin-top: var(--wi-space-3, 12px);
+  font-size: clamp(26px, 2.4vw, 32px);
+  line-height: 1.05;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
   color: var(--wi-text-primary);
 }
 
@@ -61,7 +72,6 @@ withDefaults(
   display: inline-flex;
   align-items: center;
   min-height: 26px;
-  margin-top: 16px;
   padding: 0 10px;
   border-radius: 999px;
   background: var(--wi-app-surface-secondary);
@@ -72,13 +82,14 @@ withDefaults(
 }
 
 .metric-card__description {
-  margin: 14px 0 0;
+  margin: var(--wi-space-3, 12px) 0 0;
   color: var(--wi-text-secondary);
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 .metric-card__footer {
-  margin-top: 14px;
+  margin-top: var(--wi-space-3, 12px);
 }
 
 .metric-card--success .metric-card__highlight {

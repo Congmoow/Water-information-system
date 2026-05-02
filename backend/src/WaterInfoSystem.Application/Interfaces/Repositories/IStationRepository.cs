@@ -22,6 +22,4 @@ public interface IStationRepository
     Task DeleteAsync(Station station, CancellationToken cancellationToken);
 
     Task<int> CountAsync(CancellationToken cancellationToken);
-
-    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

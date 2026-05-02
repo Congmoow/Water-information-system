@@ -86,9 +86,4 @@ public class StationRepository : IStationRepository
     {
         return _dbContext.Stations.CountAsync(cancellationToken);
     }
-
-    public Task SaveChangesAsync(CancellationToken cancellationToken)
-    {
-        return _dbContext.SaveChangesAsync(cancellationToken);
-    }
 }

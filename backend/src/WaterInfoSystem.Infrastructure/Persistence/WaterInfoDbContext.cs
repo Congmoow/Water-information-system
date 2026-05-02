@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Domain.Entities;
 
 namespace WaterInfoSystem.Infrastructure.Persistence;
 
-public class WaterInfoDbContext : DbContext
+public class WaterInfoDbContext : DbContext, IUnitOfWork
 {
     public WaterInfoDbContext(DbContextOptions<WaterInfoDbContext> options)
         : base(options)
@@ -26,5 +27,10 @@ public class WaterInfoDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(WaterInfoDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+    }
+
+    Task IUnitOfWork.SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        return SaveChangesAsync(cancellationToken);
     }
 }

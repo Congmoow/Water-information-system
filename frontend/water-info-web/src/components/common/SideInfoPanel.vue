@@ -1,5 +1,5 @@
 <template>
-  <aside class="side-info-panel panel">
+  <aside class="side-info-panel panel slide-in-right">
     <header class="side-info-panel__header">
       <div class="side-info-panel__copy">
         <p v-if="subtitle" class="side-info-panel__subtitle">{{ subtitle }}</p>
@@ -38,20 +38,30 @@ withDefaults(
 
 <style scoped lang="scss">
 .side-info-panel {
-  padding: 20px 22px;
+  padding: var(--wi-space-5, 24px) var(--wi-space-5, 24px);
+}
+
+.side-info-panel__header,
+.side-info-panel__meta,
+.side-info-panel__body,
+.side-info-panel__footer {
+  position: relative;
+  z-index: 1;
 }
 
 .side-info-panel__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
+  gap: var(--wi-space-3, 12px);
 }
 
 .side-info-panel__copy h3 {
-  margin: 6px 0 0;
+  margin: var(--wi-space-2, 8px) 0 0;
   color: var(--wi-text-primary);
-  font-size: 20px;
+  font-size: var(--wi-font-size-section-title, 18px);
+  font-weight: var(--wi-font-weight-section-title, 600);
+  letter-spacing: -0.01em;
 }
 
 .side-info-panel__subtitle {
@@ -67,20 +77,21 @@ withDefaults(
 }
 
 .side-info-panel__meta {
-  margin-top: 18px;
-  padding: 16px;
+  margin-top: var(--wi-space-4, 16px);
+  padding: var(--wi-space-4, 16px);
   border-radius: var(--wi-app-radius-md);
-  background: var(--wi-app-surface-secondary);
+  background: linear-gradient(180deg, var(--wi-app-surface-secondary) 0%, var(--wi-app-surface-tertiary) 100%);
   border: 1px solid var(--wi-app-border-subtle);
+  box-shadow: var(--wi-app-shadow-xs);
 }
 
 .side-info-panel__body {
-  margin-top: 18px;
+  margin-top: var(--wi-space-4, 16px);
 }
 
 .side-info-panel__footer {
-  margin-top: 18px;
-  padding-top: 16px;
+  margin-top: var(--wi-space-4, 16px);
+  padding-top: var(--wi-space-4, 16px);
   border-top: 1px solid var(--wi-app-border-subtle);
 }
 </style>

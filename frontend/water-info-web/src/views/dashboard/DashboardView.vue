@@ -1,46 +1,61 @@
 <template>
   <div class="page-shell">
-    <section class="dashboard-overview panel">
-      <div class="dashboard-overview__main">
-        <p class="dashboard-overview__eyebrow">系统运行总览</p>
-        <h2>优先关注站点在线率、水位变化与当日告警响应。</h2>
-        <p class="dashboard-overview__copy">
-          当前首页聚合工程资产、站点在线状态、趋势变化与最近告警，便于在答辩或日常巡检中快速判断系统运行态势。
-        </p>
-      </div>
-      <div class="dashboard-overview__meta">
-        <div>
-          <span>在线覆盖率</span>
-          <strong>{{ onlineCoverage }}</strong>
+    <section class="dashboard-map-section panel">
+      <header class="dashboard-map-section__header">
+        <div class="dashboard-map-section__copy">
+          <h3>空间监测分布</h3>
+          <p>实时展示水库、河道与监测站点的空间分布及状态。</p>
         </div>
-        <div>
-          <span>待关注告警</span>
-          <strong>{{ alarmSnapshot.pendingCount }}</strong>
+      </header>
+      <div class="dashboard-map-layout">
+        <div class="dashboard-map-canvas">
+          <div ref="mapRef" class="map-container"></div>
         </div>
-        <div>
-          <span>最近触发</span>
-          <strong>{{ formatDateTime(alarmSnapshot.latestTriggeredAt) }}</strong>
+        <div class="dashboard-map-sidebar">
+          <SideInfoPanel title="站点状态" subtitle="在线、离线与预警站点分布">
+            <div class="legend-donut-wrapper">
+              <StatDonutChart :items="stationStatusStatsCN" palette="stationStatus" />
+            </div>
+          </SideInfoPanel>
+          <SideInfoPanel
+            v-if="activeMapPoint"
+            :title="activeMapPoint.name"
+            :subtitle="mapPointTypeLabel(activeMapPoint)"
+          >
+            <template #status>
+              <StatusTag
+                v-if="activeMapPoint.source === 'station'"
+                category="stationStatus"
+                :value="activeMapPoint.status || 'Normal'"
+              />
+              <span v-else class="entity-pill">{{ activeMapPoint.source === 'reservoir' ? '水库' : '河道' }}</span>
+            </template>
+            <template #meta>
+              <div class="entity-facts-grid entity-facts-grid--2">
+                <div class="entity-facts-grid__item">
+                  <span>纬度</span>
+                  <strong>{{ activeMapPoint.latitude.toFixed(4) }}</strong>
+                </div>
+                <div class="entity-facts-grid__item">
+                  <span>经度</span>
+                  <strong>{{ activeMapPoint.longitude.toFixed(4) }}</strong>
+                </div>
+              </div>
+            </template>
+            <p class="map-point-desc">{{ activeMapPoint.description || '暂无说明' }}</p>
+          </SideInfoPanel>
+          <section v-else class="map-empty panel">
+            <el-empty description="点击地图点位查看详情" />
+          </section>
         </div>
       </div>
     </section>
-
-    <div class="page-grid metrics-grid">
-      <MetricCard
-        v-for="item in metrics"
-        :key="item.title"
-        :label="item.title"
-        :value="item.value"
-        :description="item.description"
-        :highlight="item.highlight"
-        :tone="item.tone"
-      />
-    </div>
 
     <div class="page-grid dashboard-focus-grid">
       <ChartSection
         class="dashboard-main-chart"
         :title="waterLevelMeta.label"
-        description="作为首页主分析区，聚焦最近监测样本按日期聚合后的变化趋势。"
+        description="聚焦最近监测样本按日期聚合后的变化趋势。"
       >
         <template #actions>
           <div class="trend-summary-group">
@@ -87,112 +102,43 @@
           <p class="dashboard-alert-copy__title">当前关注重点</p>
           <p>
             今日累计触发 {{ overview.todayAlarmCount }} 条告警，其中待处理 {{ alarmSnapshot.pendingCount }} 条。
-            首页下方列表保留最近事件，便于继续追踪。
           </p>
         </div>
       </SideInfoPanel>
     </div>
 
     <div class="page-grid dashboard-support-grid">
-      <ChartSection :title="rainfallMeta.label" description="作为次级趋势区，展示最近雨量采样的累计变化。">
+      <ChartSection :title="rainfallMeta.label" description="展示最近雨量采样的累计变化。">
         <TrendLineChart :points="overview.rainfallTrend" series-type="rainfall" :unit="rainfallMeta.unit" />
       </ChartSection>
 
-      <div class="dashboard-support-grid__stack">
-        <ChartSection title="告警等级分布" description="按告警等级汇总，用于快速判断风险结构。">
-          <StatBarChart :items="overview.alarmLevelStats" palette="alarmLevels" />
-        </ChartSection>
-
-        <ChartSection title="站点运行状态" description="在线、离线与预警站点分布。">
-          <StatDonutChart :items="overview.stationStatusStats" palette="stationStatus" />
-        </ChartSection>
-
-        <SideInfoPanel title="空间分布入口" subtitle="首页空间摘要">
-          <template #meta>
-            <div class="dashboard-spatial-meta">
-              <div>
-                <span>水库对象</span>
-                <strong>{{ spatialSnapshot.reservoirCount }}</strong>
-              </div>
-              <div>
-                <span>河道对象</span>
-                <strong>{{ spatialSnapshot.riverCount }}</strong>
-              </div>
-              <div>
-                <span>监测站点</span>
-                <strong>{{ spatialSnapshot.stationCount }}</strong>
-              </div>
-            </div>
-          </template>
-          <div class="dashboard-spatial-copy">
-            <p class="dashboard-spatial-copy__title">空间维度</p>
-            <p>首页保留空间分布摘要，便于从总览切换到地图工作台，继续查看点位分布与异常状态。</p>
-          </div>
-          <template #footer>
-            <div class="entity-panel-footer">
-              <div>
-                <span>快速入口</span>
-                <strong>{{ spatialSnapshot.emphasis }}</strong>
-              </div>
-              <el-button type="primary" @click="openMapView">查看地图</el-button>
-            </div>
-          </template>
-        </SideInfoPanel>
-      </div>
+      <ChartSection title="告警等级分布" description="按告警等级汇总，用于快速判断风险结构。">
+        <StatBarChart :items="overview.alarmLevelStats" palette="alarmLevels" />
+      </ChartSection>
     </div>
-
-    <TableSection
-      title="最近告警"
-      description="展示最新触发的告警记录，便于首页快速追踪。"
-      :loading="loading"
-      :has-data="overview.recentAlarms.length > 0"
-      :total="overview.recentAlarms.length"
-      empty-description="当前暂无最近告警"
-    >
-      <el-table :data="overview.recentAlarms" v-loading="loading" border>
-        <el-table-column prop="stationName" label="站点名称" min-width="160" />
-        <el-table-column label="等级" width="120">
-          <template #default="{ row }">
-            <StatusTag category="alarmLevel" :value="row.level" />
-          </template>
-        </el-table-column>
-        <el-table-column label="状态" width="120">
-          <template #default="{ row }">
-            <StatusTag category="alarmStatus" :value="row.status" />
-          </template>
-        </el-table-column>
-        <el-table-column prop="message" label="内容" min-width="260" show-overflow-tooltip />
-        <el-table-column prop="triggeredAt" label="触发时间" min-width="180">
-          <template #default="{ row }">{{ formatDateTime(row.triggeredAt) }}</template>
-        </el-table-column>
-      </el-table>
-    </TableSection>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import dayjs from 'dayjs'
-import { useRouter } from 'vue-router'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import ChartSection from '@/components/common/ChartSection.vue'
-import MetricCard from '@/components/common/MetricCard.vue'
 import SideInfoPanel from '@/components/common/SideInfoPanel.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
-import TableSection from '@/components/common/TableSection.vue'
 import TrendLineChart from '@/components/charts/TrendLineChart.vue'
 import StatBarChart from '@/components/charts/StatBarChart.vue'
 import StatDonutChart from '@/components/charts/StatDonutChart.vue'
 import { fetchDashboardOverview } from '@/api/modules/dashboard'
+import { fetchMapPoints } from '@/api/modules/map'
+import { visualizationTokens } from '@/theme/tokens'
 import {
   buildDashboardAlarmSnapshot,
-  buildDashboardMetrics,
-  buildDashboardSpatialSnapshot,
   buildTrendSummary,
   getDashboardMeasurementMeta
 } from './dashboardPresentation'
-import type { DashboardOverview } from '@/types/models'
+import type { DashboardOverview, MapPoint } from '@/types/models'
 
-const router = useRouter()
 const loading = ref(false)
 const overview = reactive<DashboardOverview>({
   reservoirCount: 0,
@@ -206,23 +152,25 @@ const overview = reactive<DashboardOverview>({
   stationStatusStats: [],
   recentAlarms: []
 })
-
-const metrics = computed(() => buildDashboardMetrics(overview))
 const alarmSnapshot = computed(() => buildDashboardAlarmSnapshot(overview))
-const spatialSnapshot = computed(() => buildDashboardSpatialSnapshot(overview))
 const waterTrendSummary = computed(() => buildTrendSummary(overview.waterLevelTrend))
 const rainfallTrendSummary = computed(() => buildTrendSummary(overview.rainfallTrend))
-const onlineCoverage = computed(() => {
-  if (overview.stationCount === 0) return '0%'
-  return `${Math.round((overview.onlineStationCount / overview.stationCount) * 100)}%`
-})
 
 const waterLevelMeta = getDashboardMeasurementMeta('waterLevel')
 const rainfallMeta = getDashboardMeasurementMeta('rainfall')
 
-function formatDateTime(value?: string) {
-  return value ? dayjs(value).format('YYYY-MM-DD HH:mm') : '--'
+const stationStatusLabels: Record<string, string> = {
+  Normal: '在线',
+  Offline: '离线',
+  Warning: '预警'
 }
+
+const stationStatusStatsCN = computed(() =>
+  overview.stationStatusStats.map((item) => ({
+    ...item,
+    name: stationStatusLabels[item.name] || item.name
+  }))
+)
 
 function formatValueWithUnit(value: number, unit: string) {
   return `${value} ${unit}`.trim()
@@ -231,10 +179,6 @@ function formatValueWithUnit(value: number, unit: string) {
 function formatSignedValue(value: number, unit: string) {
   const prefix = value > 0 ? '+' : ''
   return `${prefix}${value} ${unit}`.trim()
-}
-
-async function openMapView() {
-  await router.push('/map')
 }
 
 async function loadData() {
@@ -247,65 +191,94 @@ async function loadData() {
 }
 
 onMounted(loadData)
+
+// Map integration
+const mapRef = ref<HTMLDivElement | null>(null)
+const mapPoints = ref<MapPoint[]>([])
+const activeMapPoint = ref<MapPoint | null>(null)
+let mapInstance: L.Map | null = null
+let markerLayer: L.LayerGroup | null = null
+
+const mapOverview = computed(() => ({
+  total: mapPoints.value.length,
+  warningCount: mapPoints.value.filter(p => p.status === 'Warning').length,
+  offlineCount: mapPoints.value.filter(p => p.status === 'Offline').length
+}))
+
+function mapPointTypeLabel(point: MapPoint) {
+  if (point.source === 'reservoir') return '水库工程'
+  if (point.source === 'river') return '河道工程'
+  return '监测站点'
+}
+
+function mapMarkerColor(point: MapPoint) {
+  if (point.source === 'reservoir') return visualizationTokens.map.engineering
+  if (point.source === 'river') return visualizationTokens.map.river
+  if (point.status === 'Warning') return visualizationTokens.map.warning
+  if (point.status === 'Offline') return visualizationTokens.map.offline
+  return visualizationTokens.map.station
+}
+
+function initMap() {
+  if (!mapRef.value || mapInstance) return
+
+  mapInstance = L.map(mapRef.value, {
+    zoomControl: true
+  }).setView([30.62, 114.34], 11)
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(mapInstance)
+
+  markerLayer = L.layerGroup().addTo(mapInstance)
+}
+
+function renderMarkers() {
+  if (!mapInstance || !markerLayer) return
+
+  markerLayer.clearLayers()
+  const layers = mapPoints.value.map((point) => {
+    const marker = L.circleMarker([point.latitude, point.longitude], {
+      radius: point.source === 'station' ? 8 : 10,
+      color: visualizationTokens.map.markerStroke,
+      weight: 2,
+      fillColor: mapMarkerColor(point),
+      fillOpacity: 0.92
+    })
+
+    marker.on('click', () => {
+      activeMapPoint.value = point
+      marker.bindPopup(`<strong>${point.name}</strong>`).openPopup()
+    })
+
+    marker.addTo(markerLayer!)
+    return marker
+  })
+
+  if (layers.length > 0) {
+    const group = L.featureGroup(layers)
+    mapInstance.fitBounds(group.getBounds().pad(0.18))
+  }
+}
+
+async function loadMapData() {
+  mapPoints.value = await fetchMapPoints()
+  activeMapPoint.value = mapPoints.value[0] ?? null
+  await nextTick()
+  initMap()
+  renderMarkers()
+}
+
+onMounted(loadMapData)
+
+onBeforeUnmount(() => {
+  markerLayer?.clearLayers()
+  mapInstance?.remove()
+})
 </script>
 
 <style scoped lang="scss">
-.dashboard-overview {
-  padding: 24px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
-  gap: 24px;
-  align-items: center;
-}
 
-.dashboard-overview__eyebrow {
-  margin: 0;
-  color: var(--wi-text-tertiary);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.dashboard-overview__main h2 {
-  margin: 12px 0 0;
-  max-width: 760px;
-  font-size: clamp(24px, 2.6vw, 34px);
-  line-height: 1.2;
-  color: var(--wi-text-primary);
-}
-
-.dashboard-overview__copy {
-  margin: 12px 0 0;
-  max-width: 720px;
-  color: var(--wi-text-secondary);
-  line-height: 1.8;
-}
-
-.dashboard-overview__meta {
-  display: grid;
-  gap: 14px;
-  padding: 18px;
-  border-radius: var(--wi-app-radius-lg);
-  background: var(--wi-app-surface-secondary);
-  border: 1px solid var(--wi-app-border-subtle);
-
-  span,
-  strong {
-    display: block;
-  }
-
-  span {
-    color: var(--wi-text-tertiary);
-    font-size: 12px;
-  }
-
-  strong {
-    margin-top: 8px;
-    color: var(--wi-text-primary);
-    font-size: 18px;
-    line-height: 1.5;
-  }
-}
 
 .metrics-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -330,6 +303,16 @@ onMounted(loadData)
   border-radius: var(--wi-app-radius-md);
   background: var(--wi-app-surface-secondary);
   border: 1px solid var(--wi-app-border-subtle);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--wi-primary) 18%, var(--wi-app-border-subtle));
+    box-shadow: var(--wi-app-shadow-xs);
+    transform: translateY(-1px);
+  }
 
   span,
   strong,
@@ -411,7 +394,7 @@ onMounted(loadData)
 }
 
 .dashboard-support-grid {
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .dashboard-support-grid__stack {
@@ -419,11 +402,95 @@ onMounted(loadData)
   gap: 24px;
 }
 
+.dashboard-map-section {
+  padding: 22px 24px;
+}
+
+.dashboard-map-section__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--wi-app-border-subtle);
+}
+
+.dashboard-map-section__copy h3 {
+  margin: 0;
+  color: var(--wi-text-primary);
+  font-size: 18px;
+}
+
+.dashboard-map-section__copy p {
+  margin: 8px 0 0;
+  color: var(--wi-text-secondary);
+  font-size: 13px;
+}
+
+.dashboard-map-section__stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.dashboard-map-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.35fr);
+  gap: 20px;
+  min-height: 420px;
+}
+
+.dashboard-map-canvas {
+  position: relative;
+  border-radius: var(--wi-app-radius-md);
+  overflow: hidden;
+  background: var(--wi-bg-muted);
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+}
+
+.dashboard-map-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.legend-donut-wrapper {
+  :deep(.chart-card__view) {
+    height: 160px;
+  }
+  :deep(.chart-card) {
+    min-height: 160px;
+  }
+}
+
+.map-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.map-point-desc {
+  margin: 12px 0 0;
+  color: var(--wi-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 @media (max-width: 1200px) {
   .dashboard-overview,
   .metrics-grid,
   .dashboard-focus-grid,
-  .dashboard-support-grid {
+  .dashboard-support-grid,
+  .dashboard-map-layout {
     grid-template-columns: 1fr;
   }
 

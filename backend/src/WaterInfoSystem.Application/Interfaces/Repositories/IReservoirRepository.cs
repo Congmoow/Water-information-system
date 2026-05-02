@@ -15,6 +15,4 @@ public interface IReservoirRepository
     Task DeleteAsync(Reservoir reservoir, CancellationToken cancellationToken);
 
     Task<int> CountAsync(CancellationToken cancellationToken);
-
-    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -68,8 +68,8 @@ const decorativeAlphaTokens = {
 
 const visualTokens = {
   gradient: {
-    pageBackground:
-      'radial-gradient(circle at top left, rgba(26, 111, 181, 0.1), transparent 28%), radial-gradient(circle at bottom right, rgba(185, 133, 47, 0.05), transparent 22%), linear-gradient(180deg, #f7fafc 0%, #f3f7fc 44%, #edf4fa 100%)',
+    /** 主工作区背景：中性层级为主，避免强装饰径向/强调色铺陈（Design §2、§6） */
+    pageBackground: `linear-gradient(180deg, ${corePalette.neutral[50]} 0%, #f5f8fb 48%, ${corePalette.neutral[100]} 100%)`,
     inverseHero: 'linear-gradient(135deg, #0e1e38, rgba(26, 54, 93, 0.94))'
   },
   glow: {
@@ -83,10 +83,11 @@ const visualTokens = {
     decorativeSoft: `rgba(247, 251, 253, ${decorativeAlphaTokens.heroOverlaySoft})`
   },
   shadow: {
-    emphasis: '0 10px 24px rgba(26, 111, 181, 0.18)',
-    inverseStrong: '0 10px 24px rgba(14, 30, 56, 0.32)',
-    card: '0 18px 40px rgba(15, 23, 42, 0.08)',
-    overlay: '0 24px 64px rgba(15, 23, 42, 0.14)'
+    emphasis: '0 8px 20px rgba(26, 111, 181, 0.14)',
+    inverseStrong: '0 10px 24px rgba(14, 30, 56, 0.28)',
+    /** 卡片/浮层：轻阴影，层级主要靠边框与表面色差（Design §8.4） */
+    card: '0 4px 16px rgba(15, 23, 42, 0.05)',
+    overlay: '0 16px 48px rgba(15, 23, 42, 0.1)'
   }
 } as const
 
@@ -131,8 +132,9 @@ const appChromeTokens = {
     strong: 'rgba(72, 98, 118, 0.18)'
   },
   shadow: {
-    sm: '0 8px 20px rgba(15, 23, 42, 0.04)',
-    md: '0 14px 32px rgba(15, 23, 42, 0.06)'
+    xs: '0 1px 2px rgba(15, 23, 42, 0.04)',
+    sm: '0 4px 14px rgba(15, 23, 42, 0.04)',
+    md: '0 10px 28px rgba(15, 23, 42, 0.06)'
   },
   inverse: {
     sidebar: '#101b2d',

@@ -1,5 +1,5 @@
 <template>
-  <section class="page-card panel">
+  <section class="page-card panel hover-glow">
     <header v-if="title || subtitle" class="page-card__header">
       <div>
         <h3>{{ title }}</h3>
@@ -24,29 +24,38 @@ defineProps<{
 
 <style scoped lang="scss">
 .page-card {
-  padding: 22px 24px;
-  background: var(--wi-surface-panel);
+  padding: var(--wi-space-5, 24px) var(--wi-space-5, 24px);
+  background: var(--wi-app-surface, var(--wi-surface-panel));
+}
+
+.page-card__header,
+.page-card__body {
+  position: relative;
+  z-index: 1;
 }
 
 .page-card__header {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--wi-space-4, 16px);
   align-items: flex-start;
-  margin-bottom: 18px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--wi-border-subtle);
+  margin-bottom: var(--wi-space-4, 16px);
+  padding-bottom: var(--wi-space-4, 16px);
+  border-bottom: 1px solid var(--wi-app-border-subtle, var(--wi-border-subtle));
 
   h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--wi-font-size-card-title, 16px);
+    font-weight: var(--wi-font-weight-card-title, 600);
     color: var(--wi-text-primary);
+    letter-spacing: -0.02em;
   }
 
   p {
-    margin: 8px 0 0;
+    margin: var(--wi-space-2, 8px) 0 0;
     color: var(--wi-text-secondary);
     font-size: 13px;
+    line-height: 1.65;
   }
 }
 </style>

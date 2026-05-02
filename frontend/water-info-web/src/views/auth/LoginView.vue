@@ -38,26 +38,25 @@
           <form @submit.prevent="handleLogin">
             <div class="form-group">
               <label>用户名</label>
-              <input
+              <el-input
                 v-model="form.username"
-                class="form-input"
-                placeholder="admin / viewer"
-                required
+                placeholder="请输入用户名"
+                size="large"
               />
             </div>
             <div class="form-group">
               <label>密码</label>
-              <input
+              <el-input
                 v-model="form.password"
                 type="password"
-                class="form-input"
                 placeholder="请输入密码"
-                required
+                size="large"
+                show-password
               />
             </div>
             <div class="login-options">
               <label>
-                <input type="checkbox" /> 记住密码
+                <el-checkbox v-model="rememberPassword" /> 记住密码
               </label>
               <a href="#">忘记密码？</a>
             </div>
@@ -72,8 +71,7 @@
             </el-button>
           </form>
           <div class="login-card__tips">
-            <p>默认管理员：admin / Admin@123</p>
-            <p>默认普通用户：viewer / Viewer@123</p>
+            <p>请联系管理员获取账号密码</p>
           </div>
         </div>
       </div>
@@ -82,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -90,10 +88,11 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const rememberPassword = ref(false)
 
 const form = reactive({
-  username: 'admin',
-  password: 'Admin@123'
+  username: '',
+  password: ''
 })
 
 // 生成粒子效果
@@ -125,27 +124,17 @@ async function handleLogin() {
     ElMessage.success('登录成功')
     const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/dashboard'
     await router.push(redirect)
-  } catch (error) {
-    const message = error instanceof Error ? error.message : '登录失败，请检查账号密码'
-    ElMessage.error(message)
+  } catch (error: unknown) {
+    const msg = (error as { code?: string })?.code === 'ERR_NETWORK'
+      ? '无法连接到服务器，请确认后端服务已启动'
+      : error instanceof Error ? error.message : '登录失败，请检查账号密码'
+    ElMessage.error(msg)
   }
 }
 </script>
 
 <style scoped>
 .login-page {
-  /* 基础变量 */
-  --spacing-xs: 8px;
-  --spacing-sm: 12px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-2xl: 40px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --transition-fast: 0.2s ease;
-
   min-height: 100vh;
   position: relative;
   display: flex;
@@ -205,7 +194,7 @@ async function handleLogin() {
 /*英文副标题样式 */
 .hero-en-title {
   font-size: 18px !important;
-  color: var(--wi-primary-light-3) !important; /* 稍微浅一点的蓝色 */
+  color: var(--wi-color-brand-300) !important;
   opacity: 0.8;
   letter-spacing: 0.05em;
   margin-bottom: 24px !important;
@@ -330,11 +319,15 @@ async function handleLogin() {
 .login-card {
   width: 100%;
   max-width: 440px;
-  background: var(--wi-auth-glass-card-bg);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-2xl);
-  box-shadow: var(--wi-auth-glass-card-shadow);
+  background: color-mix(in srgb, var(--wi-auth-glass-card-bg) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--wi-text-inverse-primary) 14%, transparent);
+  border-radius: var(--wi-app-radius-lg, 18px);
+  padding: 40px;
+  box-shadow:
+    var(--wi-auth-glass-card-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.4) inset;
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   animation: fadeUp 0.8s ease-out 0.2s both;
 }
 
@@ -347,52 +340,29 @@ async function handleLogin() {
   text-align: center;
   font-size: 24px;
   margin-top: 0;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 24px;
   color: var(--wi-text-primary);
   font-weight: 600;
 }
 
 .form-group {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 24px;
   text-align: left;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 12px;
   font-weight: 500;
   color: var(--wi-text-secondary);
   font-size: 14px;
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--wi-border-default);
-  border-radius: var(--radius-md);
-  background: var(--wi-auth-input-background);
-  color: var(--wi-text-primary);
-  font-size: 14px;
-  transition: all var(--transition-fast);
-  box-sizing: border-box;
-  outline: none;
-}
-
-.form-input:focus {
-  border-color: var(--wi-primary);
-  box-shadow: var(--wi-auth-input-focus-shadow);
-  background: var(--wi-surface-overlay);
-}
-
-.form-input::placeholder {
-  color: var(--wi-text-disabled);
 }
 
 .login-options {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 24px;
   color: var(--wi-text-secondary);
   font-size: 13px;
 }
@@ -400,7 +370,7 @@ async function handleLogin() {
 .login-options label {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: 8px;
   cursor: pointer;
   color: var(--wi-text-secondary);
 }
@@ -409,7 +379,7 @@ async function handleLogin() {
   color: var(--wi-primary);
   text-decoration: none;
   font-size: 13px;
-  transition: opacity var(--transition-fast);
+  transition: opacity 0.2s ease;
 }
 
 .login-options a:hover {
@@ -433,7 +403,7 @@ async function handleLogin() {
   width: 100%;
   height: 44px;
   margin-top: 8px;
-  border-radius: var(--radius-md);
+  border-radius: var(--wi-app-radius-sm, 10px);
   font-weight: 500;
 }
 
