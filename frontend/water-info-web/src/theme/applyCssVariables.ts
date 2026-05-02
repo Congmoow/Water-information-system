@@ -118,6 +118,7 @@ const semanticVars: Record<string, string> = {
   '--wi-auth-hero-decorative-particle': semanticTokens.auth.heroParticle,
   '--wi-auth-glass-card-bg': semanticTokens.auth.cardBg,
   '--wi-auth-glass-card-shadow': semanticTokens.auth.cardShadow,
+  '--wi-auth-glass-card-inset-border': semanticTokens.auth.cardInsetBorder,
   '--wi-auth-input-background': semanticTokens.auth.inputBg,
   '--wi-auth-input-focus-shadow': semanticTokens.auth.inputFocusShadow,
   /* 认证短别名 */

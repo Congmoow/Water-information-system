@@ -77,7 +77,12 @@ describe('stationPresentation', () => {
   })
 
   it('keeps station form grouped for archive and runtime configuration', () => {
-    expect(getStationFormSections()).toEqual(['基础信息', '运行状态', '归属关系', '补充说明'])
+    expect(getStationFormSections()).toEqual({
+      basic: { title: '基础信息', description: '定义站点名称与监测类型，作为对象档案的基础标识。' },
+      status: { title: '运行状态', description: '设置当前运行状态、最近活跃时间以及告警阈值。' },
+      affiliation: { title: '归属关系', description: '维护站点的空间坐标以及归属工程关系。' },
+      supplement: { title: '补充说明', description: '补充说明当前站点用途、现场情况或维护备注。' }
+    })
     expect(stationTypeLabel('WaterLevel')).toBe('水位站')
     expect(stationTypeLabel('Rainfall')).toBe('雨量站')
   })

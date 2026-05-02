@@ -12,7 +12,7 @@ public class ReservoirServiceTests
     {
         var repository = new FakeReservoirRepository();
         var unitOfWork = new FakeUnitOfWork();
-        var service = new ReservoirService(repository, unitOfWork);
+        var service = new ReservoirService(repository, new FakeStationRepository(), unitOfWork);
         var request = new ReservoirUpsertDto("东湖水库", "江州市东湖新区", 1000m, "江州市水务局", 30.1, 114.2, "测试说明");
 
         var result = await service.CreateAsync(request, CancellationToken.None);
@@ -25,7 +25,7 @@ public class ReservoirServiceTests
     [Fact]
     public async Task UpdateAsync_ShouldThrowNotFoundException_WhenReservoirDoesNotExist()
     {
-        var service = new ReservoirService(new FakeReservoirRepository(), new FakeUnitOfWork());
+        var service = new ReservoirService(new FakeReservoirRepository(), new FakeStationRepository(), new FakeUnitOfWork());
 
         await Assert.ThrowsAsync<NotFoundException>(() =>
             service.UpdateAsync(Guid.NewGuid(), new ReservoirUpsertDto("西山水库", "西山镇", 900m, "西山区水利站", 30.2, 114.3, "说明"), CancellationToken.None));

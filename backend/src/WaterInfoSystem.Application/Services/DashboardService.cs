@@ -69,11 +69,11 @@ public class DashboardService : IDashboardService
             todayAlarmItems.Count,
             BuildAverageTrend(waterLevelItems),
             BuildRainfallTrend(rainfallItems),
-            alarmLevelCounts.Select(x => new CategoryCountDto(x.Category, x.Count)).ToList(),
+            alarmLevelCounts.Select(x => new CategoryCountDto(x.Level.ToString(), x.Count)).ToList(),
             [
-                new CategoryCountDto("Online", stationItems.Count(x => x.Status == StationStatus.Online)),
-                new CategoryCountDto("Offline", stationItems.Count(x => x.Status == StationStatus.Offline)),
-                new CategoryCountDto("Warning", stationItems.Count(x => x.Status == StationStatus.Warning))
+                new CategoryCountDto(StationStatus.Online.ToString(), stationItems.Count(x => x.Status == StationStatus.Online)),
+                new CategoryCountDto(StationStatus.Offline.ToString(), stationItems.Count(x => x.Status == StationStatus.Offline)),
+                new CategoryCountDto(StationStatus.Warning.ToString(), stationItems.Count(x => x.Status == StationStatus.Warning))
             ],
             recentAlarmItems.Select(MapRecentAlarm).ToList());
     }

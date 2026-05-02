@@ -45,6 +45,6 @@ public class AuthService : IAuthService
 
     private static UserProfileDto MapProfile(User user)
     {
-        return new UserProfileDto(user.Id, user.Username, user.FullName, user.Role.ToString(), user.CreatedAt);
+        return new UserProfileDto(user.Id, user.Username, user.FullName, user.Role, user.CreatedAt);
     }
 }

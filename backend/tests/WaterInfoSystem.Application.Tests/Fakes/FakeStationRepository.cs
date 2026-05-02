@@ -64,4 +64,14 @@ internal class FakeStationRepository : IStationRepository
     {
         return Task.FromResult(Items.Count);
     }
+
+    public Task<bool> ExistsByRiverIdAsync(Guid riverId, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Items.Any(x => x.RiverId == riverId));
+    }
+
+    public Task<bool> ExistsByReservoirIdAsync(Guid reservoirId, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Items.Any(x => x.ReservoirId == reservoirId));
+    }
 }

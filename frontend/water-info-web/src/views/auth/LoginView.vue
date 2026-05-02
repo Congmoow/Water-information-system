@@ -325,7 +325,7 @@ async function handleLogin() {
   padding: 40px;
   box-shadow:
     var(--wi-auth-glass-card-shadow),
-    0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+    0 0 0 1px var(--wi-auth-glass-card-inset-border) inset;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   animation: fadeUp 0.8s ease-out 0.2s both;

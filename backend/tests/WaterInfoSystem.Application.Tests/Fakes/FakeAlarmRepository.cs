@@ -72,12 +72,12 @@ internal class FakeAlarmRepository : IAlarmRepository
         return Task.CompletedTask;
     }
 
-    public Task<IReadOnlyList<(string Category, int Count)>> GetLevelCountsAsync(CancellationToken cancellationToken)
+    public Task<IReadOnlyList<(AlarmLevel Level, int Count)>> GetLevelCountsAsync(CancellationToken cancellationToken)
     {
         var counts = Items
             .GroupBy(x => x.Level)
-            .Select(g => (g.Key.ToString(), g.Count()))
+            .Select(g => (g.Key, g.Count()))
             .ToList();
-        return Task.FromResult((IReadOnlyList<(string Category, int Count)>)counts);
+        return Task.FromResult((IReadOnlyList<(AlarmLevel Level, int Count)>)counts);
     }
 }

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Domain.Entities;
 using WaterInfoSystem.Infrastructure.Persistence;
@@ -9,12 +8,10 @@ namespace WaterInfoSystem.Infrastructure.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly WaterInfoDbContext _dbContext;
-    private readonly IUnitOfWork _unitOfWork;
 
-    public UserRepository(WaterInfoDbContext dbContext, IUnitOfWork unitOfWork)
+    public UserRepository(WaterInfoDbContext dbContext)
     {
         _dbContext = dbContext;
-        _unitOfWork = unitOfWork;
     }
 
     public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
@@ -35,6 +32,5 @@ public class UserRepository : IUserRepository
     public async Task AddRangeAsync(IEnumerable<User> users, CancellationToken cancellationToken)
     {
         await _dbContext.Users.AddRangeAsync(users, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

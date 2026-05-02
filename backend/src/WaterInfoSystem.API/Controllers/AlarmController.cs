@@ -34,6 +34,14 @@ public class AlarmController : ControllerBase
     }
 
     [Authorize(Roles = "Administrator")]
+    [HttpPost]
+    public async Task<ActionResult<ApiResponse<AlarmDetailDto>>> Create([FromBody] AlarmCreateDto request, CancellationToken cancellationToken)
+    {
+        var result = await _alarmService.CreateAsync(request, cancellationToken);
+        return Ok(ApiResponse<AlarmDetailDto>.Success(result));
+    }
+
+    [Authorize(Roles = "Administrator")]
     [HttpPut("{id:guid}/handle")]
     public async Task<ActionResult<ApiResponse<AlarmDetailDto>>> Handle(Guid id, [FromBody] AlarmHandleDto request, CancellationToken cancellationToken)
     {

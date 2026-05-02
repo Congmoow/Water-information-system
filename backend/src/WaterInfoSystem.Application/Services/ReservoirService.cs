@@ -11,11 +11,13 @@ namespace WaterInfoSystem.Application.Services;
 public class ReservoirService : IReservoirService
 {
     private readonly IReservoirRepository _reservoirRepository;
+    private readonly IStationRepository _stationRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ReservoirService(IReservoirRepository reservoirRepository, IUnitOfWork unitOfWork)
+    public ReservoirService(IReservoirRepository reservoirRepository, IStationRepository stationRepository, IUnitOfWork unitOfWork)
     {
         _reservoirRepository = reservoirRepository;
+        _stationRepository = stationRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -56,6 +58,12 @@ public class ReservoirService : IReservoirService
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var entity = await GetRequiredEntityAsync(id, cancellationToken);
+
+        if (await _stationRepository.ExistsByReservoirIdAsync(id, cancellationToken))
+        {
+            throw new AppException("该水库下存在关联站点，无法删除");
+        }
+
         await _reservoirRepository.DeleteAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

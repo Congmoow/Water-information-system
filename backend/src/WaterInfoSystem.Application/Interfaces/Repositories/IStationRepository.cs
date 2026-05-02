@@ -22,4 +22,8 @@ public interface IStationRepository
     Task DeleteAsync(Station station, CancellationToken cancellationToken);
 
     Task<int> CountAsync(CancellationToken cancellationToken);
+
+    Task<bool> ExistsByRiverIdAsync(Guid riverId, CancellationToken cancellationToken);
+
+    Task<bool> ExistsByReservoirIdAsync(Guid reservoirId, CancellationToken cancellationToken);
 }

@@ -64,11 +64,11 @@ public class AlarmRepository : IAlarmRepository
         return (items, total);
     }
 
-    public async Task<IReadOnlyList<(string Category, int Count)>> GetLevelCountsAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<(AlarmLevel Level, int Count)>> GetLevelCountsAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.AlarmRecords
             .GroupBy(x => x.Level)
-            .Select(g => new ValueTuple<string, int>(g.Key.ToString(), g.Count()))
+            .Select(g => new ValueTuple<AlarmLevel, int>(g.Key, g.Count()))
             .ToListAsync(cancellationToken);
     }
 

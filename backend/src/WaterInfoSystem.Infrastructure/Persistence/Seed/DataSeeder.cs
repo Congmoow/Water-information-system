@@ -36,7 +36,7 @@ public class DataSeeder
             return;
         }
 
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         var users = new[]
         {

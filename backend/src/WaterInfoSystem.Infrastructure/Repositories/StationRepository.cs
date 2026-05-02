@@ -86,4 +86,14 @@ public class StationRepository : IStationRepository
     {
         return _dbContext.Stations.CountAsync(cancellationToken);
     }
+
+    public Task<bool> ExistsByRiverIdAsync(Guid riverId, CancellationToken cancellationToken)
+    {
+        return _dbContext.Stations.AnyAsync(x => x.RiverId == riverId, cancellationToken);
+    }
+
+    public Task<bool> ExistsByReservoirIdAsync(Guid reservoirId, CancellationToken cancellationToken)
+    {
+        return _dbContext.Stations.AnyAsync(x => x.ReservoirId == reservoirId, cancellationToken);
+    }
 }

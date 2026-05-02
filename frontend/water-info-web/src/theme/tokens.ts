@@ -108,7 +108,8 @@ const authTokens = {
   },
   glassCard: {
     background: 'rgba(255, 255, 255, 0.95)',
-    shadow: '0 20px 60px rgba(10, 18, 32, 0.3)'
+    shadow: '0 20px 60px rgba(10, 18, 32, 0.3)',
+    insetBorder: 'rgba(255, 255, 255, 0.4)'
   },
   input: {
     background: '#f8fafc',
@@ -196,6 +197,7 @@ export const semanticTokens = {
     heroParticle: authTokens.hero.decorative.particle,
     cardBg: authTokens.glassCard.background,
     cardShadow: authTokens.glassCard.shadow,
+    cardInsetBorder: authTokens.glassCard.insetBorder,
     inputBg: authTokens.input.background,
     inputFocusShadow: authTokens.input.focusShadow
   },

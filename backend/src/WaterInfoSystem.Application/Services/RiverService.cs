@@ -59,8 +59,7 @@ public class RiverService : IRiverService
     {
         var entity = await GetRequiredEntityAsync(id, cancellationToken);
 
-        var stations = await _stationRepository.GetAllAsync(cancellationToken);
-        if (stations.Any(s => s.RiverId == id))
+        if (await _stationRepository.ExistsByRiverIdAsync(id, cancellationToken))
         {
             throw new AppException("该河道下存在关联站点，无法删除");
         }

@@ -33,7 +33,7 @@ public class AuthServiceTests
         Assert.Equal("token-admin", result.Token);
         Assert.Equal("admin", result.User.Username);
         Assert.Equal("张伟", result.User.FullName);
-        Assert.Equal("Administrator", result.User.Role);
+        Assert.Equal(UserRole.Administrator, result.User.Role);
     }
 
     [Fact]

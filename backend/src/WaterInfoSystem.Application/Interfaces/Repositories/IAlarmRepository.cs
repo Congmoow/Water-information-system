@@ -15,7 +15,7 @@ public interface IAlarmRepository
         int pageSize,
         CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<(string Category, int Count)>> GetLevelCountsAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyList<(AlarmLevel Level, int Count)>> GetLevelCountsAsync(CancellationToken cancellationToken);
 
     Task<IReadOnlyList<AlarmRecord>> GetRecentAsync(int take, CancellationToken cancellationToken);
 
