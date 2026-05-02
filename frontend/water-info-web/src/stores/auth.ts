@@ -5,8 +5,13 @@ import { TOKEN_STORAGE_KEY, USER_STORAGE_KEY } from '@/constants/storage'
 import type { LoginRequest, LoginResult, UserProfile } from '@/types/auth'
 
 function parseUser(): UserProfile | null {
-  const raw = localStorage.getItem(USER_STORAGE_KEY)
-  return raw ? (JSON.parse(raw) as UserProfile) : null
+  try {
+    const raw = localStorage.getItem(USER_STORAGE_KEY)
+    return raw ? (JSON.parse(raw) as UserProfile) : null
+  } catch {
+    localStorage.removeItem(USER_STORAGE_KEY)
+    return null
+  }
 }
 
 export const useAuthStore = defineStore('auth', () => {

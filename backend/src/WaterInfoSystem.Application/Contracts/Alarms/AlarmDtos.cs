@@ -20,8 +20,7 @@ public record AlarmCreateDto(
 
 public record AlarmHandleDto(
     AlarmStatus Status,
-    string? HandleRemark,
-    Guid? HandledByUserId);
+    string? HandleRemark);
 
 public record AlarmListItemDto(
     Guid Id,

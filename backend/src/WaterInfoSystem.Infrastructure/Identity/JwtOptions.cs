@@ -10,5 +10,5 @@ public class JwtOptions
 
     public string SigningKey { get; set; } = string.Empty;
 
-    public int ExpiryMinutes { get; set; } = 480;
+    public int ExpiryMinutes { get; set; } = 120;
 }

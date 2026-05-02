@@ -54,12 +54,6 @@
                 show-password
               />
             </div>
-            <div class="login-options">
-              <label>
-                <el-checkbox v-model="rememberPassword" /> 记住密码
-              </label>
-              <a href="#">忘记密码？</a>
-            </div>
             <el-button
               type="primary"
               size="large"
@@ -80,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -88,7 +82,6 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
-const rememberPassword = ref(false)
 
 const form = reactive({
   username: '',

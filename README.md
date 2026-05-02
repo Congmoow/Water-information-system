@@ -53,6 +53,22 @@
 - 如果已经执行了 `003_seed_data.sql`，后端 `DataSeeder` 检测到 `Users` 表有数据后会跳过再次初始化
 - 如果选择手动方式，请按 `001 -> 002 -> 003` 的顺序完整执行
 
+### 环境配置
+
+后端启动前需要配置 JWT 签名密钥。请在 `backend/src/WaterInfoSystem.API/` 目录下创建 `appsettings.Development.json` 文件：
+
+```json
+{
+  "Jwt": {
+    "SigningKey": "Your-Secret-Key-At-Least-32-Characters-Long!!"
+  }
+}
+```
+
+或者通过环境变量设置：`Jwt__SigningKey=Your-Secret-Key-At-Least-32-Characters-Long!!`
+
+> 注意：`appsettings.Development.json` 已在 `.gitignore` 中，不会被提交到仓库。
+
 ### 2. 启动后端
 
 推荐命令：

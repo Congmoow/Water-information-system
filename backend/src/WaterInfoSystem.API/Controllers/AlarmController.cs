@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WaterInfoSystem.Application.Contracts.Alarms;
 using WaterInfoSystem.Application.Interfaces.Services;
+using WaterInfoSystem.Shared.Exceptions;
 using WaterInfoSystem.Shared.Results;
 
 namespace WaterInfoSystem.API.Controllers;
@@ -45,15 +46,13 @@ public class AlarmController : ControllerBase
     [HttpPut("{id:guid}/handle")]
     public async Task<ActionResult<ApiResponse<AlarmDetailDto>>> Handle(Guid id, [FromBody] AlarmHandleDto request, CancellationToken cancellationToken)
     {
-        var handledByUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var payload = request with
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdClaim, out var handledByUserId))
         {
-            HandledByUserId = Guid.TryParse(handledByUserId, out var parsedUserId)
-                ? parsedUserId
-                : request.HandledByUserId
-        };
+            throw new UnauthorizedException("登录信息无效");
+        }
 
-        var result = await _alarmService.HandleAsync(id, payload, cancellationToken);
+        var result = await _alarmService.HandleAsync(id, request, handledByUserId, cancellationToken);
         return Ok(ApiResponse<AlarmDetailDto>.Success(result));
     }
 }

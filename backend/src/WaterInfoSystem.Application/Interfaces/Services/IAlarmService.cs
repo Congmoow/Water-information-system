@@ -11,5 +11,5 @@ public interface IAlarmService
 
     Task<AlarmDetailDto> CreateAsync(AlarmCreateDto request, CancellationToken cancellationToken);
 
-    Task<AlarmDetailDto> HandleAsync(Guid id, AlarmHandleDto request, CancellationToken cancellationToken);
+    Task<AlarmDetailDto> HandleAsync(Guid id, AlarmHandleDto request, Guid handledByUserId, CancellationToken cancellationToken);
 }
