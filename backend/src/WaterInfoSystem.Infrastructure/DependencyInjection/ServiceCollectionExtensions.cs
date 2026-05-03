@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Application.Interfaces.Security;
+using WaterInfoSystem.Application.Interfaces.Services;
+using WaterInfoSystem.Application.Services;
 using WaterInfoSystem.Infrastructure.Identity;
 using WaterInfoSystem.Infrastructure.Persistence;
 using WaterInfoSystem.Infrastructure.Persistence.Seed;
@@ -32,6 +34,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ITokenService, JwtTokenService>();
         services.AddScoped<DataSeeder>();
+
+        services.AddHttpClient<IAiServiceClient, AiServiceClient>();
 
         return services;
     }

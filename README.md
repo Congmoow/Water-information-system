@@ -1,23 +1,27 @@
 # 水利信息系统
 
-一个面向水库、河道、站点监测与告警管理的水利信息系统课程项目，用于课程提交与答辩演示。
+一个面向水库、河道、站点监测与告警管理，以及涉水审批智能审核的水利信息系统课程项目。
 
 ## 项目简介
 
-- 项目名称：水利信息系统
+- 项目名称：水利信息系统（含涉水审批智能审核模块）
 - 项目性质：课程项目
-- 项目说明：提供登录鉴权、基础信息管理、监测数据展示、告警处理、图表统计和地图展示能力
+- 项目说明：提供登录鉴权、基础信息管理、监测数据展示、告警处理、图表统计、地图展示，以及基于 AI Agent 的涉水审批合规审查能力
 
 ## 技术栈
 
-- 后端：ASP.NET Core 8、EF Core、SQL Server
-- 前端：Vue 3、TypeScript、Vite、Element Plus、Pinia
-- 数据库：SQL Server
-- 认证：JWT + BCrypt 密码哈希
-- 接口文档：OpenAPI + Scalar
+| 层级 | 技术 |
+|------|------|
+| 主后端 | ASP.NET Core 8、EF Core、SQL Server |
+| AI 服务 | Python 3.10+、FastAPI、LangChain、ChromaDB、MCP |
+| 前端 | Vue 3、TypeScript、Vite、Element Plus、Pinia |
+| 数据库 | SQL Server |
+| 认证 | JWT + BCrypt 密码哈希 |
+| 接口文档 | OpenAPI + Scalar（.NET）、Swagger（Python） |
 
 ## 核心功能
 
+### 水利业务管理
 - 登录与权限控制
 - 水库、河道、站点管理
 - 监测数据查询与趋势展示
@@ -25,10 +29,19 @@
 - 统计图表展示
 - 地图点位展示
 
+### 涉水审批智能审核（AI 模块）
+- 审批申请提交与管理（表单 + 文件上传）
+- 知识库管理（PDF/Word 文档解析 → 向量化 → ChromaDB）
+- MCP 协议工具（`knowledge_search` + `check_completeness`）
+- 合规审查 Agent（LangChain Agent 自动审查）
+- OCR 扫描件识别（PaddleOCR）
+- 初审结果展示（不合规项分类 + 修改建议）
+
 ## 项目结构
 
-- `backend`：后端解决方案与接口实现
-- `frontend`：前端项目
+- `backend`：ASP.NET Core 后端解决方案与接口实现
+- `frontend`：Vue 3 前端项目
+- `ai-service`：Python AI 服务（知识库、MCP、Agent）
 - `sql`：数据库初始化脚本与相关 SQL 文件
 - `docs`：课程文档、说明书与过程资料
 
@@ -44,6 +57,7 @@
    - `sql/init/001_create_database.sql`
    - `sql/init/002_create_tables.sql`
    - `sql/init/003_seed_data.sql`
+   - `sql/init/004_approval_tables.sql`（审批模块表）
 2. 直接启动后端
    - 后端首次连接空数据库时，会自动创建表并写入演示数据
 
@@ -80,7 +94,22 @@ dotnet run --no-launch-profile --urls http://localhost:5000
 
 默认数据库连接在 `backend/src/WaterInfoSystem.API/appsettings.json` 中配置，当前库名为 `WaterInfoSystemDb`。
 
-### 3. 启动前端
+### 3. 启动 AI 服务（可选）
+
+```powershell
+cd ai-service
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+AI 服务默认地址：`http://localhost:8000`
+Swagger 文档：`http://localhost:8000/docs`
+
+> 注意：AI 服务需要下载嵌入模型（BAAI/bge-small-zh-v1.5），首次启动会自动下载。
+
+### 4. 启动前端
 
 ```powershell
 cd frontend/water-info-web
@@ -96,7 +125,7 @@ npm run dev
 
 - `http://localhost:5000`
 
-### 4. 使用启动脚本
+### 5. 使用启动脚本
 
 仓库根目录提供 Windows 演示启动脚本：
 
@@ -108,8 +137,9 @@ npm run dev
 
 - 检查前后端路径是否存在
 - 提示先确认 SQL Server 已启动
-- 分别打开两个 PowerShell 窗口启动后端和前端
+- 分别打开 PowerShell 窗口启动后端、前端和 AI 服务
 - 将后端固定到 `http://localhost:5000`，与前端开发代理保持一致
+- 将 AI 服务固定到 `http://localhost:8000`
 
 如果前端依赖已经安装完成，也可以使用：
 
@@ -138,9 +168,16 @@ npm run dev
 - OpenAPI JSON：`http://localhost:5000/openapi/v1.json`
 - Scalar 文档页：`http://localhost:5000/scalar/v1`
 
+AI 服务启动后可访问：
+
+- Swagger UI：`http://localhost:8000/docs`
+- ReDoc：`http://localhost:8000/redoc`
+
 ## 说明
 
-- 本次仓库收尾补充了 SQL 初始化脚本、根目录启动脚本和简短 README，便于最终提交与答辩演示
-- 未扩展业务功能，未调整前后端主体结构
+- 水利业务模块：水库/河道/站点管理、监测数据、告警处理、仪表盘、地图
+- AI 审批模块：涉水取水许可申请的提交、AI Agent 合规审查、初审结果展示
+- AI 服务基于 Python FastAPI + LangChain + ChromaDB，通过 HTTP 与 .NET 后端集成
+- MCP 协议提供 `knowledge_search` 和 `check_completeness` 两个工具
 
 

@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAlarmService, AlarmService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IMapService, MapService>();
+        services.AddScoped<IApprovalService, ApprovalService>();
         services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
         return services;
     }

@@ -22,6 +22,9 @@ const router = createRouter({
         { path: 'stations', name: 'stations', component: () => import('@/views/station/StationView.vue'), meta: { title: '站点管理', requiresAdmin: true } },
         { path: 'monitoring', name: 'monitoring', component: () => import('@/views/monitoring/MonitoringView.vue'), meta: { title: '监测数据' } },
         { path: 'alarms', name: 'alarms', component: () => import('@/views/alarm/AlarmView.vue'), meta: { title: '告警记录', requiresAdmin: true } },
+        { path: 'approvals', name: 'approvals', component: () => import('@/views/approval/ApprovalListView.vue'), meta: { title: '审批管理' } },
+        { path: 'approvals/create', name: 'approvalCreate', component: () => import('@/views/approval/ApprovalCreateView.vue'), meta: { title: '新建审批' } },
+        { path: 'approvals/:id/review', name: 'reviewResult', component: () => import('@/views/approval/ReviewResultView.vue'), meta: { title: '初审结果' } },
         { path: 'user-center', name: 'userCenter', component: () => import('@/views/user-center/UserCenterView.vue'), meta: { title: '用户中心' } }
       ]
     },
