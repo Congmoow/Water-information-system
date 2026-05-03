@@ -313,6 +313,190 @@ namespace WaterInfoSystem.Infrastructure.Persistence.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ApprovalApplication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicantIdCard")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ApplicantName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("ApplicationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnterpriseLicenseNo")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("EnterpriseName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("SubmittedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("WaterIntakeAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("WaterIntakeLocation")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("WaterIntakePurpose")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("SubmittedByUserId");
+
+                    b.ToTable("ApprovalApplications", (string)null);
+                });
+
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ApprovalAttachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplicationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AttachmentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FileType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.ToTable("ApprovalAttachments", (string)null);
+                });
+
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ReviewResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplicationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AgentVersion")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPassed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ReviewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.ToTable("ReviewResults", (string)null);
+                });
+
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ReviewFinding", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<Guid>("ReviewResultId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Suggestion")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReviewResultId");
+
+                    b.ToTable("ReviewFindings", (string)null);
+                });
+
             modelBuilder.Entity("WaterInfoSystem.Domain.Entities.AlarmRecord", b =>
                 {
                     b.HasOne("WaterInfoSystem.Domain.Entities.MonitoringData", "MonitoringData")
@@ -359,6 +543,50 @@ namespace WaterInfoSystem.Infrastructure.Persistence.Migrations
                     b.Navigation("River");
                 });
 
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ApprovalApplication", b =>
+                {
+                    b.HasOne("WaterInfoSystem.Domain.Entities.User", "SubmittedByUser")
+                        .WithMany()
+                        .HasForeignKey("SubmittedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SubmittedByUser");
+                });
+
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ApprovalAttachment", b =>
+                {
+                    b.HasOne("WaterInfoSystem.Domain.Entities.ApprovalApplication", "Application")
+                        .WithMany("Attachments")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+                });
+
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ReviewResult", b =>
+                {
+                    b.HasOne("WaterInfoSystem.Domain.Entities.ApprovalApplication", "Application")
+                        .WithMany("ReviewResults")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+                });
+
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ReviewFinding", b =>
+                {
+                    b.HasOne("WaterInfoSystem.Domain.Entities.ReviewResult", "ReviewResult")
+                        .WithMany("Findings")
+                        .HasForeignKey("ReviewResultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReviewResult");
+                });
+
             modelBuilder.Entity("WaterInfoSystem.Domain.Entities.MonitoringData", b =>
                 {
                     b.Navigation("AlarmRecords");
@@ -379,6 +607,18 @@ namespace WaterInfoSystem.Infrastructure.Persistence.Migrations
                     b.Navigation("AlarmRecords");
 
                     b.Navigation("MonitoringDatas");
+                });
+
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ApprovalApplication", b =>
+                {
+                    b.Navigation("Attachments");
+
+                    b.Navigation("ReviewResults");
+                });
+
+            modelBuilder.Entity("WaterInfoSystem.Domain.Entities.ReviewResult", b =>
+                {
+                    b.Navigation("Findings");
                 });
 #pragma warning restore 612, 618
         }

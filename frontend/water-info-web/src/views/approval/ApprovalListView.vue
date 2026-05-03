@@ -96,7 +96,11 @@ const {
     waterIntakeAmount: 0,
   }),
   deleteConfirmMessage: '确认删除该审批申请吗？',
+  createSuccessMessage: '审批申请已创建',
+  updateSuccessMessage: '审批申请已更新',
   deleteSuccessMessage: '删除成功',
+  createDialogTitle: '新建审批申请',
+  editDialogTitle: '编辑审批申请',
 })
 
 function statusTagType(status: string) {

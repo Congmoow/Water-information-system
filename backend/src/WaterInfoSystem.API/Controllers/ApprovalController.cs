@@ -60,15 +60,34 @@ public class ApprovalController : ControllerBase
         IFormFile file,
         CancellationToken cancellationToken)
     {
+        // 先验证申请存在
+        await _approvalService.GetByIdAsync(id, cancellationToken);
+
+        // 使用安全文件名：去除路径分隔符，仅保留文件名部分
+        var safeFileName = Path.GetFileName(fileName);
+        if (string.IsNullOrWhiteSpace(safeFileName))
+            return BadRequest(ApiResponse<ApprovalDetailDto>.Failure(400, "文件名无效"));
+
+        // 白名单校验文件类型
+        var allowedTypes = new[] { "pdf", "docx", "doc", "jpg", "jpeg", "png" };
+        var ext = safeFileName.Split('.').LastOrDefault()?.ToLowerInvariant();
+        if (ext == null || !allowedTypes.Contains(ext))
+            return BadRequest(ApiResponse<ApprovalDetailDto>.Failure(400, "不支持的文件类型"));
+
+        // 大小限制 (20MB)
+        if (file.Length > 20 * 1024 * 1024)
+            return BadRequest(ApiResponse<ApprovalDetailDto>.Failure(400, "文件大小超过 20MB 限制"));
+
         var uploadsDir = Path.Combine("uploads", id.ToString());
         Directory.CreateDirectory(uploadsDir);
 
-        var filePath = Path.Combine(uploadsDir, $"{Guid.NewGuid()}_{fileName}");
+        var storedName = $"{Guid.NewGuid()}{Path.GetExtension(safeFileName)}";
+        var filePath = Path.Combine(uploadsDir, storedName);
         await using var stream = new FileStream(filePath, FileMode.Create);
         await file.CopyToAsync(stream, cancellationToken);
 
         var result = await _approvalService.AddAttachmentAsync(
-            id, fileName, fileType, filePath, attachmentType, cancellationToken);
+            id, safeFileName, fileType, filePath, attachmentType, cancellationToken);
 
         return Ok(ApiResponse<ApprovalDetailDto>.Success(result));
     }

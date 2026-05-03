@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using WaterInfoSystem.Application.Interfaces.Services;
 using WaterInfoSystem.Domain.Entities;
 
-namespace WaterInfoSystem.Application.Services;
+namespace WaterInfoSystem.Infrastructure.Services;
 
 public class AiServiceClient : IAiServiceClient
 {

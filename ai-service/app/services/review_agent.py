@@ -137,7 +137,7 @@ class ReviewAgent:
             findings.append(ReviewFindingResult(
                 category="内容规范",
                 severity="Warning",
-                description="取水用途选择了"其他"但未补充说明",
+                description='取水用途选择了"其他"但未补充说明',
                 suggestion="请在备注中补充说明具体取水用途",
             ))
 

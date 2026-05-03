@@ -5,11 +5,11 @@ using WaterInfoSystem.Application.Interfaces;
 using WaterInfoSystem.Application.Interfaces.Repositories;
 using WaterInfoSystem.Application.Interfaces.Security;
 using WaterInfoSystem.Application.Interfaces.Services;
-using WaterInfoSystem.Application.Services;
 using WaterInfoSystem.Infrastructure.Identity;
 using WaterInfoSystem.Infrastructure.Persistence;
 using WaterInfoSystem.Infrastructure.Persistence.Seed;
 using WaterInfoSystem.Infrastructure.Repositories;
+using WaterInfoSystem.Infrastructure.Services;
 
 namespace WaterInfoSystem.Infrastructure.DependencyInjection;
 
@@ -31,6 +31,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IStationRepository, StationRepository>();
         services.AddScoped<IMonitoringRepository, MonitoringRepository>();
         services.AddScoped<IAlarmRepository, AlarmRepository>();
+        services.AddScoped<IApprovalRepository, ApprovalRepository>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ITokenService, JwtTokenService>();
         services.AddScoped<DataSeeder>();
