@@ -8,6 +8,7 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $backendDir = Join-Path $repoRoot "backend\src\WaterInfoSystem.API"
 $frontendDir = Join-Path $repoRoot "frontend\water-info-web"
+$aiServiceDir = Join-Path $repoRoot "ai-service"
 
 if (-not (Test-Path $backendDir)) {
     throw "Backend project path not found: $backendDir"
@@ -34,8 +35,9 @@ Write-Host ""
 Write-Host "Water Information System demo startup"
 Write-Host "------------------------------------"
 Write-Host "Please make sure SQL Server is running and the database connection in backend/src/WaterInfoSystem.API/appsettings.json is available."
-Write-Host "Backend directory : $backendDir"
-Write-Host "Frontend directory: $frontendDir"
+Write-Host "Backend directory  : $backendDir"
+Write-Host "Frontend directory : $frontendDir"
+Write-Host "AI service directory: $aiServiceDir"
 Write-Host ""
 
 $backendCommand = @(
@@ -59,15 +61,28 @@ $frontendCommand = @(
     "npm run dev"
 ) -join "; "
 
+# AI Service (Python FastAPI)
+$aiServiceCommand = @(
+    "Set-Location -LiteralPath '$aiServiceDir'",
+    "Write-Host 'Starting AI service on http://localhost:8000 ...'",
+    "python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+) -join "; "
+
 Start-Process -FilePath "powershell.exe" -ArgumentList @("-NoExit", "-Command", $backendCommand) | Out-Null
 Start-Sleep -Seconds 2
 Start-Process -FilePath "powershell.exe" -ArgumentList @("-NoExit", "-Command", $frontendCommand) | Out-Null
+Start-Sleep -Seconds 1
+if (Test-Path $aiServiceDir) {
+    Start-Process -FilePath "powershell.exe" -ArgumentList @("-NoExit", "-Command", $aiServiceCommand) | Out-Null
+}
 
 Write-Host "Startup windows opened."
-Write-Host "Frontend : $frontendUrl"
-Write-Host "Backend  : $backendUrl"
-Write-Host "Scalar   : $scalarUrl"
-Write-Host "OpenAPI  : $openApiUrl"
+Write-Host "Frontend  : $frontendUrl"
+Write-Host "Backend   : $backendUrl"
+Write-Host "AI Service: http://localhost:8000"
+Write-Host "AI Docs   : http://localhost:8000/docs"
+Write-Host "Scalar    : $scalarUrl"
+Write-Host "OpenAPI   : $openApiUrl"
 Write-Host ""
 Write-Host "If the database is empty, you can either:"
 Write-Host "1. Execute sql/init/001_create_database.sql -> 002_create_tables.sql -> 003_seed_data.sql"

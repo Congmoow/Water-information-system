@@ -23,6 +23,14 @@ public class WaterInfoDbContext : DbContext, IUnitOfWork
 
     public DbSet<AlarmRecord> AlarmRecords => Set<AlarmRecord>();
 
+    public DbSet<ApprovalApplication> ApprovalApplications => Set<ApprovalApplication>();
+
+    public DbSet<ApprovalAttachment> ApprovalAttachments => Set<ApprovalAttachment>();
+
+    public DbSet<ReviewResult> ReviewResults => Set<ReviewResult>();
+
+    public DbSet<ReviewFinding> ReviewFindings => Set<ReviewFinding>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(WaterInfoDbContext).Assembly);

@@ -41,6 +41,17 @@ TestResults/
 # Python bytecode
 __pycache__/
 *.pyc
+*.pyo
+
+# Python virtual environment
+ai-service/venv/
+ai-service/.venv/
+
+# AI service data
+ai-service/chroma_db/
+ai-service/uploads/
+ai-service/knowledge_docs/*.pdf
+ai-service/knowledge_docs/*.docx
 
 # Environment files
 .env
